@@ -46,6 +46,7 @@ npm test 测试模块
 npm version 查看模块版本
 npm view 查看模块的注册信息
 npm remove <name>移除
+npm search 搜索模块
 
 npm cache 管理模块的缓存
     npm cache add <tarball file>
