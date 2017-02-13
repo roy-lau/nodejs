@@ -15,9 +15,10 @@ NPM的全称是Node Package Manager，是随同NodeJS一起安装的包管理和
     npm help 查看某条命令的详细帮助 
     npm root 查看包的安装路径
     npm ls 查看安装的模块
-1. npm adduser 创建用户
-    npm login   登陆用户
-2. npm publish 发布模块
+1. npm adduser 创建用户<br> 
+    npm login   登陆用户 <br>
+2. npm publish 发布模块 <br>
+
 #### npm access 在发布的包上设置访问级别
     npm access public [<package>]
     npm access restricted [<package>]
