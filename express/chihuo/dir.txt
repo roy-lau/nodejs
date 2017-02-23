@@ -1,0 +1,12 @@
+
+–node_modules 项目中依赖的包 
+
+–public 公共资源放的目录 
+
+–routes 学名 路由，里面放着一些路由文件 
+
+–views 放着就是页面文件了 
+
+–app.js 项目的入口文件。当然你也可以改成其他的名字
+
+http://cnodejs.org/topic/547293caa3e2aee40698df0b 	学习网址
