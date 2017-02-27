@@ -32,7 +32,7 @@ NPM的全称是Node Package Manager，是随同NodeJS一起安装的包管理和
     npm config set <key> <value> [-g|--global]
     npm config get <key>
     npm config delete <key>
-    npm config list
+    npm config list -l 
     npm config edit
     npm get <key>
     npm set <key> <value> [-g|--global]
