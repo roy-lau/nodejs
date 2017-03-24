@@ -1,3 +1,4 @@
+// 串行化流程控制
 var fs = require('fs');
 var request = require('request');
 var htmlparser = require('htmlparser');
