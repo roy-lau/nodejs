@@ -39,11 +39,11 @@ var server = http.createServer(function(req, res) {
     }
 });
 server.listen(3000);
-console.log('此程序测试方法如下：\n'
-              '--参数-d会将请求方法设为POST，\n'
-              '步骤1. curl -d  '第一个待办事项' http://loaclhost:3000\n'
-              '步骤2. curl -d  '第二个待办事项' http://loaclhost:3000\n'
-              '步骤3. curl http://loaclhost:3000\n')
+console.log('此程序测试方法如下：\n\n'
+              + '   注： 参数-d会将请求方法设为POST，中文会出现乱码！\n\n'
+              + "   步骤1. curl -d  '第一个待办事项' http://localhost:3000\n"
+              + "   步骤2. curl -d  '第二个待办事项' http://localhost:3000\n"
+              + '   步骤3. curl http://loaclhost:3000\n')
  
  
  
