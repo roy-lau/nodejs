@@ -20,7 +20,7 @@ router.post('/ucenter', function(req, res){
 		 user.count(query, function(err, doc){	// cont返回集合中文档的数量，和find一样可以接收查询条件。query表示查询的条件
 				 if(doc == 1){
 					 console.log(query.name + ":登陆成功 || " + new Date());
-					 res.render('ucenter', { title: doc});
+					 res.render('ucenter', { title: query.name });
 				 }else{
 					 console.log(query.name + ":登陆失败" + new Date());
 					 res.redirect('/');
