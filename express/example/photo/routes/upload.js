@@ -12,29 +12,29 @@ module.exports = {
 	submit: function(dir){
 		return function(req, res, next){
 			/*
-			 * 默认为 原来的文件名 
+			 * 两个bug待解决
 			 *
-			 * req.files.photos.image 获取图片
-			 * req.files.photos.name 获取图片名
+			 * 1.获取上传文件的文件名(已解决)
+			 * 2.获取上传文件的全路径
 			 */
-			 console.log(req.files)
 			 console.log(req.body)
-			var  img = req.files.photos.image,
-				name = req.body.photos.name || img.name,
-				path = join(dir, img.name);
+			 console.log(req.files)
+			var  img = req.body.photosImage		// 这里应该获取本地文件的全部路径
+				name = req.body.photosName,
+				path = join(dir, img );
 
-		/*	// 文件重命名	
-			fs.rename(img.path, path, function(err){
+			// 文件重命名	
+			fs.rename( img , path, function(err){
 				if (err)  return next(err);
 
 				db.create({
 					name: name,
-					path: img.name
+					path: path
 				}, function(err){
 					if (err) return next(err);
 					res.redirect('/');		// 重定向到首页
 				});
-			});*/
+			});
 		};
 	},
 	list: function(req, res, next){
