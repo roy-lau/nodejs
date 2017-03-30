@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+	    <p>上传图片表单</p>
+	    <form method="post" action='/upload' enctype="multipart/form-data">
+	    	<p>
+	    		<input type="text" name="photos[name]" >
+	    	</p>
+	    	<p>
+	    		<input type="file" name="photos[image]" >
+	    	</p>
+	    	<p>
+	    		<input type="submit" name="upload" value="上传图片">
+	    	</p>
+	    	<button>1</button><button>2</button>
+	    </form>
+  </body>
+</html>

@@ -8,17 +8,20 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var photos = require('./routes/photos');
+var upload = require('./routes/upload');
 
 var app = express();
+var router = express.Router();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));    // 配置视图文件
-app.set('view engine', 'ejs');      				// 配置视图模板
+app.set('views', path.join(__dirname, 'views'));    	// 配置视图文件
+app.set('view engine', 'ejs');      					// 配置视图模板
+app.set('upload', path.join(__dirname, 'upload'));    	// 设置存放文件的路径
 
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));         // 输出有颜色区分的日志，便于开发调试
-app.use(bodyParser.json());     // 解析请求体
+app.use(bodyParser.json());     // 解析请求体req.body
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));    // 提供./pulic下的静态文件
@@ -26,6 +29,11 @@ app.use(express.static(path.join(__dirname, 'public')));    // 提供./pulic下�
 app.use('/', index);
 app.use('/users', users);
 app.use('/photos', photos);
+
+// app.use('/upload/', upload);
+
+app.get('/upload', upload.form);
+app.post('/upload', upload.submit());
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
