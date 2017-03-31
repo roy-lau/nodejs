@@ -23,7 +23,10 @@ app.set('upload', path.join(__dirname, 'public/images'));    	// 设置存放文
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));         // 输出有颜色区分的日志，便于开发调试
 app.use(bodyParser.json());     // 解析请求体req.body为json格式
-app.use(bodyParser.urlencoded({ extended: false }));	// 创建 application/x-www-form-urlencoded 解析
+
+// 创建 application/x-www-form-urlencoded 解析
+// 当extended为false的时候，键值对中的值就为'String'或'Array'形式，为true的时候，则可为任何数据类型。
+app.use(bodyParser.urlencoded({ extended: true }));	
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));    // 提供./pulic下的静态文件
 

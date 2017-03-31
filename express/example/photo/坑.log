@@ -1,3 +1,0 @@
-1、 
-enctype="multipart/form-data"
-body-parser包不支持enctype="multipart/form-data"类型所以req.body一直为{}

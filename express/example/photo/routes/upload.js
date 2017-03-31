@@ -21,8 +21,8 @@ module.exports = {
 			 */
 			 console.log(req.body)
 			 console.log(req.files)
-			var  img = req.body.photosImage		
-				name = req.body.photosName,
+			var  img = req.body.photos.image,
+				name = req.body.photos.name,
 				path = join(dir, img.name );
 
 			// 文件重命名	
