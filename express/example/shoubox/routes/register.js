@@ -4,6 +4,7 @@
 module.exports = {
 	form: function (req, res) {
 		res.render('register', {title: 'Register'});
+		console.log(req.body)
 	}
 }
 

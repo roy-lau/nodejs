@@ -1,8 +1,9 @@
-extends layout
+extends layout 
 
 block content
   h1= title
   p hello #{title}
+  block messages
   form(action='/register', method='post')
     p 用户名：
       input(type='text' name='user[name]')
