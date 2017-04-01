@@ -1,11 +1,12 @@
-#                 jade随记
+#                 					jade随记
+
 ### 参数：
 
 	extends layout					---- 相当于src进来一个页面
 	include note.txt 				---- include同于导入文本
 	include ./layout/header.jade 	---- 将header.jade当做html引入 
 
-	block content 					---- block获取block下边的content可以在别的文件引用
+	block content 					---- block获取block下边的内容，content可以在别的文件引用
 	  h1 
 	  p 
 	  p

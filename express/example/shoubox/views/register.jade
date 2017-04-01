@@ -2,8 +2,11 @@ extends layout
 
 block content
   h1= title
+  //- 导航链接
+  include menu
   p hello #{title}
-  block messages
+  //- 消息
+  include messages
   form(action='/register', method='post')
     p 用户名：
       input(type='text' name='user[name]')
