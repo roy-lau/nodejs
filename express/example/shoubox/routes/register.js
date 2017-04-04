@@ -1,4 +1,4 @@
-var User = require('../public/lib/user')
+// var User = require('../public/lib/user')
 /* GET register listing. */
 
 module.exports = {

@@ -15,7 +15,7 @@ res.error = function(msg){
 }
 
 module.exports = function(req, res, next){
-	res.locals.message = req.session.message || [admin];
+	res.locals.message = req.session.message || [];
 	res.locals.removeMessages = function(){
 		req.session.message = [];
 	};
