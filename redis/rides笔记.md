@@ -27,14 +27,122 @@
 		t 6379
 
 	2、监听端口：redis-cli.exe -h 127.0.0.1 -p 6379  -a "mypass"  // 参数：-h 主机，-p 端口，-a 密码
-	   默认写法redis-cli 		// 
+	   默认写法redis-cli
 
 	   设置键值对：ping 		// 用于检测rides是否启动，回复pong为启动
-	   设置键值对：set myKey abc
+	   设置键值对：set myKey abc 		// set key值后面必须跟value
 	   取出键值对：get myKey
 	   删除键值对：del myKey
 
 	__命令执行后输出 (integer) 1，否则将输出 (integer) 0__
+
+### redis key命令
+	转储（dump）
+	序列化给定 key ，并返回被序列化的值
+	语法：
+		dump keyname
+	实例：
+	127.0.0.1:6379> set greeting "hello, dumping word!"
+	OK
+	127.0.0.1:6379> dump greeting
+	"\x00\x14hello, dumping word!\x06\x00\x8a\xa4\xf1\xff8\xe3e\xb7"
+
+	exists
+	检查给定 key 是否存在。
+	若 key 存在返回 1 ，否则返回 0 。
+	语法： 
+		exists keyname
+	实例：
+	127.0.0.1:6379> exists greeting
+	(integer) 1
+
+	Expire 
+	为给定 key 设置过期时间。
+	设置成功返回 1 。 当 key 不存在或者不能为 key 设置过期时间时(比如在低于 2.1.3 版本的 Redis 中你尝试更新 key 的过期时间)返回 0 。
+	语法：
+		expire KEY_NAME TIME_IN_SECONDS
+	实例：
+		127.0.0.1:6379> expire greeting 60      // 一分钟后该键会自动消失
+		(integer) 1 
+		一分钟过去了……
+		127.0.0.1:6379> get greeting
+		(nil)
+
+	expireat
+EXPIREAT 的作用和 EXPIRE 类似，都用于为 key 设置过期时间。 不同在于 EXPIREAT 命令接受的时间参数是 UNIX 时间戳(unix timestamp)。
+	语法：
+		EXPIREAT key timestamp
+	实例：
+		127.0.0.1:6379> expireat greeting 1293840000 	// 时间戳
+		(integer) 1
+
+	pexpireat 
+	Redis PEXPIREAT 命令用于设置 key 的过期时间，以毫秒计。key 过期后将不再可用。 
+	语法：
+		 PEXPIREAT KEY_NAME TIME_IN_MILLISECONDS_IN_UNIX_TIMESTAMP
+	实例：
+		127.0.0.1:6379> pexpireat hell  1555543555  // 毫秒
+		(integer) 1
+
+	keys
+	查询key
+	实例：
+		127.0.0.1:6379> set test1 redis
+		OK
+		127.0.0.1:6379> set test2 mysql
+		OK
+		127.0.0.1:6379> set test3 mongodb
+		OK
+		127.0.0.1:6379> keys test*     	// 查询所有以test开头的
+		1) "test3"
+		2) "test2"
+		3) "test1"
+		127.0.0.1:6379> keys *     	// 查询所有key
+		…………此处省略…………
+
+	move
+	Redis MOVE 命令用于将当前数据库的 key 移动到给定的数据库 db 当中。 
+	语法：
+		 MOVE KEY_NAME DESTINATION_DATABASE
+	实例：
+		127.0.0.1:6379> select 0			// redis默认使用数据库 0，为了清晰起见，这里再显式指定一次。
+		OK 
+		127.0.0.1:6379> set first name 		// 设置一个key为first
+		OK
+		127.0.0.1:6379> move first 1 		// 移动first到数据库1
+		(integer) 1
+		127.0.0.1:6379> exists first 		// exists返回(integer) 0，证明first已经被移走
+		(integer) 0
+		127.0.0.1:6379> select 1 			// 切换到数据库1
+		OK
+		127.0.0.1:6379[1]> exists first     // 鉴定完毕first存在
+		(integer) 1
+		127.0.0.1:6379[1]> get first 		// 鉴定完毕first的name没有丢 :smill:
+		"name"
+
+	PERSIST  and ttl
+	Redis PERSIST 命令用于移除给定 key 的过期时间，使得 key 永不过期。 
+	语法：
+		PERSIST KEY_NAME
+	实例：
+		127.0.0.1:6379> set test "learning redis"
+		OK
+		127.0.0.1:6379> expire test 60 		// 为key设置生存时间
+		(integer) 1
+		127.0.0.1:6379> ttl test            // 查看剩余的生存时间
+		(integer) 56
+		127.0.0.1:6379> ttl test			 // 查看剩余的生存时间
+		(integer) 47
+		127.0.0.1:6379> persist test 		// 移除key的生存时间
+		(integer) 1
+		127.0.0.1:6379> ttl test 			// 查看剩余的生存时间（-1为到期）
+		(integer) -1
+
+
+
+
+
+
 
 ### rides数据类型
 
@@ -47,23 +155,23 @@
 
 		__用法__
 
-		127.0.0.1:6379> hmset user:1 username liuqinag password 110119		// 设置hash
+		127.0.0.1:6379> hmset user:1 username Ltest password 110119		// 设置hash
 		OK
 		127.0.0.1:6379> hgetall user:1 				// 获取
 		1) "username"
-		2) "liuqinag"
+		2) "Ltest"
 		3) "password"
 		4) "110119"
 
 		2、list（列表）
 
-		127.0.0.1:6379> lpush liuqinag vehicle  	// push数据到list
+		127.0.0.1:6379> lpush Ltest vehicle  	// push数据到list
 		(integer) 1
-		127.0.0.1:6379> lpush liuqinag room
+		127.0.0.1:6379> lpush Ltest room
 		(integer) 2
-		127.0.0.1:6379> lpush liuqinag woman
+		127.0.0.1:6379> lpush Ltest woman
 		(integer) 3
-		127.0.0.1:6379> lrange liuqinag 0 10   		// 查询数据liuqinag内的第0到第10条数据
+		127.0.0.1:6379> lrange Ltest 0 10   		// 查询数据Ltest内的第0到第10条数据
 		1) "woman"
 		2) "room"
 		3) "vehicle"
@@ -81,15 +189,15 @@
 		
 		__用法__
 
-		127.0.0.1:6379> sadd liu vehicle		// 添加集合
+		127.0.0.1:6379> sadd setTest vehicle		// 添加集合
 		(integer) 1
-		127.0.0.1:6379> sadd liu room
+		127.0.0.1:6379> sadd setTest room
 		(integer) 1
-		127.0.0.1:6379> sadd liu woman
+		127.0.0.1:6379> sadd setTest woman
 		(integer) 1
-		127.0.0.1:6379> sadd liu woman
+		127.0.0.1:6379> sadd setTest woman
 		(integer) 0
-		127.0.0.1:6379> smembers liu			// 查询成员
+		127.0.0.1:6379> smembers setTest			// 查询成员
 		1) "vehicle"
 		2) "woman"
 		3) "room"
@@ -110,15 +218,15 @@
 
 		__用法__
 
-		127.0.0.1:6379> zadd qiang 0 vehicle   // 添加有序集合
+		127.0.0.1:6379> zadd zTest 0 vehicle   // 添加有序集合
 		(integer) 1
-		127.0.0.1:6379> zadd qiang 0 room
+		127.0.0.1:6379> zadd zTest 0 room
 		(integer) 1
-		127.0.0.1:6379> zadd qiang 0 woman
+		127.0.0.1:6379> zadd zTest 0 woman
 		(integer) 1
-		127.0.0.1:6379> zadd qiang 0 woman
+		127.0.0.1:6379> zadd zTest 0 woman
 		(integer) 0
-		127.0.0.1:6379> zrangebyscore qiang 0 100  	// 通过范围获取有序集合
+		127.0.0.1:6379> zrangebyscore zTest 0 100  	// 通过范围获取有序集合
 		1) "room"
 		2) "vehicle"
 		3) "woman"
