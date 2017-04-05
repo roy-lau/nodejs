@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride());		// 此插件可以获取除get post 以外的方法，比如put delete等
 app.use(cookieParser('your secret here'));
 app.use(session()); 
-app.use(app.router); 
+// app.use(app.router); 
 
 require('./routes/Rconfig')(app);  // 将app传递给./rotes/Rconfig
 
