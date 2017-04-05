@@ -120,26 +120,148 @@ EXPIREAT 的作用和 EXPIRE 类似，都用于为 key 设置过期时间。 不
 		127.0.0.1:6379[1]> get first 		// 鉴定完毕first的name没有丢 :smill:
 		"name"
 
-	PERSIST  and ttl
-	Redis PERSIST 命令用于移除给定 key 的过期时间，使得 key 永不过期。 
+	persist  and ttl
+	Redis persist 命令用于移除给定 key 的过期时间，使得 key 永不过期。 
 	语法：
 		PERSIST KEY_NAME
 	实例：
 		127.0.0.1:6379> set test "learning redis"
 		OK
+		127.0.0.1:6379> ttl test            // key 存在，但没有设置剩余生存时间（-1）
+		(integer) -1
 		127.0.0.1:6379> expire test 60 		// 为key设置生存时间
 		(integer) 1
-		127.0.0.1:6379> ttl test            // 查看剩余的生存时间
+		127.0.0.1:6379> ttl test            // 查看剩余的生存时间(秒)
 		(integer) 56
-		127.0.0.1:6379> ttl test			 // 查看剩余的生存时间
+		127.0.0.1:6379> ttl test			 // 查看剩余的生存时间(秒)
 		(integer) 47
 		127.0.0.1:6379> persist test 		// 移除key的生存时间
 		(integer) 1
 		127.0.0.1:6379> ttl test 			// 查看剩余的生存时间（-1为到期）
 		(integer) -1
 
+	pttl
+	Redis Pttl 命令以毫秒为单位返回 key 的剩余过期时间。 
+	语法：
+		 PTTL KEY_NAME
+	实例：
+		127.0.0.1:6379> set lean "learning redis"
+		OK
+		127.0.0.1:6379> ttl test            // key 存在，但没有设置剩余生存时间（-1）
+		(integer) -1
+		127.0.0.1:6379> expire lean 60 		// 为key设置生存时间
+		(integer) 1
+		127.0.0.1:6379> ttl lean			// 查看剩余的生存时间(秒)
+		(integer) 54
+		127.0.0.1:6379> pttl lean			// 查看剩余的生存时间(毫秒)
+		(integer) 46574
 
+	randomkey 
+	语法：
+	Redis RANDOMKEY 命令从当前数据库中随机返回一个 key 。 
+		RANDOMKEY 
+	实例：
+	127.0.0.1:6379> mset first 'redis' second 'mongodb' third 'mysql'  // 设置多个key
+	OK
+	127.0.0.1:6379> randomkey		// 随机返回一个key
+	"first"
+	127.0.0.1:6379> randomkey		// 随机返回一个key
+	"second"
+	127.0.0.1:6379> randomkey		// 随机返回一个key
+	"first"
+	127.0.0.1:6379> randomkey		// 随机返回一个key
+	"init"
+	127.0.0.1:6379> randomkey		// 随机返回一个key
+	"init"
+	127.0.0.1:6379> randomkey		// 随机返回一个key
+	"init"
+	127.0.0.1:6379> keys *			// 查看所有的key
+	1) "third"
+	2) "second"
+	3) "first"
+	4) "init"
 
+	rename 
+	Redis Rename 命令用于修改 key 的名称 。 
+	语法：
+		RENAME OLD_KEY_NAME NEW_KEY_NAME
+	实例：
+		127.0.0.1:6379> mset first 'redis' second 'mongodb' third 'mysql'  // 设置多个key
+		OK
+		127.0.0.1:6379> rename first Penultimate 		// 修改first为Penultimate
+		OK
+		127.0.0.1:6379> exists first					// 查看first是否存在
+		(integer) 0
+		127.0.0.1:6379> exists Penultimate				// 查看Penultimate是否存在
+		(integer) 1
+		127.0.0.1:6379> rename first Penultimate		// 尝试修改不存在的key值first
+		(error) ERR no such key
+		127.0.0.1:6379> set pc "hasee"					// 设置pc为hasee
+		OK
+		127.0.0.1:6379> set pc1 "dell"					// 设置pc1为dell
+		OK
+		127.0.0.1:6379> rename pc pc1					// 改key值，pc为pc1
+		OK
+		127.0.0.1:6379> get pc							// 查看pc的value为nil空
+		(nil)
+		127.0.0.1:6379> get pc1							// 查看pc1为 hasee
+		"hasee"
+
+	renamenx
+	Redis Renamenx 命令用于在新的 key 不存在时修改 key 的名称 。 
+	语法：
+		 RENAMENX OLD_KEY_NAME NEW_KEY_NAME
+	实例：
+		127.0.0.1:6379> set pc "hasee"					// 设置pc为hasee
+		OK
+		127.0.0.1:6379> set pc1 "dell"					// 设置pc1为dell
+		OK
+		127.0.0.1:6379> renamenx pc pc1					// 修改pc为pc1(0_失败)
+		(integer) 0
+		127.0.0.1:6379> renamenx pc1 pc					// 修改pc1为pc(0_失败)
+		(integer) 0
+		127.0.0.1:6379> get pc
+		"hasee"
+		127.0.0.1:6379> get pc1
+		"dell"
+		127.0.0.1:6379> exists pc3						// 查看pc3是否存在
+		(integer) 0
+		127.0.0.1:6379> renamenx pc pc3					// 修改pc为pc3(1_成功)
+		(integer) 1
+		127.0.0.1:6379> get pc          				// 查看pc是否还存在
+		(nil)
+		127.0.0.1:6379> get pc3 						// pc已被改为pc3
+		"hasee"
+
+	type
+	Redis Type 命令用于返回 key 所储存的值的类型。 
+	语法：
+		TYPE KEY_NAME 
+	返回值：
+	  返回 key 的数据类型，数据类型有：
+	    none (key不存在)
+	    string (字符串)
+	    list (列表)
+	    set (集合)
+	    zset (有序集)
+	    hash (哈希表)
+	实例：
+	127.0.0.1:6379> hmset user:1 username sx pwd 123 		// 创建哈希
+	OK
+	127.0.0.1:6379> type user:1								// 查看类型
+	hash
+	127.0.0.1:6379> lpush Ltest book						// 创建列表
+	(integer) 1
+	127.0.0.1:6379> type Ltest								// 查看类型
+	list
+	127.0.0.1:6379> set getting confing						// 创建集合
+	OK
+	127.0.0.1:6379> type pat								// 查看集合
+	set
+	127.0.0.1:6379> sadd pat "dog"							// 创建无序集合
+	(integer) 1
+	127.0.0.1:6379> type getting							// 查看类型
+	string
 
 
 
@@ -165,7 +287,7 @@ EXPIREAT 的作用和 EXPIRE 类似，都用于为 key 设置过期时间。 不
 
 		2、list（列表）
 
-		127.0.0.1:6379> lpush Ltest vehicle  	// push数据到list
+		127.0.0.1:6379> lpush Ltest vehicle  		// push数据到list
 		(integer) 1
 		127.0.0.1:6379> lpush Ltest room
 		(integer) 2
@@ -374,6 +496,102 @@ EXPIREAT 的作用和 EXPIRE 类似，都用于为 key 设置过期时间。 不
 30. 指定包含其它的配置文件，可以在同一主机上多个Redis实例之间使用同一份配置文件，而同时各个实例又拥有自己的特定配置文件
 
     include /path/to/local.conf
+
+### 查看服务器信息
+
+127.0.0.1:6379> info
+	# Server
+	redis_version:3.0.504
+	redis_git_sha1:00000000
+	redis_git_dirty:0
+	redis_build_id:a4f7a6e86f2d60b3
+	redis_mode:standalone
+	os:Windows
+	arch_bits:32
+	multiplexing_api:WinSock_IOCP
+	process_id:5800
+	run_id:4d6afdd49a2039775e20214bb22680b27c0deea5
+	tcp_port:6379
+	uptime_in_seconds:5309
+	uptime_in_days:0
+	hz:10
+	lru_clock:14966534
+	config_file:D:\Program Files\redis\redis.windows.conf
+
+	# Clients
+	connected_clients:1
+	client_longest_output_list:0
+	client_biggest_input_buf:0
+	blocked_clients:0
+
+	# Memory
+	used_memory:521064
+	used_memory_human:508.85K
+	used_memory_rss:483296
+	used_memory_peak:521064
+	used_memory_peak_human:508.85K
+	used_memory_lua:26624
+	mem_fragmentation_ratio:0.93
+	mem_allocator:jemalloc-3.6.0
+
+	# Persistence
+	loading:0
+	rdb_changes_since_last_save:0
+	rdb_bgsave_in_progress:0
+	rdb_last_save_time:1491361241
+	rdb_last_bgsave_status:ok
+	rdb_last_bgsave_time_sec:0
+	rdb_current_bgsave_time_sec:-1
+	aof_enabled:0
+	aof_rewrite_in_progress:0
+	aof_rewrite_scheduled:0
+	aof_last_rewrite_time_sec:-1
+	aof_current_rewrite_time_sec:-1
+	aof_last_bgrewrite_status:ok
+	aof_last_write_status:ok
+
+	# Stats
+	total_connections_received:1
+	total_commands_processed:66
+	instantaneous_ops_per_sec:0
+	total_net_input_bytes:2490
+	total_net_output_bytes:4745
+	instantaneous_input_kbps:0.00
+	instantaneous_output_kbps:0.00
+	rejected_connections:0
+	sync_full:0
+	sync_partial_ok:0
+	sync_partial_err:0
+	expired_keys:1
+	evicted_keys:0
+	keyspace_hits:19
+	keyspace_misses:4
+	pubsub_channels:0
+	pubsub_patterns:0
+	latest_fork_usec:3000
+	migrate_cached_sockets:0
+
+	# Replication
+	role:master
+	connected_slaves:0
+	master_repl_offset:0
+	repl_backlog_active:0
+	repl_backlog_size:1048576
+	repl_backlog_first_byte_offset:0
+	repl_backlog_histlen:0
+
+	# CPU
+	used_cpu_sys:0.87
+	used_cpu_user:0.27
+	used_cpu_sys_children:0.00
+	used_cpu_user_children:0.00
+
+	# Cluster
+	cluster_enabled:0
+
+	# Keyspace
+	db0:keys=5,expires=0,avg_ttl=0
+	127.0.0.1:6379> cpu
 
 ### 下载地址
 
