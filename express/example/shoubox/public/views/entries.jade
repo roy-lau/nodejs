@@ -1,0 +1,13 @@
+extends layout 
+
+block content
+  h1= title
+  //- 导航链接
+  include menu
+  each entry in entries
+    .entry
+      h3 #{entry.title}
+      p #{entry.body}
+      p Posted by #{entry.username}
+  //- 分页组件
+  include pager
