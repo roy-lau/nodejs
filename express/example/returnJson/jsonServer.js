@@ -18,7 +18,7 @@ appRouter.route('/:apiName')
             if (data[req.params.apiName]) {
                 res.json(data[req.params.apiName])
             } else {
-                req.snd('没有api信息')
+                req.send('没有api信息')
             }
         })
     });

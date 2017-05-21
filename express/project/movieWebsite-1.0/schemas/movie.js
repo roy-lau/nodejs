@@ -39,14 +39,14 @@ MovieSchema.pre('save', function(){
 MovieSchema.statics = {
 	// fatch: 这个方法用来取出数据库内所有的数据
 				// 将数据内的数据按照更新时间排序
-	fatch: function(cb){
+	fetch: function(cb){
 		return this
 			.find({})
 			.sort('meta.updateAt')
 			.exec(cb)
 	},
 	// findById: 查找一条数据
-	findById: function(cb){
+	findById: function(id, cb){
 			return this
 			.findOne({_id: id})
 			.exec(cb)
