@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 
 
 
-
 var app = express();
 
 // view engine setup
@@ -21,6 +20,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.locals.moment = require("moment") 	// 时间格式化模块
 
 var index = require('./routes/index');
 app.use(index);

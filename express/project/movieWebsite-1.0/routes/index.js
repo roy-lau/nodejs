@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+
 var mongoose = require('mongoose')
 var _ = require('underscore')
 var Moive = require("../models/movie")
@@ -19,12 +20,11 @@ router.get('/', function(req, res, next) {
 /* GET detail page. */
 router.get('/movie/:id', function(req, res, next) {
     var id = req.params.id // 获取当前路由的id
-
     Moive.findById(id, function(err, movie) {
         res.render('pages/detail', {
             title: '电影网站—--' + movie.title,
-            movies: movie
-        });
+            movies: {movie:movie}
+        })
     })
 });
 
@@ -50,9 +50,9 @@ router.get('/admin/update/:id', function(req, res) {
         var id = req.params.id
         if (id) {
             Moive.findById(id, function(err, movie) {
-                req.render('admin', {
+                res.render('pages/admin', {
                     title: '电影网站——后台更新页',
-                    movies: movie
+                    movie: movie
                 })
             })
         }
@@ -60,7 +60,6 @@ router.get('/admin/update/:id', function(req, res) {
     /* GET post movie. */
     // 将后台录入页传来的数据保存到数据库内
 router.post('/admin/movie/new', function(req, res) {
-        console.log(req.body)
     var id = req.body.movie._id,
         movieObj = req.body.movie,
         _movie;
@@ -75,6 +74,7 @@ router.post('/admin/movie/new', function(req, res) {
             })
         })
     } else {
+        // 如果后台录入页传来的数据不为空，则保存
         _movie = new Moive({
             doctor: movieObj.doctor,
             title: movieObj.title,
@@ -94,7 +94,7 @@ router.post('/admin/movie/new', function(req, res) {
 
 /* GET list page. */
 router.get('/admin/list', function(req, res, next) {
-    Moive.fetch(function(err, movies) {
+    Moive.fetch(function(err, movie) {
         if (err) console.log(err)
         res.render('pages/list', {
             title: '电影网站——列表页',

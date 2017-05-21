@@ -24,7 +24,7 @@ var MovieSchema = new mongoose.Schema({
 
 // ========保存===========
 
-MovieSchema.pre('save', function(){
+MovieSchema.pre('save', function(next){
 	// 判断数据是否是新添加的
 	if(this.isNew){
 	// 如果是新添加的就将创建的时间和更新的时间设置为当前时间
