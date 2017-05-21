@@ -70,7 +70,7 @@ router.post('/admin/movie/new', function(req, res) {
             _movie = _.extend(movie, movieObj)
             _movie.save(function(err, movie) {
                 if (err) console.log(err)
-                res.redirect('/movie/' + movie._id)
+                res.redirect('/admin/list')
             })
         })
     } else {
@@ -87,7 +87,7 @@ router.post('/admin/movie/new', function(req, res) {
         })
         _movie.save(function(err, movie) {
             if (err) console.log(err)
-            res.redirect('/movie/' + movie._id)
+            res.redirect('/admin/list')
         })
     }
 })
@@ -102,5 +102,17 @@ router.get('/admin/list', function(req, res, next) {
         });
     });
 });
-
+/* GET delete movie. */
+router.delete('/admin/list', function(req, res){
+    var id = req.body.id;
+    if(id){
+        Moive.remove({_id: id}, function(err, movie){
+            if(err) {
+                console.log("删除错误信息："+err)
+            }else{
+                res.json({success:1})
+            }
+        })
+    }
+})
 module.exports = router
