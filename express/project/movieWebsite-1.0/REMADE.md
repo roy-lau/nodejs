@@ -19,11 +19,11 @@
 ```
 git clone https://github.com/roy-lau/nodejs.git
 
-cd nodejs/express/project/movieWebsite
+cd nodejs/express/project/movieWebsite-1.0
 
 npm install
 
-npm run dev
+npm start(需启动mongoDB服务器)
 
 访问 http://localhost:3000
 ```
