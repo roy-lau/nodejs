@@ -2,7 +2,7 @@
 
 'use strict';
 const email = require("emailjs");
-const option = require("./config");
+const option = require("./src/config");
 console.log()
 
 let server 	= email.server.connect(option.userinfo);

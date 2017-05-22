@@ -41,8 +41,9 @@ module.exports = {
             // html类型
             { data: "<html><h2>zip邮件</h2><p>这是一个使用emailjs发送的带有压缩包的的邮件</p></html>", alternative: true },
             // zip类型，附件
-            { path: "assets/test-send--by-zip-file.zip", type: "application/zip", name: "附件-压缩包.zip" },
-            { path: "assets/imges.gif", type: "image/gif", name: "附件-图片.gif" }
+            // path 是相对于index.js的
+            { path: "src/assets/test-send--by-zip-file.zip", type: "application/zip", name: "附件-压缩包.zip" },
+            { path: "src/assets/imges.gif", type: "image/gif", name: "附件-图片.gif" }
         ]
     },
     /*
@@ -56,7 +57,8 @@ module.exports = {
             // html类型
             { data: "<html><h2>image邮件</h2><p>这是一个使用emailjs发送的带有图片的邮件</p><img src='cid:my-image' width='100' height ='50'></html>", alternative: true },
             // jpg 类型 附件
-            { path: "assets/imges.gif", type: "image/gif", headers: { "Content-ID": "<my-image>" } }
+            // path 是相对于index.js的
+            { path: "src/assets/imges.gif", type: "image/gif", headers: { "Content-ID": "<my-image>" } }
         ]
     }
 }
