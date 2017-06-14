@@ -1,0 +1,137 @@
+nav li {
+  list-style: none;
+}
+/* reset----重置 */
+html,
+body {
+  font: '宋体', 'Helvetica Neue', 'Microsoft YaHei', Tahoma, Arial, sans-serif;
+}
+/* 通用样式 */
+.m0 {
+  margin: 0;
+}
+.text-gray {
+  color: gray;
+  font-size: 1em;
+}
+.btn-white {
+  width: 150px;
+  height: 35px;
+  display: block;
+  border-radius: 18px;
+  border: 1px solid #1FA66E;
+  text-align: center;
+  line-height: 35px;
+  font-size: 1.3em;
+  background-color: white;
+  color: #1FA66E;
+}
+.btn-white:hover {
+  background-color: #1FA66E;
+  color: white;
+  text-decoration: none;
+  -webkit-backface-visibility: hidden;
+}
+.Price-box {
+  height: 250px;
+  width: 180px;
+  margin: 0 10px;
+  text-align: center;
+  border: 1px solid #C7CBD3;
+}
+.Price-box .Price-box-title {
+  line-height: 50px;
+  border-bottom: 1px solid #C7CBD3;
+}
+.Price-box .Price-box-title .Price-money {
+  color: #fb364a;
+  font-size: 36px;
+}
+.Price-box .Price-h {
+  font-size: 22px;
+  font-weight: bold;
+  color: #3d4f5b;
+}
+.Price-box .Price-Original-price {
+  color: #C7CBD3;
+  text-decoration: line-through;
+}
+.Price-box .Price-Contain {
+  color: #2fb26a;
+}
+.Price-box .Price-go-purchase {
+  display: inline-block;
+  width: 158px;
+  height: 48px;
+  margin: 10px 0;
+  line-height: 48px;
+  text-align: center;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  background-color: #fb364a;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+}
+.Price-box .one {
+  margin: 40px 0;
+}
+/* 左侧列表*/
+.left-list {
+  position: fixed;
+  top: 61px;
+  background-color: #091720;
+  color: white;
+}
+.left-list .left-list-label-sms {
+  background-color: #F83251;
+}
+.left-list .left-list-label-voice {
+  background-color: #B83FCD;
+}
+.left-list h1 {
+  line-height: 2em;
+  font-weight: 300;
+}
+.left-list a:link {
+  line-height: 2.5em;
+  font-weight: 300;
+  font-size: 1.3em;
+}
+/* 右侧内容页 */
+.conent-page #sms-page1,
+.conent-page #sms-page2,
+.conent-page #sms-page3,
+.conent-page #sms-page4,
+.conent-page #voice-page1,
+.conent-page #voice-page2,
+.conent-page #voice-page3,
+.conent-page #voice-page4 {
+  padding-top: 61px;
+  background-color: #EFEFEF;
+}
+.conent-page .sms-box-page1,
+.conent-page .sms-box-page2,
+.conent-page .sms-box-page3,
+.conent-page .sms-box-page4,
+.conent-page .voice-box-page1,
+.conent-page .voice-box-page2,
+.conent-page .voice-box-page3,
+.conent-page .voice-box-page4 {
+  width: 866px;
+  margin: 0 auto;
+  padding: 45px 40px;
+  border-radius: 1%;
+  box-shadow: 0 5px 15px #cac8e9;
+  background-color: white;
+}
+.conent-page #sms-footer,
+.conent-page #voice-footer {
+  text-align: center;
+  margin: 0 auto;
+}
+.conent-page #sms-footer .QAlist li,
+.conent-page #voice-footer .QAlist li {
+  list-style: none;
+}

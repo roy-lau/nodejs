@@ -1,0 +1,186 @@
+html,
+body {
+  font: '宋体', 'Helvetica Neue', 'Microsoft YaHei', Tahoma, Arial, sans-serif;
+  margin: 0;
+  background-color: #EAEDF5;
+}
+#nav h2,
+.items h2,
+.tetle-item h2 {
+  font-size: 2em;
+  margin-top: -5px;
+  font-weight: 300;
+}
+#nav h2 a,
+.items h2 a,
+.tetle-item h2 a {
+  text-decoration: none;
+  color: #000;
+}
+.bg-img {
+  width: 100%;
+  background: url(http://www.yuntongxun.com/front/images/taste_img1.jpg) no-repeat;
+}
+.bg-img img {
+  display: block;
+  margin: 0 auto;
+  padding: 130px;
+}
+.bg-img .boxs {
+  width: 80%;
+  height: 1030px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: space-between;
+  /*280*/
+}
+.bg-img .boxs .item1,
+.bg-img .boxs .item2,
+.bg-img .boxs .item3,
+.bg-img .boxs .item4,
+.bg-img .boxs .item5,
+.bg-img .boxs .item6,
+.bg-img .boxs .item7,
+.bg-img .boxs .item8,
+.bg-img .boxs .item9 {
+  width: 22.1%;
+  height: 280px;
+  margin-bottom: 60px;
+  position: relative;
+}
+.bg-img .boxs .item1 .isInfo,
+.bg-img .boxs .item2 .isInfo,
+.bg-img .boxs .item3 .isInfo,
+.bg-img .boxs .item4 .isInfo,
+.bg-img .boxs .item5 .isInfo,
+.bg-img .boxs .item6 .isInfo,
+.bg-img .boxs .item7 .isInfo,
+.bg-img .boxs .item8 .isInfo,
+.bg-img .boxs .item9 .isInfo {
+  display: none;
+}
+.bg-img .boxs .item1 {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px 0px no-repeat;
+}
+.bg-img .boxs .item1:hover {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -2800px no-repeat;
+}
+.bg-img .boxs .item1:hover .isInfo {
+  display: block;
+}
+.bg-img .boxs .item2 {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -1960px no-repeat;
+}
+.bg-img .boxs .item2:hover {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -2800px no-repeat;
+}
+.bg-img .boxs .item2:hover .isInfo {
+  display: block;
+}
+.bg-img .boxs .item3 {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -1400px no-repeat;
+}
+.bg-img .boxs .item3:hover {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -2800px no-repeat;
+}
+.bg-img .boxs .item3:hover .isInfo {
+  display: block;
+}
+.bg-img .boxs .item4 {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -840px no-repeat;
+}
+.bg-img .boxs .item4:hover {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -2800px no-repeat;
+}
+.bg-img .boxs .item4:hover .isInfo {
+  display: block;
+}
+.bg-img .boxs .item5 {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -560px no-repeat;
+}
+.bg-img .boxs .item5:hover {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -2800px no-repeat;
+}
+.bg-img .boxs .item5:hover .isInfo {
+  display: block;
+}
+.bg-img .boxs .item6 {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -1120px no-repeat;
+}
+.bg-img .boxs .item6:hover {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -2800px no-repeat;
+}
+.bg-img .boxs .item6:hover .isInfo {
+  display: block;
+}
+.bg-img .boxs .item7 {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -280px no-repeat;
+}
+.bg-img .boxs .item7:hover {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -2800px no-repeat;
+}
+.bg-img .boxs .item7:hover .isInfo {
+  display: block;
+}
+.bg-img .boxs .item8 {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -2520px no-repeat;
+}
+.bg-img .boxs .item8:hover {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -2800px no-repeat;
+}
+.bg-img .boxs .item8:hover .isInfo {
+  display: block;
+}
+.bg-img .boxs .item9 {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -3080px no-repeat;
+}
+.bg-img .boxs .item9:hover {
+  background: url(http://www.yuntongxun.com/front/images/tastebg.jpg) 0px -2800px no-repeat;
+}
+.bg-img .boxs .item9:hover .isInfo {
+  display: block;
+}
+.bg-img .boxs .cont {
+  margin: 8px;
+  position: absolute;
+  bottom: 0;
+}
+.bg-img .boxs .cont h3 {
+  margin: 0;
+  color: #000;
+  font-size: 1em;
+}
+.bg-img .boxs .cont p {
+  margin: 0;
+  font-size: 13px;
+  color: gray;
+}
+.bg-img .boxs .isInfo {
+  margin-top: 50px;
+}
+.bg-img .boxs .isInfo a {
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+  line-height: 2.3em;
+}
+.bg-img .boxs .isInfo a:first-child {
+  width: 120px;
+  border-radius: 15px;
+  border: 2px solid white;
+  text-decoration: none;
+  background-color: #1068E6;
+  color: white;
+}
+footer {
+  padding: 20px 0px 20px 50px;
+  background-color: #0D0D0D;
+  color: white;
+}
+footer p {
+  margin: 0;
+  color: gray;
+  font-size: 1em;
+}

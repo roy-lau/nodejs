@@ -1,0 +1,94 @@
+// 头部导航
+#navbar {
+    position: fixed;
+    top: 0;
+    z-index: 99;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid #131E24;
+    .content {
+    	width: 90%;
+		margin: 0 auto;
+		a{line-height: 60px;}
+    	.lt{
+			img{float: left;}
+			h2{float: left;margin: auto 20px;
+				color: #333;
+                font-weight: 500;
+                font-size: 25px;}
+    	}
+        // 中间导航
+		.cent{
+			li{float: left;margin: 0 48px;
+	           a {
+	                font-size: 1.2em;
+	                color: #000;
+	                text-decoration: none;
+	                transition: all 0.5s;
+		            &:hover{
+		                color: #00a3f0;
+		                border-bottom: 3px solid #00a3f0;
+		            }
+	            }
+			}
+		}
+        // 右侧按钮
+		.rt{
+			float: right;
+            a {
+                width: 83px;
+                height: 31px;
+                border: 1px solid #18bd9c;
+                border-radius: 10%;
+                font-size: 16px;
+                padding: 5px 25px;
+                cursor: pointer;
+                transition: all 1s;
+            }
+            .register {
+                background-color: #18bd9c;
+                color: #FFF;
+	            &:hover{
+	                color: #FFF;
+	                background-color: #8dc;
+	            }
+            }
+            .login {
+                color: #18bd9c;
+               &:hover{
+	                color: #FFF;
+	                background-color: #8dc;
+	            }
+            }
+		}
+    }
+}
+        .title-item,
+        .tab-item,
+        .right-item {
+            flex: 1;
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+        }
+        // 标题
+        .title-item,h2 {
+                padding-top: 0px;
+            a{
+                color: #333;
+                font-weight: 500;
+                font-size: 25px;
+            }
+        }
+        .tab-item {
+            a {
+                font-size: 1.3em;
+                color: #000;
+                text-decoration: none;
+                transition: all 0.5s;
+            }
+            &:hover a {
+                color: #00a3f0;
+                border-bottom: 3px solid #00a3f0;
+            }
+     

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+
+<head>
+    <title>好外号-注册</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge，chrome=1">
+    <link rel="stylesheet" type="text/css" href="http://101.201.101.70:1024/assets/style/index.css">
+    <link rel="stylesheet" type="text/css" href="http://apps.bdimg.com/libs/bootstrap/3.3.4/css/bootstrap.min.css">
+    <style type="text/css">
+    .register_bg {
+        width: 100%;
+        height: 100%;
+        min-width: 1200px;
+        min-height: 700px;
+        background: url(http://www.yuntongxun.com/front/images/advice_img1.jpg) center;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+    }
+    
+    .register_content {
+        padding: 150px 130px;
+    }
+    
+    .register_content,
+    h1 {
+        color: white;
+    }
+    
+    .text-error {
+        color: red;
+    }
+    </style>
+</head>
+
+<body>
+    <nav id="nav">
+        <div class="items">
+            <img src="http://101.201.101.70:1024/assets/images/logo.gif" width="60" height="60">
+            <div class="title-item">
+                <h2><a href="http://101.201.101.70:1024/index.html">号 外 号</a></h2>
+            </div>
+            <div class="tab-item">
+                <a href="http://101.201.101.70:1024/index.html">首页</a>
+            </div>
+            <div class="tab-item" id="product_item">
+                <a href="http://101.201.101.70:1024/views/product.html">产品</a>
+                <div id="product_menu" style="display: none;">
+                    <div class="container">
+                        <div class="left-menu">
+                            <ul>
+                                <li>
+                                    <h1>云通讯</h1></li>
+                                <li>
+                                    <p>行业第一的通信能力集成服务商</p>
+                                </li>
+                                <li><a href="">了解更多》</a></li>
+                            </ul>
+                        </div>
+                        <div class="menu">
+                            <h3 class="title">语音类</h3>
+                            <ul>
+                                <li class="menu-item">
+                                    <em class="dot"> · </em>
+                                    <a href="http://101.201.101.70:1024/views/product.html#voiceClass-1">企业外号</a>
+                                </li>
+                                <li class="menu-item">
+                                    <em class="dot"> · </em>
+                                    <a href="http://101.201.101.70:1024/views/product.html#voiceClass-2">安全隐私号</a>
+                                </li>
+                                <li class="menu-item">
+                                    <em class="dot"> · </em>
+                                    <a href="http://101.201.101.70:1024/views/product.html#voiceClass-3">一键双呼</a>
+                                </li>
+                                <li class="menu-item">
+                                    <em class="dot"> · </em>
+                                    <a href="http://101.201.101.70:1024/views/product.html#voiceClass-4">企业名片</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="menu">
+                            <h3 class="title">消息类</h3>
+                            <ul>
+                                <li class="menu-item">
+                                    <em class="dot"> · </em>
+                                    <a href="http://101.201.101.70:1024/views/product.html#smsClass-1">短信验证码</a> </li>
+                                <li class="menu-item">
+                                    <em class="dot"> · </em>
+                                    <a href="http://101.201.101.70:1024/views/product.html#smsClass-2">短信发送平台</a> </li>
+                                <li class="menu-item">
+                                    <em class="dot"> · </em>
+                                    <a href="http://101.201.101.70:1024/views/product.html#smsClass-3">短信通知</a>
+                                </li>
+                                <li class="menu-item">
+                                    <em class="dot"> · </em>
+                                    <a href="http://101.201.101.70:1024/views/product.html#smsClass-4">闪信通知</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-item">
+                <a href="http://101.201.101.70:1024/views/price.html">价格</a>
+            </div>
+            <div class="tab-item">
+                <a href="http://101.201.101.70:1024/views/experience.html">体验</a>
+            </div>
+            <div class="tab-item">
+                <a href="http://101.201.101.70:1024/views/APIdoc.html">开发文档</a>
+            </div>
+            <div class="tab-item">
+                <a href="http://101.201.101.70:1024/views/APIdoc.html#smsVerification-Protocol-specification">帮助</a>
+            </div>
+            <div class="right-item">
+                <a class="register" href="http://101.201.101.70:8080/ucrm/">登陆</a>
+            </div>
+            <div class="right-item">
+                <a class="login" href="http://101.201.101.70:8080/ucrm/register_toRegister.action">注册</a>
+            </div>
+        </div>
+    </nav>
+    <div class="register_bg">
+        <div class="register_content row" style="margin:0;">
+            <div class="col-lg-5">
+                <h1>快速注册号外号</h1>
+                <p>省时、省力、省钱！</p>
+                <p>号外号™ 致力于让通讯能力"零门槛"、"低资费"、"轻松按需取用"</p>
+                <p>已有号外号帐号？<a href="http://101.201.101.70:8080/ucrm/">立即登录 >></a></p>
+            </div>
+            <div class="col-lg-5">
+                <form class="sign">
+                    <label for="mobile">手机号：</label>
+                    <input type="tel" class="form-control" name="" placeholder="请输入手机号">
+                    <p id="error-mobile" class="text-error pull-right"></p>
+                    <br>
+                    <label for="email">邮箱：</label>
+                    <input type="email" class="form-control" name="" placeholder="请输入电子邮箱">
+                    <p id="error-email" class="text-error pull-right"></p>
+                    <br>
+                    <label for="pwd">密码：</label>
+                    <input type="password" class="form-control" name="" id="pwd" placeholder="请输入密码">
+                    <p id="error-password" class="text-error pull-right"></p>
+                    <br>
+                    <hr>
+                    <button type="button" class="btn btn-success" data-loading-text="Loading..." id="next">下一步</button>
+                </form>
+                <form id="Verification_Code" style="display: none;">
+                    <label for="SMScode">短信验证码：</label>
+                    <br>
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                        <button id="conut" class="btn btn-default pull-right" type="button" 
+                        >60 ’s</button>
+                      </span>
+                        <input type="text" class="form-control" name="" id="SMScode" placeholder="请输入短信验证码">
+                    </div>
+                    <p id="error-SMScode" class="text-error pull-right"></p>
+                    <br>
+                    <hr>
+                    <em>注册即表示同意遵守《协议条款》</em>
+                    <a class="btn btn-success" data-loading-text="Loading..." id="submit">注册</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="http://apps.bdimg.com/libs/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+$(function() {
+    // 验证手机
+    $(":input[type='tel']").blur(function() {
+        var mobile = $(this).val();
+        var isname;
+        $.ajax({
+            async: false,
+            type: 'post',
+            url: 'register_isExistSameUserName.action',
+            data: {
+                UserName: mobile
+            },
+            dataType: 'json',
+            success: function(res) {
+                isname = res;
+            },
+            error: function() {}
+        });
+        if (mobile == "") {
+            $("#error-mobile").text("手机号不能为空!");
+        } else if (!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(mobile))) {
+            $("#error-mobile").text("手机格式错误!");
+            return false;
+        } else if (isname) {
+            $("#error-mobile").text("该用户名已注册!");
+        }
+    });
+    // 清除提示信息！
+    $(":input[type='tel']").focus(function() {
+        $("#error-mobile").text("");
+    });
+
+    // 验证邮箱
+    $(":input[type='email']").blur(function() {
+        var email = $(this).val();
+        if (email == "") {
+            $("#error-email").text("邮箱不能为空!");
+        } else if (!/\w+[@]{1}\w+[.]\w+/.test(email)) {
+            $("#error-email").text("Email格式错误!");
+            return false;
+        }
+    });
+    // 清除提示信息！
+    $(":input[type='email']").focus(function() {
+        $("#error-email").text("");
+    });
+
+    // 验证密码
+    $("#pwd").blur(function() {
+        var pwd1 = $("#pwd").val();
+        if (pwd1 == "") {
+            $("#error-password").text("密码不能为空!");
+        } else if (!/[a-zA-Z0-9]{6,24}/.test(pwd1)) { // 匹配大小写字母，数字，3-12位
+            $("#error-password").text("密码为6-24位字母数字!");
+            return false;
+        }
+    });
+    // 清除提示信息！
+    $("#pwd").focus(function() {
+        $("#error-password").text("");
+    });
+
+    // 下一步
+    $('#next').click(function() {
+        $(this).button('loading');
+        if ($(":input[type='email']").val() && $(":input[type='tel']").val() && $("#pwd").val() !== "") {
+            $.ajax({
+                async: false,
+                type: 'post',
+                url: 'register_register.action',
+                data: {
+                    Email: $(":input[type='email']").val(),
+                    Tel: $(":input[type='tel']").val(),
+                    Pwd: $("#pwd").val()
+                },
+                dataType: 'json',
+                success: function(note) {
+                    Time()
+                    $('.sign').fadeOut()
+                    $('#Verification_Code').fadeIn()
+                },
+                error: function() {
+                    Time()
+                    $('.sign').fadeOut()
+                    $('#Verification_Code').fadeIn()
+                }
+            });
+        }
+    });
+
+    // 倒计时的方法
+    function Time() {
+        var count = 3;
+        var clear = setInterval(function() {
+            if (count === 0) {
+                clearInterval(clear)
+                $('#conut').html("点此重新获取验证码")
+                $('#error-SMScode').html("验证码超时，请重新填写")
+                return;
+            }
+            $('#conut').html('' + count-- + " ’s" + '')
+
+        }, 1000)
+    }
+
+    // 再次获取验证码
+    $('#conut').click(function() {
+        $.ajax({
+            async: false,
+            type: 'post',
+            url: 'register_register.action',
+            data: {
+                Tel: $(":input[type='tel']").val()
+            },
+            dataType: 'json',
+            success: function(note) {
+                Time()
+            },
+            error: function() {}
+        });
+    })
+
+    // 注册
+    $("#submit").click(function() {
+        $.ajax({
+            async: false,
+            type: 'post',
+            url: 'register_register.action',
+            data: {
+                phone: $(":input[type='tel']").val(),
+                SMScode: $("#SMScode").val()
+            },
+            dataType: 'json',
+            success: function(note) {
+                // 成功后跳转到到登陆页面
+            },
+            error: function() {}
+        });
+    })
+
+});
+</script>
+
+</html>

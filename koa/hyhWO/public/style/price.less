@@ -1,0 +1,98 @@
+nav{li{list-style: none;}}
+
+/* reset----重置 */
+html,body{font: '宋体','Helvetica Neue','Microsoft YaHei', Tahoma, Arial, sans-serif} 
+
+/* 通用样式 */ 
+.m0{margin: 0;} //外边框为0
+.text-gray{color: gray;font-size: 1em;} // zi字体颜色为灰色
+
+
+// 快速接入使用——按钮
+.btn-white{width: 150px; height: 35px;display: block; border-radius: 18px;border: 1px solid #1FA66E;
+	text-align: center;line-height: 35px;font-size: 1.3em;
+	background-color: white;color: #1FA66E;
+	&:hover{background-color: #1FA66E;color: white;text-decoration: none;-webkit-backface-visibility: hidden;}
+}
+
+// 价格——框
+.Price-box{
+	height: 250px;
+	width: 180px;
+	margin: 0 10px;
+	text-align: center;
+	border: 1px solid #C7CBD3;
+	.Price-box-title{
+		line-height: 50px;
+		border-bottom: 1px solid #C7CBD3;
+		.Price-money{
+			color: #fb364a;
+			font-size: 36px;
+		}
+	}
+	.Price-h{
+		font-size: 22px;
+		font-weight: bold;
+		color: #3d4f5b;
+	}
+	.Price-Original-price{ color: #C7CBD3;text-decoration: line-through;}
+	.Price-Contain{color: #2fb26a;}
+	.Price-go-purchase{
+		display: inline-block;
+		width: 158px;
+		height: 48px;
+		margin: 10px 0;
+		line-height: 48px;
+		text-align: center;
+		color: #fff;
+		font-size: 18px;
+		font-weight: bold;
+		background-color: #fb364a;
+		border-radius: 3px;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+	}
+	.one{margin: 40px 0;}
+	
+}
+
+/* 左侧列表*/
+.left-list{
+	position: fixed;top: 61px;
+	background-color: #091720;color: white;
+
+	.left-list-label-sms{background-color: #F83251;}
+	.left-list-label-voice{background-color: #B83FCD;}
+	h1{line-height: 2em;font-weight: 300;}
+	a:link{line-height: 2.5em;font-weight: 300;font-size: 1.3em;
+
+	}
+	// a:link {color: #FF0000}		未访问的链接
+	// a:visited {color: #FF0000}	/*已访问的链接 */
+} 
+
+/* 右侧内容页 */
+.conent-page{
+	#sms-page1,
+	#sms-page2,
+	#sms-page3,
+	#sms-page4,
+	#voice-page1,
+	#voice-page2,
+	#voice-page3,
+	#voice-page4{
+		padding-top: 61px;background-color: #EFEFEF;}
+	.sms-box-page1,
+	.sms-box-page2,
+	.sms-box-page3,
+	.sms-box-page4,
+	.voice-box-page1,
+	.voice-box-page2,
+	.voice-box-page3,
+	.voice-box-page4{width: 866px;margin: 0 auto;padding: 45px 40px;
+		border-radius: 1%;box-shadow: 0 5px 15px #cac8e9;background-color: white;}
+	#sms-footer,
+	#voice-footer{text-align: center;margin: 0 auto;
+		.QAlist{li{list-style: none;}}
+	}
+} 
