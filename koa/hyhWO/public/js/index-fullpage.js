@@ -8,5 +8,4 @@ $(function(){
         navigationPosition: 'left', // 小圆点显示位置
         navigationTooltips: ['HOME', 'service', 'banner', 'footer'] // 每个小圆点旁的提示名
     })
-	alert($)
 })
