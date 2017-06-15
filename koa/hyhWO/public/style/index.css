@@ -1,11 +1,12 @@
+.container {
+  height: 100%;
+}
 .container .page1 {
-  background-image: url(images/banner.gif);
+  background-image: url(/images/banner.gif);
 }
 .container .page1 .page1-text h1,
 .container .page1 .page1-text p {
-  display: flex;
-  justify-content: center;
-  width: 100%;
+  text-align: center;
   color: #199cc4;
 }
 .container .page1 .page1-text h1 sup,
@@ -29,7 +30,7 @@
   width: 90%;
   margin: 0 auto;
 }
-.container .page2 .warp .info-block {
+.container .page2 .warp .warp-block {
   width: 280px;
   height: 400px;
   float: left;
@@ -42,10 +43,10 @@
   transition: .5s all linear;
   box-shadow: 0 4px 8px 0 rgba(7, 17, 27, 0.1);
 }
-.container .page2 .warp .info-block:hover {
+.container .page2 .warp .warp-block:hover {
   box-shadow: 8px 8px 5px rgba(190, 190, 190, 0.5);
 }
-.container .page2 .warp .info-block .iconfont {
+.container .page2 .warp .warp-block .iconfont {
   display: inline-block;
   width: 100px;
   height: 100px;
@@ -55,30 +56,30 @@
   line-height: 100px;
   color: white;
 }
-.container .page2 .warp .info-block .icon-shouji {
+.container .page2 .warp .warp-block .icon-shouji {
   background-color: #61B2EC;
 }
-.container .page2 .warp .info-block .icon-anquan1 {
+.container .page2 .warp .warp-block .icon-anquan1 {
   background-color: #FBB154;
 }
-.container .page2 .warp .info-block .icon-anquan {
+.container .page2 .warp .warp-block .icon-anquan {
   background-color: #B9A6F4;
 }
-.container .page2 .warp .info-block .icon-gaoxiaobianjie {
+.container .page2 .warp .warp-block .icon-gaoxiaobianjie {
   background-color: #46DBCB;
 }
-.container .page2 .warp .info-block h3 {
+.container .page2 .warp .warp-block h3 {
   font-size: 18px;
   font-weight: bold;
 }
-.container .page2 .warp .info-block ul.cotent-list li {
+.container .page2 .warp .warp-block ul.warp-list li {
   line-height: 2em;
 }
-.container .pic1 {
+.container .page3 .pic1 {
   background: url(../images/banner1.png) center;
   position: relative;
 }
-.container .pic1 a {
+.container .page3 .pic1 a {
   position: absolute;
   bottom: 90px;
   left: 140px;
@@ -86,14 +87,14 @@
   color: #FF8C00;
   transition: all .5s;
 }
-.container .pic1 a:hover {
+.container .page3 .pic1 a:hover {
   left: 160px;
 }
-.container .pic2 {
+.container .page3 .pic2 {
   background: url(../images/banner2.png) center;
   position: relative;
 }
-.container .pic2 a {
+.container .page3 .pic2 a {
   position: absolute;
   bottom: 90px;
   left: 140px;
@@ -101,14 +102,14 @@
   color: #4BB274;
   transition: all .5s;
 }
-.container .pic2 a:hover {
+.container .page3 .pic2 a:hover {
   left: 160px;
 }
-.container .pic3 {
+.container .page3 .pic3 {
   background: url(../images/banner3.png) center;
   position: relative;
 }
-.container .pic3 a {
+.container .page3 .pic3 a {
   position: absolute;
   bottom: 95px;
   left: 140px;
@@ -116,14 +117,14 @@
   color: #4AB5A6;
   transition: all .5s;
 }
-.container .pic3 a:hover {
+.container .page3 .pic3 a:hover {
   left: 160px;
 }
-.container .pic4 {
+.container .page3 .pic4 {
   background: url(../images/banner4.png) center;
   position: relative;
 }
-.container .pic4 a {
+.container .page3 .pic4 a {
   position: absolute;
   bottom: 95px;
   left: 140px;
@@ -131,7 +132,7 @@
   color: #00B4EE;
   transition: all .5s;
 }
-.container .pic4 a:hover {
+.container .page3 .pic4 a:hover {
   left: 160px;
 }
 .container .page4 {

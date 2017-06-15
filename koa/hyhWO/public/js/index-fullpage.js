@@ -1,5 +1,5 @@
 // 触发fullpage插件
-
+$(function(){
     $('#fullpage').fullpage({
         verticalCentered: true, // 页面内容是否上下居中
         css3: true, // 优先使用css3动画，不支持CSS3的浏览器会自动降级用jq动画
@@ -8,3 +8,5 @@
         navigationPosition: 'left', // 小圆点显示位置
         navigationTooltips: ['HOME', 'service', 'banner', 'footer'] // 每个小圆点旁的提示名
     })
+	alert($)
+})

@@ -1,13 +1,12 @@
 .container{
     @col: #199cc4;
+    height: 100%;
     .page1 {
-        background-image: url(images/banner.gif);
+        background-image: url(/images/banner.gif);
         .page1-text {
             h1,
             p {
-                display: flex;
-                justify-content: center;
-                width: 100%;
+                text-align: center;
                 color: @col;
                 sup {
                     font-size: 8px;
@@ -30,7 +29,7 @@
         .warp{
                 width: 90%;
                 margin: 0 auto;
-            .info-block {
+            .warp-block {
                 width: 280px;
                 height: 400px;
                 float: left;
@@ -54,74 +53,75 @@
                 .icon-gaoxiaobianjie{background-color: #46DBCB;}
 
                 h3{font-size: 18px;font-weight: bold;}
-                ul.cotent-list{
+                ul.warp-list{
                     li{ line-height: 2em;}
                 }
             }
         }
     }
 
-
-    .pic1 {
-        background: url(../images/banner1.png) center;
-        position: relative;
-        a {
-            position: absolute;
-            bottom: 90px;
-            left: 140px;
-            font-size: 2.5rem;
-            color: #FF8C00;
-            transition: all .5s;
-            &:hover {
-                left: 160px;
+    .page3{
+        .pic1 {
+            background: url(../images/banner1.png) center;
+            position: relative;
+            a {
+                position: absolute;
+                bottom: 90px;
+                left: 140px;
+                font-size: 2.5rem;
+                color: #FF8C00;
+                transition: all .5s;
+                &:hover {
+                    left: 160px;
+                }
             }
         }
-    }
 
-    .pic2 {
-        background: url(../images/banner2.png) center;
-        position: relative;
-        a {
-            position: absolute;
-            bottom: 90px;
-            left: 140px;
-            font-size: 2.5rem;
-            color: #4BB274;
-            transition: all .5s;
-            &:hover {
-                left: 160px;
+        .pic2 {
+            background: url(../images/banner2.png) center;
+            position: relative;
+            a {
+                position: absolute;
+                bottom: 90px;
+                left: 140px;
+                font-size: 2.5rem;
+                color: #4BB274;
+                transition: all .5s;
+                &:hover {
+                    left: 160px;
+                }
             }
         }
-    }
 
-    .pic3 {
-        background: url(../images/banner3.png) center;
-        position: relative;
-        a {
-            position: absolute;
-            bottom: 95px;
-            left: 140px;
-            font-size: 2.5rem;
-            color: #4AB5A6;
-            transition: all .5s;
-            &:hover {
-                left: 160px;
+        .pic3 {
+            background: url(../images/banner3.png) center;
+            position: relative;
+            a {
+                position: absolute;
+                bottom: 95px;
+                left: 140px;
+                font-size: 2.5rem;
+                color: #4AB5A6;
+                transition: all .5s;
+                &:hover {
+                    left: 160px;
+                }
             }
         }
-    }
 
-    .pic4 {
-        background: url(../images/banner4.png) center;
-        position: relative;
-        a {
-            position: absolute;
-            bottom: 95px;
-            left: 140px;
-            font-size: 2.5rem;
-            color: #00B4EE;
-            transition: all .5s;
-            &:hover {
-                left: 160px;
+        .pic4 {
+            background: url(../images/banner4.png) center;
+            position: relative;
+            a {
+                position: absolute;
+                bottom: 95px;
+                left: 140px;
+                font-size: 2.5rem;
+                color: #00B4EE;
+                transition: all .5s;
+                &:hover {
+                    left: 160px;
+                }
             }
         }
     }
