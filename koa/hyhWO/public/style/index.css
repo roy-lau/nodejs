@@ -143,28 +143,23 @@
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
+  line-height: 3em;
 }
-.container .page4 .link_items ul li a {
-  line-height: 3rem;
-  font-size: 1.3em;
-  font-style: oblique;
-  font-family: "宋体";
-  color: #FFF;
-}
-.container .page4 .link_items ul li a:hover {
-  text-decoration: underline;
+.container .page4 .link_items {
+  width: 13%;
+  float: left;
+  margin-left: 420px;
 }
 .container .page4 .link_items ul li h2 {
   color: #199cc4;
 }
+.container .page4 .link_items ul li a {
+  color: white;
+}
 .container .page4 .footer_text {
-  line-height: 3rem;
-  margin: 120px;
+  width: 45%;
+  padding-top: 35px;
+  float: right;
   color: gray;
 }
 @media (max-width: 1200px) {
