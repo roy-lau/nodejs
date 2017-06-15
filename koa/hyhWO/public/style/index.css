@@ -1,87 +1,35 @@
-#product_menu {
-  position: absolute;
-  z-index: 66;
-  top: 60px;
-  left: 0;
-  width: 100%;
-  background-color: #131E24;
+.container .page1 {
+  background-image: url(images/banner.gif);
 }
-#product_menu .container {
-  width: 80%;
-  display: flex;
-}
-#product_menu .container .left-menu {
-  float: left;
-  width: 40%;
-}
-#product_menu .container .left-menu h1 {
-  margin-top: 2.5em;
-  font-size: 2em;
-}
-#product_menu .container .menu {
-  margin: 0 auto;
-  width: 20%;
-}
-#product_menu .container .menu .title {
-  line-height: 38px;
-  font-size: 18px;
-  color: #7395a6;
-  font-style: italic;
-  padding: 38px 0 12px 0;
-  border-bottom: #05080a solid 4px;
-}
-#product_menu .container .menu .menu-item .dot {
-  line-height: 36px;
-  font-size: 16px;
-  color: #FFF;
-  width: 10px;
-}
-#product_menu .container .menu .menu-item a {
-  line-height: 20px;
-  font-size: 16px;
-  color: #e6e7e9;
-  transition: all 0.3s;
-  border-bottom: 0 solid transparent;
-}
-#product_menu .container .menu .menu-item:hover a {
-  text-decoration: underline;
-  color: #FFF;
-}
-#product_menu .container .menu .menu-item:hover a:after {
-  content: ' >';
-}
-.page1 {
-  background-image: url(../images/banner.gif);
-}
-.page1 .section-text h1,
-.page1 .section-text p {
+.container .page1 .page1-text h1,
+.container .page1 .page1-text p {
   display: flex;
   justify-content: center;
   width: 100%;
   color: #199cc4;
 }
-.page1 .section-text h1 sup,
-.page1 .section-text p sup {
+.container .page1 .page1-text h1 sup,
+.container .page1 .page1-text p sup {
   font-size: 8px;
 }
-.page1 .section-text h1 {
+.container .page1 .page1-text h1 {
   font-size: 2.5rem;
   line-height: 5rem;
 }
-.page2 {
+.container .page2 {
   width: 100%;
 }
-.page2 h2 {
+.container .page2 h2 {
   text-align: center;
   font-size: 2em;
   letter-spacing: 6px;
   line-height: 3em;
 }
-.page2 .warp {
+.container .page2 .warp {
   width: 90%;
   margin: 0 auto;
 }
-.page2 .warp .info-block {
+.container .page2 .warp .info-block {
   width: 280px;
   height: 400px;
   float: left;
@@ -94,10 +42,10 @@
   transition: .5s all linear;
   box-shadow: 0 4px 8px 0 rgba(7, 17, 27, 0.1);
 }
-.page2 .warp .info-block:hover {
+.container .page2 .warp .info-block:hover {
   box-shadow: 8px 8px 5px rgba(190, 190, 190, 0.5);
 }
-.page2 .warp .info-block .iconfont {
+.container .page2 .warp .info-block .iconfont {
   display: inline-block;
   width: 100px;
   height: 100px;
@@ -107,30 +55,30 @@
   line-height: 100px;
   color: white;
 }
-.page2 .warp .info-block .icon-shouji {
+.container .page2 .warp .info-block .icon-shouji {
   background-color: #61B2EC;
 }
-.page2 .warp .info-block .icon-anquan1 {
+.container .page2 .warp .info-block .icon-anquan1 {
   background-color: #FBB154;
 }
-.page2 .warp .info-block .icon-anquan {
+.container .page2 .warp .info-block .icon-anquan {
   background-color: #B9A6F4;
 }
-.page2 .warp .info-block .icon-gaoxiaobianjie {
+.container .page2 .warp .info-block .icon-gaoxiaobianjie {
   background-color: #46DBCB;
 }
-.page2 .warp .info-block h3 {
+.container .page2 .warp .info-block h3 {
   font-size: 18px;
   font-weight: bold;
 }
-.page2 .warp .info-block ul.cotent-list li {
+.container .page2 .warp .info-block ul.cotent-list li {
   line-height: 2em;
 }
-.pic1 {
+.container .pic1 {
   background: url(../images/banner1.png) center;
   position: relative;
 }
-.pic1 a {
+.container .pic1 a {
   position: absolute;
   bottom: 90px;
   left: 140px;
@@ -138,14 +86,14 @@
   color: #FF8C00;
   transition: all .5s;
 }
-.pic1 a:hover {
+.container .pic1 a:hover {
   left: 160px;
 }
-.pic2 {
+.container .pic2 {
   background: url(../images/banner2.png) center;
   position: relative;
 }
-.pic2 a {
+.container .pic2 a {
   position: absolute;
   bottom: 90px;
   left: 140px;
@@ -153,14 +101,14 @@
   color: #4BB274;
   transition: all .5s;
 }
-.pic2 a:hover {
+.container .pic2 a:hover {
   left: 160px;
 }
-.pic3 {
+.container .pic3 {
   background: url(../images/banner3.png) center;
   position: relative;
 }
-.pic3 a {
+.container .pic3 a {
   position: absolute;
   bottom: 95px;
   left: 140px;
@@ -168,14 +116,14 @@
   color: #4AB5A6;
   transition: all .5s;
 }
-.pic3 a:hover {
+.container .pic3 a:hover {
   left: 160px;
 }
-.pic4 {
+.container .pic4 {
   background: url(../images/banner4.png) center;
   position: relative;
 }
-.pic4 a {
+.container .pic4 a {
   position: absolute;
   bottom: 95px;
   left: 140px;
@@ -183,10 +131,10 @@
   color: #00B4EE;
   transition: all .5s;
 }
-.pic4 a:hover {
+.container .pic4 a:hover {
   left: 160px;
 }
-.page4 {
+.container .page4 {
   width: 100%;
   height: 100%;
   background: url(../images/footer_bg.jpg) center;
@@ -200,20 +148,20 @@
   align-items: center;
   color: white;
 }
-.page4 .link_items ul li a {
+.container .page4 .link_items ul li a {
   line-height: 3rem;
   font-size: 1.3em;
   font-style: oblique;
   font-family: "宋体";
   color: #FFF;
 }
-.page4 .link_items ul li a:hover {
+.container .page4 .link_items ul li a:hover {
   text-decoration: underline;
 }
-.page4 .link_items ul li h2 {
+.container .page4 .link_items ul li h2 {
   color: #199cc4;
 }
-.page4 .footer_text {
+.container .page4 .footer_text {
   line-height: 3rem;
   margin: 120px;
   color: gray;

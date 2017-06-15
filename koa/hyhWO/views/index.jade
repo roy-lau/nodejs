@@ -1,9 +1,18 @@
 include header
     title= title
-    link(rel='stylesheet', href='/style/reset.css')
-    link(rel='stylesheet', href='/style/navbar.css')
+    link(rel='stylesheet', href='/style/index.css')
     link(rel='stylesheet', href='http://apps.bdimg.com/libs/jquery-fullPage/2.7.4/jquery.fullPage.css')
+    script(src='http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js')
+    script(src='http://apps.bdimg.com/libs/jquery-fullPage/2.7.4/jquery.fullPage.js')
+    script(src='/js/index-fullpage.js')
   body
     include navbar
-    h1= title
-    p Welcome to #{title}
+    section.container
+      #fullpage
+        #section.page1
+          .page1-text
+            h1 通信，像插U盘一样简单！
+            p 号外号<sup>&nbsp; TM &nbsp;</sup> 为您提供一站式服务、让通信能力"零门槛" "低资费"尽享互联网时代·新通信服务！
+        #section.page2
+        #section.page3
+        #section.page4
