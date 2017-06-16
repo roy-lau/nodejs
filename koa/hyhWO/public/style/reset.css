@@ -20,7 +20,7 @@ time, mark, audio, video, input {
     border: 0;
     font-size: 100%;
     font-weight: normal;
-    vertical-align: baseline;
+    // vertical-align: baseline;
     font: '宋体','Helvetica Neue','Microsoft YaHei', Tahoma, Arial, sans-serif
 }
 
