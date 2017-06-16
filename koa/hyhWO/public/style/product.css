@@ -1,31 +1,24 @@
 body {
   background: #EFEFEF;
-  position: relative;
-  line-height: 1.5;
-  font-family: 'Raleway', sans-serif;
-  letter-spacing: 2px;
 }
-body li {
-  list-style: none;
-}
-body .mt6 {
+.mt6 {
   margin-top: 62px;
 }
-body #nav-items {
+#nav-items {
   position: fixed;
   width: 280px;
   background-color: #FFF;
   padding: 0;
   margin: 0 30px;
 }
-body #nav-items h3.title-item {
+#nav-items h3.title-item {
   margin-left: 30px;
   line-height: 3em;
   font-size: 18px;
   color: #2b4454;
   border-bottom: 1px solid #EFEFEF;
 }
-body #nav-items div.nav-item p a {
+#nav-items div.nav-item p a {
   margin-left: 50px;
   line-height: 2em;
   font-size: 14px;
@@ -33,29 +26,29 @@ body #nav-items div.nav-item p a {
   color: #2b4454;
   font-family: '宋体';
 }
-body #nav-items div.nav-item p:hover {
+#nav-items div.nav-item p:hover {
   background-color: #EFEFEF;
 }
-body #nav-items div.nav-item .current {
+#nav-items div.nav-item .current {
   background-color: #EFEFEF;
   border-left: 10px solid #20A56E;
 }
-body strong.line-h {
+strong.line-h {
   line-height: 3em;
 }
-body .text-gray {
+.text-gray {
   padding: 9px 0 34px 0;
   line-height: 24px;
   font-size: 14px;
   color: #888888;
   font-family: '宋体';
 }
-body span.info {
+span.info {
   font-size: 12px;
   color: #142f42;
   font-family: '宋体';
 }
-body a.btn-green {
+a.btn-green {
   width: 174px;
   height: 47px;
   margin-bottom: 80px;
@@ -66,7 +59,7 @@ body a.btn-green {
   background-color: #1FA66E;
   color: #FFF;
 }
-body p.end-line:after {
+p.end-line:after {
   content: ' ';
   display: block;
   margin-top: 20px;

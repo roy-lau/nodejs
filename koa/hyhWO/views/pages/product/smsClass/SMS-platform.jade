@@ -1,0 +1,32 @@
+extends ../component
+
+block content
+  .container-fluid.mt6
+  .row
+    #nav-items.col-md-2
+      h3.title-item 语音类
+      .nav-item
+        p
+          a(href='../voiceClass/Corporate-nickname.html') 企业外号
+        p
+          a(href='../voiceClass/Security-privacy-number.html') 安全隐私号
+        p
+          a(href='../voiceClass/One-button-double-call.html') 一键双呼
+        p
+          a(href='../voiceClass/Business-card.html') 企业名片
+      h3.title-item 消息类
+      .nav-item
+        p
+          a(href='SMS-authentication-code.html') 短信验证码
+        p.current
+          a(href='SMS-platform.html') 短信发送平台
+        p
+          a(href='SMS-notification.html') 短信通知
+        p
+          a(href='Notice-of-flashing-letters.html') 闪信通知
+    .col-md-8(style='position: absolute;left: 350px;')
+      // 消息类
+      section#voiceClass
+        h2 消息类
+        section#smsClass-2
+          h3 短信发送平台

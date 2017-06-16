@@ -1,0 +1,162 @@
+extends ../component
+
+block content
+  .container-fluid.mt6
+  .row
+    #nav-items.col-md-2
+      h3.title-item 语音类
+      .nav-item
+        p
+          a(href='Corporate-nickname.html') 企业外号
+        p.current
+          a(href='') 安全隐私号
+        p
+          a(href='One-button-double-call.html') 一键双呼
+        p
+          a(href='Business-card.html') 企业名片
+      h3.title-item 消息类
+      .nav-item
+        p
+          a(href='../smsClass/SMS-authentication-code.html') 短信验证码
+        p
+          a(href='../smsClass/SMS-platform.html') 短信发送平台
+        p
+          a(href='../smsClass/SMS-notification.html') 短信通知
+        p
+          a(href='../smsClass/Notice-of-flashing-letters.html') 闪信通知
+    .col-md-8(style='position: absolute;left: 350px;')
+      // 语音类
+      section#voiceClass
+        h2 语音类
+        section#voiceClass-2
+          .row
+            p.h1.col-md-6
+              | 安全隐私号
+              span.info 已服务10000+企业
+            .pull-right.text-gray
+              a(href='#experience') 体验
+              a(href='#Price') 报价
+          strong 保护双方号码不泄露，防跳单、防骚扰
+          p.text-gray
+            | 基于订单形成服务双方真实号码与隐私号码的绑定关系，订单双方可通过拨打安全隐私号X进行相互联系，显示或留存在双方手机上的只有隐私号X，订单服务结束后，双方通过隐私号再取得联系，即保障服务期间沟通顺畅沟通，更保证了双方真实手机号的双向保护
+          a.btn-green(href='') 立即接入使用
+          #experience.row
+            p.h1.col-md-12.end-line 使用场景
+          strong.line-h 助力滴滴打车，打造安全通话模式
+          p.text-gray 司机不能直接看到乘客手机号，但又能通畅的联系对方，保证乘客号码不泄露、不被骚扰
+          .smsScene.row
+            ul.col-md-3.tab-list
+              li.row.on-list
+                h3 出行行业
+              li.row
+                h3 物流行业
+              li.row
+                h3 中介行业
+              li.row
+                h3 O2O行业
+            .col-md-9.img-tab.on-imgs
+              img(src='http://www.ucpaas.com/product/images/hidden-call/hidden-call-scene1.png', alt='出行行业')
+              p.text-gray
+                | 该场景是以订单作为绑定依据，按需生成隐私号码，司机及乘客双方通过该隐私号码进行互拨通话。订单完成，绑定关系解除。
+              a.btn-green(href='http://101.201.101.70:8080/ucrm/register_toRegister.action') 立即接入
+            .col-md-9.img-tab
+              img(src='http://www.ucpaas.com/product/images/hidden-call/hidden-call-scene2.png', alt='物流行业')
+              p.text-gray
+                | 快递派送即为快递员和买家分配一个隐私号码，派件期间通过该号码进行通话，物品派送成功，绑定关系随即解除。
+              a.btn-green(href='http://101.201.101.70:8080/ucrm/register_toRegister.action') 立即接入
+            .col-md-9.img-tab
+              img(src='http://www.ucpaas.com/product/images/hidden-call/hidden-call-scene3.png', alt='中介行业')
+              p.text-gray
+                | 经纪人在中介平台发布房源信息，留下电话生成虚拟号码，客户可通过中介平台查看并拨打经纪人的虚拟号码，双方号码不可见。
+              a.btn-green(href='http://101.201.101.70:8080/ucrm/register_toRegister.action') 立即接入
+            .col-md-9.img-tab
+              img(src='http://www.ucpaas.com/product/images/hidden-call/hidden-call-scene4.png', alt='O2O行业')
+              p.text-gray
+                | 二手车商家在O2O平台发布二手车信息，留 下虚拟服务号码，客户拨打商家的虚拟号码，双方号码不可见，保护了O2O平台客户信息。
+              a.btn-green(href='http://101.201.101.70:8080/ucrm/register_toRegister.action') 立即接入
+          .tips1
+            p(style='padding-top: 120px') 业务员接单后，不再看到客户的真实号码，有效保护隐私但沟通不受影响。滴滴出行·运营团队
+          br
+          br
+          #Price.row
+            p.h1.col-md-12.end-line 产品优势
+          p.text-gray 为主被叫双方分别分配临时虚拟号码，大大解决交易平台（打车平台、购物平台等）用户隐私泄露的问题
+          .row(style='background-color: white;text-align: center;margin-right: -50px;')
+            ul.col-md-3.sale-list
+              li
+                img(src='http://www.ucpaas.com/product/images/hidden-call/hidden-func1.png', alt='产品优势1', width='210', height='200')
+              li
+                strong.line-h 保护隐私
+              li
+                p.text-gray 隐藏主被叫双方真实号码，避免恶意骚扰
+            ul.col-md-3.sale-list
+              li
+                img(src='http://www.ucpaas.com/product/images/hidden-call/hidden-func2.png', alt='产品优势2', width='210', height='200')
+              li
+                strong.line-h 防泄密
+              li
+                p.text-gray 防止客户的信息被泄露，或盗卖高端客户信息
+            ul.col-md-3.sale-list
+              li
+                img(src='http://www.ucpaas.com/product/images/hidden-call/hidden-func3.png', alt='产品优势3', width='210', height='200')
+              li
+                strong.line-h 录音清晰
+              li
+                p.text-gray 强大的基础设备确保录音清晰，保证仲裁有据可查
+            ul.col-md-3.sale-list
+              li
+                img(src='http://www.ucpaas.com/product/images/hidden-call/hidden-func4.png', alt='产品优势4', width='210', height='200')
+              li
+                strong.line-h 话单详尽
+              li
+                p.text-gray 话单详尽规范、资料齐全，为大数据分析和挖掘提供有力保障
+          br
+          br
+          .row
+            p.h1.col-md-12.end-line 行业应用
+          .row
+            .col-md-3.block-scene
+              img(src='http://www.cainfoharbor.com/upload/my/2017040720134822675.png', alt='出租/网约车')
+              p
+                strong.line-h 出租/网约车
+            .col-md-3.block-scene
+              img(src='http://www.cainfoharbor.com/upload/my/2017040720034183472.png', alt='餐饮外卖')
+              p
+                strong.line-h 餐饮外卖
+            .col-md-3.block-scene
+              img(src='http://www.cainfoharbor.com/upload/my/2017040720180614476.png', alt='丽人服务')
+              p
+                strong.line-h 丽人服务
+            .col-md-3.block-scene
+              img(src='http://www.cainfoharbor.com/upload/my/2017040720214972977.png', alt='家政服务')
+              p
+                strong.line-h 家政服务
+            img(src='http://www.cainfoharbor.com/upload/my/2017040719425993762.png', width='866', alt='安全隐私号-产品内容图')
+          .row
+            p.h1.col-md-12.end-line 服务优势
+          .row
+            .col-md-3.block-scene
+              img(src='http://www.cainfoharbor.com/upload/my/201703310928106491158.png', alt='一键双呼丰富')
+              p
+                strong.line-h 一键双呼丰富
+              p.text-gray 拥有丰富的本地隐私一键双呼，通话双方看到本地手机号码，可极大提升接通率。
+            .col-md-3.block-scene
+              img(src='http://www.cainfoharbor.com/upload/my/201703310928325511159.png', alt='全程录音')
+              p
+                strong.line-h 全程录音
+              p.text-gray 号外号云通信平台支持通话全程录音，帮助企业控制业务服务质量
+            .col-md-3.block-scene
+              img(src='http://www.cainfoharbor.com/upload/my/201703310928577191160.png', alt='稳定性高')
+              p
+                strong.line-h 价格优惠
+              p.text-gray 全国唯一日呼叫量达到千万级的安全隐私号平台，网络稳定充分保障高并发通话。
+            .col-md-3.block-scene
+              img(src='http://www.cainfoharbor.com/upload/my/201703310929073951162.png', alt='对接灵活')
+              p
+                strong.line-h 对接灵活
+              p.text-gray 提供多平台技术支持，实现支持SDK、API等方式接入平台，降低对接开发时间。
+          .row
+            p.h1.col-md-12.end-line 24小时服务
+          .Prompt
+            p 号外号的售前、售后都非常专业，遇到问题也有技术人员协助，再也不怕遇到问题难解决了，合作很放心。
+          p.text-info 可查余额、账单、体验服务、7x24小时自助服务，还有最新活动优先通知喔~
