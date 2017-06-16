@@ -1,15 +1,15 @@
 nav#navbar
   div.content
     div.lt
-      img(src="images/logo.gif" width="60" height="60")
+      img(src="/images/logo.gif" width="60" height="60")
       h2
-        a.home 号 外 号
+        a.home(href="/") 号 外 号
     ul.cent
       li.tab-item
-        a(href="") 首页
+        a(href="/") 首页
       li.tab-item#product_item
-        a(href="") 产品
-        #product_menu
+        a(href="/product/Corporate-nickname") 产品
+        #product_menu(style="display:none;")
           .product-content
             .left-menu
               ul
@@ -25,7 +25,7 @@ nav#navbar
               ul
                 li.menu-item
                   em.dot  ·&nbsp;&nbsp;
-                  a(href="views/product.html#voiceClass-1") 企业外号
+                  a(href="/product/Corporate-nickname") 企业外号
                 li.menu-item
                   em.dot  ·&nbsp;&nbsp;
                   a(href="views/product.html#voiceClass-2") 安全隐私号

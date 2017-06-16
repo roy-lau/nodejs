@@ -6,9 +6,9 @@ router.get('/', function *(next) {
   });
 });
 
-router.get('/foo', function *(next) {
-  yield this.render('index', {
-    title: 'Hello World foo!'
+router.get('/product/Corporate-nickname', function *(next) {
+  yield this.render('/pages/product/voiceClass/Corporate-nickname', {
+    title: '号外号-产品'
   });
 });
 
