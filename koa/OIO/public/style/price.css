@@ -10,6 +10,7 @@
   width: 150px;
   height: 35px;
   display: block;
+  margin-top: 20px;
   border-radius: 18px;
   border: 1px solid #1FA66E;
   text-align: center;
@@ -27,7 +28,8 @@
 .Price-box {
   height: 250px;
   width: 180px;
-  margin: 0 10px;
+  margin: 10px;
+  float: left;
   text-align: center;
   border: 1px solid #C7CBD3;
 }
@@ -41,15 +43,18 @@
 }
 .Price-box .Price-h {
   font-size: 22px;
+  line-height: 55px;
   font-weight: bold;
   color: #3d4f5b;
 }
 .Price-box .Price-Original-price {
   color: #C7CBD3;
+  line-height: 30px;
   text-decoration: line-through;
 }
 .Price-box .Price-Contain {
   color: #2fb26a;
+  line-height: 30px;
 }
 .Price-box .Price-go-purchase {
   display: inline-block;
@@ -67,7 +72,14 @@
   -moz-border-radius: 3px;
 }
 .Price-box .one {
-  margin: 40px 0;
+  margin: 50px 0;
+}
+.clearfix,
+.clearfix:after,
+.clearfix:before {
+  clear: both;
+  overflow: hidden;
+  zoom: 1;
 }
 /* 左侧列表*/
 .leftArea {
@@ -101,9 +113,17 @@
 }
 /* 右侧内容页 */
 .rightArea {
-  margin-left: 170px;
-  padding-top: 61px;
+  margin-left: 266px;
+  margin-top: 61px;
   background-color: #EFEFEF;
+}
+.rightArea hr {
+  color: #C7CBD3;
+  margin-top: 30px;
+}
+.rightArea h2 {
+  font-size: 30px;
+  margin: 50px 0 20px 16px;
 }
 .rightArea #sms-page1,
 .rightArea #sms-page2,
@@ -138,4 +158,9 @@
 .rightArea #sms-footer .QAlist li,
 .rightArea #voice-footer .QAlist li {
   list-style: none;
+  line-height: 23px;
+}
+.rightArea #sms-footer .QAlist li a,
+.rightArea #voice-footer .QAlist li a {
+  color: #000;
 }

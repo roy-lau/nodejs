@@ -8,24 +8,237 @@ include ../header
         ul
           h3.leftArea-label-sms 消息页
           li
-            a(href="") 短信验证码
+            a(href="#sms-page1") 短信验证码
           li
-            a(href="") 短信发送平台
+            a(href="#sms-page2") 短信发送平台
           li
-            a(href="") 短信通知
+            a(href="#sms-page3") 短信通知
           li
-            a(href="") 闪信通知
+            a(href="#sms-page4") 闪信通知
         ul
           h3.leftArea-label-voice 通话页
           li
-            a(href="") 企业外号
+            a(href="#voice-page1") 企业外号
           li
-            a(href="") 安全隐私号
+            a(href="#voice-page2") 安全隐私号
           li
-            a(href="") 一键双呼
+            a(href="#voice-page3") 一键双呼
           li
-            a(href="") 企业名片
+            a(href="#voice-page4") 企业名片
       .rightArea
         #sms-page1
-          h4 短信验证码
-          .sms-box-page1
+          br
+          h2 短信验证码
+          .sms-box-page1.clearfix
+            strong 短信验证码
+            span.text-gray  | 通过API接口发送短信，短信验证码
+            hr
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.053
+                span.Price-unit 元/条
+              h3.Price-h 无限制
+              p 接入即可享受
+              a.Price-go-purchase.one(href="http://101.201.101.70:8080/ucrm/") 前往购买
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.048
+                span.Price-unit 元/条
+              h3.Price-h ￥100
+              p.Price-Original-price 原价 ￥106
+              p 含短信
+                span.Price-Contain 1924 / 条
+              a.Price-go-purchase(href="http://101.201.101.70:8080/ucrm/") 前往购买
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.036
+                span.Price-unit 元/条
+              h3.Price-h ￥1,000
+              p.Price-Original-price 原价 ￥1146
+              p 含短信
+                span.Price-Contain 20834/条
+              a.Price-go-purchase(href="http://101.201.101.70:8080/ucrm/") 前往购买
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.03
+                span.Price-unit 元/条
+              h3.Price-h ￥5,000
+              p.Price-Original-price 原价 ￥6250
+              p 含短信
+                span.Price-Contain 113637 / 条
+              a.Price-go-purchase(href="http://101.201.101.70:8080/ucrm/") 前往购买
+        #sms-page2
+          h2 短信发送平台
+          .sms-box-page2.clearfix
+            strong 短信发送平台
+            span.text-gray  | 通过网页就能发送短信，功能丰富，超低价格
+            hr
+            a.btn-white(href="http://101.201.101.70:8080/ucrm/register_toRegister.action") 业务咨询
+        #sms-page3
+          h2 短信通知
+          .sms-box-page3.clearfix
+            strong 短信通知
+            span.text-gray  | 覆盖三网，低延迟，高到达率
+            hr
+            // 价格框
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.053
+                span.Price-unit 元/条
+              h3.Price-h 无限制
+              p 接入即可享受
+              a.Price-go-purchase.one(href="http://101.201.101.70:8080/ucrm/") 前往购买
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.048
+                span.Price-unit 元/条
+              h3.Price-h ￥ 100
+              p.Price-Original-price 原价 ￥106
+              p 含短信
+                span.Price-Contain 1924 / 条
+              a.Price-go-purchase(href="http://101.201.101.70:8080/ucrm/") 前往购买
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.036
+                span.Price-unit 元/条
+              h3.Price-h ￥ 1,000
+              p.Price-Original-price 原价 ￥1146
+              p 含短信
+                span.Price-Contain 20834 / 条
+              a.Price-go-purchase(href="http://101.201.101.70:8080/ucrm/") 前往购买
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.03
+                span.Price-unit 元/条
+              h3.Price-h ￥ 5,000
+              p.Price-Original-price 原价 ￥6250
+              p 含短信
+                span.Price-Contain 113637 / 条
+              a.Price-go-purchase(href="http://101.201.101.70:8080/ucrm/") 前往购买
+        #sms-page4
+          h2 闪信通知
+          .sms-box-page4.clearfix
+            strong 闪信通知
+            span.text-gray  | 5秒必达、零开发、零成本
+            hr
+            a.btn-white(href="http://101.201.101.70:8080/ucrm/register_toRegister.action") 业务咨询
+        #sms-footer
+          h2 Q &amp; A
+          ul.QAlist
+            li
+              a(href="http://101.201.101.70:8080/ucrm/register_toRegister.action") 如何获得4分的价格？
+            li
+              a(href="http://101.201.101.70:8080/ucrm/register_toRegister.action") 当前折扣不够低，想要更低折扣怎么办？
+            li
+              a(href="http://101.201.101.70:8080/ucrm/register_toRegister.action") 我之前已经有充值，现在如何参加优惠？
+            li
+              a(href="http://101.201.101.70:8080/ucrm/register_toRegister.action") 充值金额可使用哪些服务？
+        // 通话页
+        #voice-page1
+          h2 企业外号
+          .voice-box-page1.clearfix
+            strong 企业外号
+            span.text-gray  | 保护双方号码不泄露，防跳单、防骚扰
+            hr
+            // 价格框
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.063
+                span.Price-unit 元/条
+              h3.Price-h 无限制
+              p 接入即可享受
+              a.Price-go-purchase.one(href="http://101.201.101.70:8080/ucrm/") 前往购买
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.058
+                span.Price-unit 元/条
+              h3.Price-h ￥ 100
+              p.Price-Original-price 原价 ￥106
+              p 含短信
+                span.Price-Contain 1924 / 条
+              a.Price-go-purchase(href="http://101.201.101.70:8080/ucrm/") 前往购买
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.056
+                span.Price-unit 元/条
+              h3.Price-h ￥ 1,000
+              p.Price-Original-price 原价 ￥1146
+              p 含短信
+                span.Price-Contain 20834 / 条
+              a.Price-go-purchase(href="http://101.201.101.70:8080/ucrm/") 前往购买
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.05
+                span.Price-unit 元/条
+              h3.Price-h ￥ 5,000
+              p.Price-Original-price 原价 ￥6250
+              p 含短信
+                span.Price-Contain 113637 / 条
+              a.Price-go-purchase(href="http://101.201.101.70:8080/ucrm/") 前往购买
+        #voice-page2
+          h2 安全隐私号
+          .voice-box-page2.clearfix
+            strong 安全隐私
+            span.text-gray  | 保护双方号码不泄露，防跳单、防骚扰
+            hr
+            p(style="color: #1CAA70;font-size: 2em;") 价格根据不同客户需求量身定制
+            a.btn-white(href="http://101.201.101.70:8080/ucrm/register_toRegister.action") 业务咨询
+        #voice-page3
+          h2 一键双呼
+          .voice-box-page3.clearfix
+            strong 一键双呼
+            span.text-gray  | 提供各地接入号、小号等资源及落地服务
+            hr
+            a.btn-white(href="http://101.201.101.70:8080/ucrm/register_toRegister.action") 业务咨询
+        #voice-page4
+          h2 企业名片
+          .voice-box-page4.clearfix
+            strong 企业名片
+            span.text-gray  | 振铃时向客户手机推送企业预设的内容
+            hr
+            // 价格框
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.063
+                span.Price-unit 元/条
+              h3.Price-h 无限制
+              p 接入即可享受
+              a.Price-go-purchase.one(href="http://101.201.101.70:8080/ucrm/") 前往购买
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.058
+                span.Price-unit 元/条
+              h3.Price-h ￥ 100
+              p.Price-Original-price 原价 ￥106
+              p 含短信
+                span.Price-Contain 1924 / 条
+              a.Price-go-purchase(href="http://101.201.101.70:8080/ucrm/") 前往购买
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.056
+                span.Price-unit 元/条
+              h3.Price-h ￥ 1,000
+              p.Price-Original-price 原价 ￥1146
+              p 含短信
+                span.Price-Contain 20834 / 条
+              a.Price-go-purchase(href="http://101.201.101.70:8080/ucrm/") 前往购买
+            .Price-box
+              p.Price-box-title
+                span.Price-money 0.05
+                span.Price-unit 元/条
+              h3.Price-h ￥ 5,000
+              p.Price-Original-price 原价 ￥6250
+              p 含短信
+                span.Price-Contain 113637 / 条
+              a.Price-go-purchase(href="http://101.201.101.70:8080/ucrm/") 前往购买
+        #voice-footer
+          h2 Q &amp; A
+          ul.QAlist
+            li
+              a(href="http://101.201.101.70:8080/ucrm/register_toRegister.action") 价格折扣规则是什么？
+            li
+              a(href="http://101.201.101.70:8080/ucrm/register_toRegister.action") 当前折扣不够低，想要更低折扣怎么办？
+            li
+              a(href="http://101.201.101.70:8080/ucrm/register_toRegister.action") 我之前已经有充值，现在如何参加优惠？
+            li
+              a(href="http://101.201.101.70:8080/ucrm/register_toRegister.action") 充值金额可使用哪些服务？

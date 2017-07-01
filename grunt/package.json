@@ -1,0 +1,26 @@
+{
+    "name": "make-grunt-build-project",
+    "version": "1.0.0",
+    "description": "the is build project grunt file dir",
+    "main": "Gruntfile.js",
+    "scripts": {
+        "dev": "grunt"
+    },
+    "keywords": [
+        "grunt",
+        "build"
+    ],
+    "dependencies": {
+        "grunt": "",
+        "grunt-spritesmith": "",
+        "grunt-contrib-imagemin": "",
+        "grunt-contrib-cssmin": "",
+        "grunt-contrib-jshint": "",
+        "grunt-contrib-concat": "",
+        "grunt-contrib-uglify": "",
+        "grunt-contrib-less": "",
+        "grunt-contrib-watch": "",
+    },
+    "author": "roy-lau",
+    "license": "MIT"
+}

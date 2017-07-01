@@ -1,11 +1,11 @@
 
 /* 通用样式 */
 .m0{margin: 0;} //外边框为0
-.text-gray{color: gray;font-size: 1em;} // zi字体颜色为灰色
+.text-gray{color: gray;font-size: 1em;} // 字体颜色为灰色
 
 
 // 快速接入使用——按钮
-.btn-white{width: 150px; height: 35px;display: block; border-radius: 18px;border: 1px solid #1FA66E;
+.btn-white{width: 150px; height: 35px;display: block;margin-top: 20px; border-radius: 18px;border: 1px solid #1FA66E;
 	text-align: center;line-height: 35px;font-size: 1.3em;
 	background-color: white;color: #1FA66E;
 	&:hover{background-color: #1FA66E;color: white;text-decoration: none;-webkit-backface-visibility: hidden;}
@@ -15,7 +15,8 @@
 .Price-box{
 	height: 250px;
 	width: 180px;
-	margin: 0 10px;
+	margin: 10px;
+	float: left;
 	text-align: center;
 	border: 1px solid #C7CBD3;
 	.Price-box-title{
@@ -28,11 +29,12 @@
 	}
 	.Price-h{
 		font-size: 22px;
+		line-height: 55px;
 		font-weight: bold;
 		color: #3d4f5b;
 	}
-	.Price-Original-price{ color: #C7CBD3;text-decoration: line-through;}
-	.Price-Contain{color: #2fb26a;}
+	.Price-Original-price{ color: #C7CBD3;line-height: 30px;text-decoration: line-through;}
+	.Price-Contain{color: #2fb26a;line-height: 30px;}
 	.Price-go-purchase{
 		display: inline-block;
 		width: 158px;
@@ -48,10 +50,11 @@
 		-webkit-border-radius: 3px;
 		-moz-border-radius: 3px;
 	}
-	.one{margin: 40px 0;}
-
+	.one{margin: 50px 0;}
 }
-
+.clearfix,
+.clearfix:after,
+.clearfix:before{ clear: both; overflow: hidden;zoom:1;}
 /* 左侧列表*/
 .leftArea{
 	position: fixed;top: 61px;
@@ -68,11 +71,12 @@
 	// a:link {color: #FF0000}		未访问的链接
 	// a:visited {color: #FF0000}	/*已访问的链接 */
 }
-
 /* 右侧内容页 */
 .rightArea{
-	margin-left: 170px;padding-top: 61px;
+	margin-left:266px;margin-top: 61px;
 	background-color: #EFEFEF;
+	hr{color: #C7CBD3;margin-top: 30px;}
+	h2{font-size: 30px;margin: 50px 0 20px 16px;}
 	#sms-page1,
 	#sms-page2,
 	#sms-page3,
@@ -94,6 +98,6 @@
 		border-radius: 1%;box-shadow: 0 5px 15px #cac8e9;background-color: white;}
 	#sms-footer,
 	#voice-footer{text-align: center;margin: 0 auto;
-		.QAlist{li{list-style: none;}}
+		.QAlist{li{list-style: none;line-height: 23px; a{color: #000;}}}
 	}
 }

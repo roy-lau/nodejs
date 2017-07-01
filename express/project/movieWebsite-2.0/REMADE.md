@@ -13,6 +13,11 @@
     "serve-favicon": "~2.3.2",
     "serve-static": "^1.12.2",
     "underscore": "^1.8.3"
+    "grunt-cli":"",
+    "grunt":"",
+    "grunt-contrib-watch":"",   // --save-dev
+    "grunt-nodemon":"",     // --save-dev
+    "grunt-concurrent":"",  // --save-dev
 
 ### 项目运行
 

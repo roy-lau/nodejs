@@ -1,4 +1,4 @@
-#navbar {
+#Navbar {
   position: fixed;
   top: 0;
   z-index: 99;
@@ -6,41 +6,41 @@
   background-color: rgba(255, 255, 255, 0.9);
   border-bottom: 1px solid #131E24;
 }
-#navbar .content {
+#Navbar .content {
   width: 90%;
   margin: 0 auto;
 }
-#navbar .content a {
+#Navbar .content a {
   line-height: 60px;
 }
-#navbar .content .lt img {
+#Navbar .content .lt img {
   float: left;
 }
-#navbar .content .lt h2 {
+#Navbar .content .lt h2 {
   float: left;
   margin: auto 20px;
   color: #333;
   font-weight: 500;
   font-size: 25px;
 }
-#navbar .content .cent li.tab-item {
+#Navbar .content .cent li.tab-item {
   float: left;
   margin: 0 48px;
 }
-#navbar .content .cent li.tab-item > a {
+#Navbar .content .cent li.tab-item > a {
   font-size: 1.2em;
   color: #000;
   text-decoration: none;
   transition: all 0.5s;
 }
-#navbar .content .cent li.tab-item > a:hover {
+#Navbar .content .cent li.tab-item > a:hover {
   color: #00a3f0;
   border-bottom: 3px solid #00a3f0;
 }
-#navbar .content .rt {
+#Navbar .content .rt {
   float: right;
 }
-#navbar .content .rt a {
+#Navbar .content .rt a {
   width: 83px;
   height: 31px;
   border: 1px solid #18bd9c;
@@ -50,19 +50,19 @@
   cursor: pointer;
   transition: all 1s;
 }
-#navbar .content .rt .register {
+#Navbar .content .rt .register {
   background-color: #18bd9c;
   color: #FFF;
 }
-#navbar .content .rt .register:hover {
+#Navbar .content .rt .register:hover {
   color: #FFF;
   background-color: #8dc;
 }
-#navbar .content .rt .login {
+#Navbar .content .rt .login {
   color: #18bd9c;
   margin-right: 5px;
 }
-#navbar .content .rt .login:hover {
+#Navbar .content .rt .login:hover {
   color: #FFF;
   background-color: #8dc;
 }
