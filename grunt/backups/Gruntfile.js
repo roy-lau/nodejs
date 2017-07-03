@@ -101,16 +101,16 @@ module.exports=function(grunt){
          * 运行 grunt watch
          */
         watch:{
-            cssmin:{
-                tasks:['cssmin:css'],
-                files:['src/css/*.css']
+            less:{
+                tasks:['less:compile'],
+                files:['src/css/*.less']
             },
             concat:{
                 tasks:['concat:js'],
                 files:['src/js/*.js']
             },
             uglify:{
-                tasks:['uglify:js'],
+                tasks:['uglify:min'],
                 files:['dist/js/bundle.js']
             }
         }
@@ -125,6 +125,6 @@ module.exports=function(grunt){
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.registerTask('default',['jshint']);
-    grunt.registerTask('js','concat and uglify js assets',['concat:js','uglify:js']);
+    grunt.registerTask('js','concat and uglify js assets',['concat:js','uglify:min']);
     grunt.registerTask('build','build a whole project',['sprite','less','cssmin','uglify','concat','imagemin']);
 };

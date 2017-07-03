@@ -10,17 +10,19 @@
         "grunt",
         "build"
     ],
-    "dependencies": {
-        "grunt": "",
-        "grunt-spritesmith": "",
-        "grunt-contrib-imagemin": "",
-        "grunt-contrib-cssmin": "",
-        "grunt-contrib-jshint": "",
-        "grunt-contrib-concat": "",
-        "grunt-contrib-uglify": "",
-        "grunt-contrib-less": "",
-        "grunt-contrib-watch": "",
-    },
+    "dependencies": {},
     "author": "roy-lau",
-    "license": "MIT"
+    "license": "MIT",
+    "devDependencies": {
+        "grunt": "^1.0.1",
+        "grunt-cli": "^1.2.0",
+        "grunt-contrib-concat": "^1.0.1",
+        "grunt-contrib-cssmin": "^2.2.0",
+        "grunt-contrib-imagemin": "^2.0.1",
+        "grunt-contrib-jshint": "^1.1.0",
+        "grunt-contrib-less": "^1.4.1",
+        "grunt-contrib-uglify": "^3.0.1",
+        "grunt-contrib-watch": "^1.0.0",
+        "grunt-spritesmith": "^6.4.0"
+    }
 }
