@@ -1,6 +1,6 @@
 // 模式
 var mongoose = require('mongoose')
-
+mongoose.Promise = global.Promise;
 var MovieSchema = new mongoose.Schema({
     doctor: String, 	// 导演
     title: String, 		// 电影的标题
