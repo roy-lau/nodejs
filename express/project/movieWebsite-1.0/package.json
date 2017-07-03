@@ -10,7 +10,6 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.0",
     "express": "~4.14.1",
-    "grunt": "^1.0.1",
     "jade": "~1.11.0",
     "moment": "^2.18.1",
     "mongoose": "^4.9.8",
@@ -18,10 +17,5 @@
     "serve-favicon": "~2.3.2",
     "serve-static": "^1.12.2",
     "underscore": "^1.8.3"
-  },
-  "devDependencies": {
-    "grunt-concurrent": "^2.3.1",
-    "grunt-contrib-watch": "^1.0.0",
-    "grunt-nodemon": "^0.4.2"
   }
 }
