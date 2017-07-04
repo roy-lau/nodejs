@@ -1,36 +1,36 @@
-//ÒÀÀµÄ£¿é
+ï»¿//ä¾èµ–æ¨¡å—
 var fs = require('fs');
 var request = require("request");
 var cheerio = require("cheerio");
 var mkdirp = require('mkdirp');
  
-//Ä¿±êÍøÖ·
-var url = 'http://me2-sex.lofter.com/tag/ÃÀÅ®ÉãÓ°?page=';
+//ç›®æ ‡ç½‘å€
+var url = 'http://me2-sex.lofter.com/tag/ç¾å¥³æ‘„å½±?page=';
  
-//±¾µØ´æ´¢Ä¿Â¼
+//æœ¬åœ°å­˜å‚¨ç›®å½•
 var dir = './images';
  
-//´´½¨Ä¿Â¼
+//åˆ›å»ºç›®å½•
 mkdirp(dir, function(err) {
     if(err){
         console.log(err);
     }
 });
  
-//·¢ËÍÇëÇó
+//å‘é€è¯·æ±‚
 request(url, function(error, response, body) {
     if(!error && response.statusCode == 200) {
         var $ = cheerio.load(body);
         $('.img img').each(function() {
             var src = $(this).attr('src');
-            console.log('ÕıÔÚÏÂÔØ' + src);
+            console.log('æ­£åœ¨ä¸‹è½½' + src);
             download(src, dir, Math.floor(Math.random()*100000) + src.substr(-4,4));
-            console.log('ÏÂÔØÍê³É');
+            console.log('ä¸‹è½½å®Œæˆ');
         });
     }
 });
  
-//ÏÂÔØ·½·¨
+//ä¸‹è½½æ–¹æ³•
 var download = function(url, dir, filename){
     request.head(url, function(err, res, body){
         request(url).pipe(fs.createWriteStream(dir + "/" + filename));

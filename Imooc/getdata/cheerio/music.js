@@ -1,26 +1,26 @@
-/*
+ï»¿/*
  * @Author: Marte
  * @Date:   2017-01-07 09:37:57
  * @Last Modified by:   Marte
  * @Last Modified time: 2017-01-07 15:39:55
  */
 
-var http = require("http"); // http ÍøÂ·
+var http = require("http"); // http ç½‘è·¯
 
-var cheerio = require("cheerio"); //html ½âÎö
+var cheerio = require("cheerio"); //html è§£æ
 
-var fs = require("fs"); //Á÷
+var fs = require("fs"); //æµ
 
-// Ä¿±êÍøÖ·£¨°Ù¶ÈÒôÀÖ×îÈÈ¸èµ¥£©
+// ç›®æ ‡ç½‘å€ï¼ˆç™¾åº¦éŸ³ä¹æœ€çƒ­æ­Œå•ï¼‰
 // http://music.baidu.com/songlist/tag/%E5%85%A8%E9%83%A8?orderType=1&offset=0&third_type=
 var startHref = "http://music.baidu.com/songlist/tag/%E5%85%A8%E9%83%A8?orderType=1&offset=";
 
-// ¸èµ¥Â·¾¶
+// æ­Œå•è·¯å¾„
 var urls = [];
-// ¸èÇúÏêÇéºÍ×ÜÊı
+// æ­Œæ›²è¯¦æƒ…å’Œæ€»æ•°
 var song = [];
 /**
- * »ñÈ¡ÍøÕ¾ĞÅÏ¢
+ * è·å–ç½‘ç«™ä¿¡æ¯
  * @param res.setEncoding('utf8');
  */
 function getHtml(href, page) {
@@ -31,21 +31,21 @@ function getHtml(href, page) {
             html += chunk;
         });
         res.on('end', function() {
-            // ½âÎöhtml
+            // è§£æhtml
             var $ = cheerio.load(html);
-            //½«Ã¿Ò³¸èµ¥µÄurl±£´æÆğÀ´
+            //å°†æ¯é¡µæ­Œå•çš„urlä¿å­˜èµ·æ¥
             var songListData = $('.main-body .songlist-list ul li').find('.text-title>a').toArray();
             for (var i = 0; i < songListData.length; i++) {
                 var link = songListData[i].attribs.href;
                 urls.push(songListData[i].attribs.href);
             };
             if (page == maxPage) {
-                console.log("¸èµ¥Â·¾¶»ñÈ¡Íê³É£º" + urls.length);
-                console.log("¸èµ¥ÊıÁ¿£º" + urls.length);
+                console.log("æ­Œå•è·¯å¾„è·å–å®Œæˆï¼š" + urls.length);
+                console.log("æ­Œå•æ•°é‡ï¼š" + urls.length);
                 if (urls.length > 0) {
                     getSongInfo(urls.shift());
                 } else {
-                    console.leg("ÒÑÍê³É£¡")
+                    console.leg("å·²å®Œæˆï¼")
                 }
             }
 
@@ -53,8 +53,8 @@ function getHtml(href, page) {
     })
 };
 /**
- *»ñÈ¡Ã¿Ò³¸èµ¥ÏêÏ¸ĞÅÏ¢
- *@param {int}£º songUrl
+ *è·å–æ¯é¡µæ­Œå•è¯¦ç»†ä¿¡æ¯
+ *@param {int}ï¼š songUrl
  */
 function getSongInfo(songUrl) {
     var html = "";
@@ -65,16 +65,16 @@ function getSongInfo(songUrl) {
         });
         res.on("end", function() {
             var $ = cheerio.load(html);
-            // ¸èµ¥Ãû³Æ
+            // æ­Œå•åç§°
             var songTitle = $(".songlist-left .songlist-info-box").find("h1").html(),
                 songlistData = $(".song-list .song-item");
             for (var i = 0; i < songlistData.length; i++) {
                 var songData = {
-                    /* ¸èÇúÃû   trimÎªÁËÈ¥³ı¿Õ¸ñ*/
+                    /* æ­Œæ›²å   trimä¸ºäº†å»é™¤ç©ºæ ¼*/
                     songName: $(songlistData[i]).children('.song-title').find('a').text().trim(),
-                    /* ¸èÊÖ */
+                    /* æ­Œæ‰‹ */
                     songSinger: $(songlistData[i]).children('.singer').find('span').text().trim(),
-                    /* ×¨¼­Ãû */
+                    /* ä¸“è¾‘å */
                     songAlbum: $(songlistData[i]).children('.album-title').find('a').text().trim(),
                 };
                 song.push(songData);
@@ -83,10 +83,10 @@ function getSongInfo(songUrl) {
             if (urls.length > 0) {
                 getSongInfo(urls.shift());
             } else {
-                console.log("ÒÑÍê³É£º¸èÇúÊıÄ¿" + song.length);
+                console.log("å·²å®Œæˆï¼šæ­Œæ›²æ•°ç›®" + song.length);
 
-                //song ÊÇËùÓĞ¸èÇúµÄ¼¯ºÏ£¬°üÀ¨¸èÃû¡¢¸èÊÖ¡¢×¨¼­
-                //ÓÉÓÚÊÇĞÂÊÖ»¹²»»á½«ËûÏÔÊ¾ÔÚÒ³ÃæÉÏ£¬Ö»ÄÜÏÔÊ¾ÔÚÃüÁîĞĞÖĞ
+                //song æ˜¯æ‰€æœ‰æ­Œæ›²çš„é›†åˆï¼ŒåŒ…æ‹¬æ­Œåã€æ­Œæ‰‹ã€ä¸“è¾‘
+                //ç”±äºæ˜¯æ–°æ‰‹è¿˜ä¸ä¼šå°†ä»–æ˜¾ç¤ºåœ¨é¡µé¢ä¸Šï¼Œåªèƒ½æ˜¾ç¤ºåœ¨å‘½ä»¤è¡Œä¸­
                 // console.log(song)
             }
         });
@@ -95,14 +95,14 @@ function getSongInfo(songUrl) {
 };
 
 /**
- * ¿ªÊ¼Ö´ĞĞ
- * Ç°ÈıÒ³µÄ¸èµ¥
- * ÓÉÓÚËûµÄÒ³ÊıÃ¿´Î¶à20ËùÒÔi+=20
+ * å¼€å§‹æ‰§è¡Œ
+ * å‰ä¸‰é¡µçš„æ­Œå•
+ * ç”±äºä»–çš„é¡µæ•°æ¯æ¬¡å¤š20æ‰€ä»¥i+=20
  */
 var maxPage = 40;
 
 function start() {
-    console.log("¿ªÊ¼»ñÈ¡¸èµ¥£¡");
+    console.log("å¼€å§‹è·å–æ­Œå•ï¼");
     for (var i = 0; i <= maxPage; i += 20) {
         getHtml(startHref, i);
     }

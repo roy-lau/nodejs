@@ -1,19 +1,19 @@
-var http = require('http');      // http ÍøÂ·
-var cheerio = require('cheerio');  // html ½âÎö
-var fs = require("fs");        // Á÷
+ï»¿var http = require('http');      // http ç½‘è·¯
+var cheerio = require('cheerio');  // html è§£æ
+var fs = require("fs");        // æµ
 
-// ÉèÖÃ±»²éÑ¯µÄÄ¿±êÍøÖ·
+// è®¾ç½®è¢«æŸ¥è¯¢çš„ç›®æ ‡ç½‘å€
 var queryHref = "http://www.haha.mx/topic/1/new/";   
-// ÉèÖÃ·ÖÒ³Î»ÖÃ
+// è®¾ç½®åˆ†é¡µä½ç½®
 var querySearch = 1;                
 
 var urls = [];
 
 
 /**
- * ¸ù¾İurlºÍ²ÎÊı»ñÈ¡·ÖÒ³ÄÚÈİ
- * @param {String}£º url
- * @param {int}£º serach
+ * æ ¹æ®urlå’Œå‚æ•°è·å–åˆ†é¡µå†…å®¹
+ * @param {String}ï¼š url
+ * @param {int}ï¼š serach
  */
 function getHtml(href, serach) {
   var pageData = "";
@@ -29,18 +29,18 @@ function getHtml(href, serach) {
 
       for(var i = 0; i < html.length; i++) {
         var src = html[i].attribs.src;
-        // É¸Ñ¡²¿·Ö¹ã¸æ£¬²»ÊÇÕæµÄ¶Î×Ó
+        // ç­›é€‰éƒ¨åˆ†å¹¿å‘Šï¼Œä¸æ˜¯çœŸçš„æ®µå­
         if (src.indexOf("http://image.haha.mx") > -1) {
           urls.push(html[i].attribs.src)
         }
       }
       if (serach == pagemax) {
-        console.log("Í¼Æ¬Á´½Ó»ñÈ¡Íê±Ï£¡" + urls.length);
-        console.log("Á´½Ó×ÜÊıÁ¿£º" + urls.length);
+        console.log("å›¾ç‰‡é“¾æ¥è·å–å®Œæ¯•ï¼" + urls.length);
+        console.log("é“¾æ¥æ€»æ•°é‡ï¼š" + urls.length);
         if (urls.length > 0) {
           downImg(urls.shift());
         } else {
-          console.log("ÏÂÔØÍê±Ï");
+          console.log("ä¸‹è½½å®Œæ¯•");
         }
       }
     });
@@ -49,15 +49,15 @@ function getHtml(href, serach) {
 
 
 /**
- * ÏÂÔØÍ¼Æ¬
- * @param {String} imgurl£ºÍ¼Æ¬µØÖ·
+ * ä¸‹è½½å›¾ç‰‡
+ * @param {String} imgurlï¼šå›¾ç‰‡åœ°å€
  */
 function downImg(imgurl) {
   var narr = imgurl.replace("http://image.haha.mx/", "").split("/")
   
   http.get(imgurl.replace("/small/", "/big/"), function(res) {
     var imgData = "";
-    //Ò»¶¨ÒªÉèÖÃresponseµÄ±àÂëÎªbinary·ñÔò»áÏÂÔØÏÂÀ´µÄÍ¼Æ¬´ò²»¿ª
+    //ä¸€å®šè¦è®¾ç½®responseçš„ç¼–ç ä¸ºbinaryå¦åˆ™ä¼šä¸‹è½½ä¸‹æ¥çš„å›¾ç‰‡æ‰“ä¸å¼€
     res.setEncoding("binary"); 
 
     res.on("data", function(chunk) {
@@ -74,7 +74,7 @@ function downImg(imgurl) {
           if (urls.length > 0) {
             downImg(urls.shift());
           } else {
-            console.log("ÏÂÔØÍê±Ï");
+            console.log("ä¸‹è½½å®Œæ¯•");
           }
         }
       });
@@ -82,9 +82,9 @@ function downImg(imgurl) {
   });
 }
 
-var pagemax = 10;    // »ñÈ¡10Ò³µÄÄÚÈİ
+var pagemax = 10;    // è·å–10é¡µçš„å†…å®¹
 function start(){
-  console.log("¿ªÊ¼»ñÈ¡Í¼Æ¬Á¬½Ó");
+  console.log("å¼€å§‹è·å–å›¾ç‰‡è¿æ¥");
   for (var i = 1 ; i <= pagemax ; i++) {
     getHtml(queryHref, i);
   }
