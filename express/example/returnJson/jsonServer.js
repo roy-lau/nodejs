@@ -26,23 +26,30 @@ appRouter.route('/:apiName')
 app.use('/api', appRouter);
 
 // 代理服务
-
-var options = {
-        target: 'http://101.201.101.70:8080/ucrm', // 目标主机
-        changeOrigin: true,               // 虚拟主机站点,配置为true可以结局跨域问题
-        ws: true,                         // proxy websockets
-        pathRewrite: {
-            '^/api/old-path' : '/api/new-path',     // 重写路径
-            '^/api/remove/path' : '/path'           // 删除的基本路径
-        },
-        router: {
-            // 当请求头等于'dev.localhost:3000'时,
-            // 覆盖目标 'http://www.example.org' to 'http://localhost:8000'
-            'dev.localhost:9090' : 'http://101.201.101.70:8080/ucrm'
-        }
-    };
-
-app.use('/path', proxy(options));
+// testPath: http://101.201.101.70:8080/ucrm/service_getServiceList.action
+// var options = {
+//         target: 'http://101.201.101.70:8080/ucrm', // 目标主机
+//         changeOrigin: true,               // 虚拟主机站点,配置为true可以结局跨域问题
+//         ws: true,                         // proxy websockets
+//         pathRewrite: {
+//             '^/api/old-path' : '/api/new-path',     // 重写路径
+//             '^/api/remove/path' : '/path'           // 删除的基本路径
+//         },
+//         router: {
+//             // 当请求头等于'dev.localhost:3000'时,
+//             // 覆盖目标 'http://www.example.org' to 'http://localhost:8000'
+//             'dev.localhost:9090' : 'http://101.201.101.70:8080/ucrm'
+//         }
+//     };
+// 方法二（成功）.
+// var options = {
+//                 target: 'http://101.201.101.70:8080/ucrm',
+//                 changeOrigin: true,
+//                 pathRewrite: {
+//                     '^/path': ''
+//                 }
+//             }
+// app.use('/path', proxy(options));
 
 
 app.listen(9090, function(err) {
