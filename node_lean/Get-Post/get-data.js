@@ -14,7 +14,7 @@ http.get(opt, function(res) {
     console.info('状态码：', res.statusCode)
 
     res.on('data', function(data) {
-        console.log("返回的内容： " + data);
+        console.log("返回的内容： " + JSON.parse(data));
     });
 
 }).on('error', function(err) {
