@@ -5,11 +5,10 @@ var express = require('express'),
 
 app.use('/api', router);
 
-
-app.listen(9090, function(err) {
+app.listen(6962, function(err) {
     if (err) {
         console.log(err)
         return
     }
-    console.log('listen at API http://localhost:9090/api')
+    console.log('listen at API http://localhost:6962/api')
 })
