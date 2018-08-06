@@ -15,9 +15,9 @@ function add(teacherName, students){
     });
 }
 // 暴露添加的方法
-exports.add = add       
+exports.add = add
 
-// module.exports = add     
+// module.exports = add
 //
 //
 // module.exports是真实存在的方法。exports是module.exports下挂载的方法！
