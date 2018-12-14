@@ -5,13 +5,31 @@
         </div>
     </div>
 </template>
+<script>
+import setHeight from '@/utils/setHeight'
+export default {
+    name: 'app',
+    components: {},
+    props: {},
+    computed: {},
+    data() {
+        return {
+            timer: false,
+        }
+    },
+    methods: {
+
+    },
+    mounted() {
+        setHeight()
+    }
+}
+</script>
 <style lang="less">
 #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    text-align: center;
-    color: #2c3e50;
 }
 
 html,
@@ -21,15 +39,15 @@ body {
 }
 
 div.bg-color {
-    width: 100%;
-    height: 940px;
+    // width: 100%;
+    // height: 100%;
     background: linear-gradient(125deg, #227afc, #3e50af, #227afc, #3e50af);
     background-size: 800% 800%;
-    animation: AnimationName 8s ease infinite;
+    animation: bgGradient 8s ease infinite;
 
 }
 
-@keyframes AnimationName {
+@keyframes bgGradient {
     0% {
         background-position: 98% 0%;
     }
@@ -42,9 +60,30 @@ div.bg-color {
         background-position: 98% 0%;
     }
 }
- /* 公共样式 */
- // 左浮动
+
+/* 公共样式 */
+// 左浮动
 .fl {
     float: left;
+}
+
+.fr {
+    float: right;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+    // 整行消息
+    li {
+        list-style-type: none;
+    }
+}
+
+@media screen and (max-width: 420px) {
+
+    body {
+        min-width: 420px;
+    }
 }
 </style>

@@ -48,7 +48,7 @@ export default {
             border-radius: 8px;
             text-indent: 5px;
             // background-color: #227afc;
-            // transition: width 1s linear 2s;
+            transition: width 1s;
 
             &:focus {
                 width: 120px;
@@ -75,5 +75,15 @@ export default {
         margin-right: 20px;
     }
 }
+@media screen and (max-width: 520px) {
 
+   // 导航列表
+    .nav .lists {
+      margin-left: 10px;
+    }
+    // 搜索框
+    .nav .search {
+        display: none;
+    }
+}
 </style>

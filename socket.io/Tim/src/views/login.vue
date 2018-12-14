@@ -28,6 +28,7 @@ export default {
     top: 30%;
     left: 35%;
     border-radius: 3%;
+    text-align: center;
 }
 
 .title-text {
