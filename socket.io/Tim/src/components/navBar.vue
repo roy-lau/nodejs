@@ -42,7 +42,6 @@ export default {
         margin-left: 20px;
 
         input {
-            color: white;
             width: 80px;
             border: 1px solid white;
             border-radius: 8px;

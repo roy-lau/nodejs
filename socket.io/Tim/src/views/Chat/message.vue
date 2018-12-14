@@ -5,7 +5,7 @@
             <!-- 左侧边栏 消息组 start -->
             <aside class="aside-group">
                 <ul>
-                    <li v-for="item in groupList">
+                    <li v-for="item in groupList" @click.self="onClickGroup">
                         <img class="imgs fl" :src="item.img" :title="item.title" alt="头像" width="50" height="50" />
                         <h4 class="texts title fl" v-text="item.title" :title="item.title"></h4>
                         <p class="texts disc fl" v-text="item.disc" :title="item.disc"></p><br />
@@ -19,12 +19,25 @@
             <section class="content">
                 <ul class="content-box">
                     <li v-for="msg in msgList">
-                      <img :src="msg.icon" alt="" />
-                      <span v-html="msg.text"></span>
+                        <p class="user-info">
+                            <img :src="msg.icon" alt="" />
+                            <span v-text="msg.id"></span>—
+                            <span v-text="msg.name"></span>—
+                            <span v-text="msg.dateTime"></span>
+                        </p>
+                        <span v-html="msg.text"></span>
                     </li>
                 </ul>
-                <textarea class="content-textarea" v-model="msgText" ></textarea>
-                <input type="button" value="发送" @click="sendMsg"/>
+                <!-- <textarea class="content-textarea" v-model="msgText" ></textarea> -->
+                <p contenteditable="true" class="content-textarea" ref="msgTexts"></p>
+                <!-- <input type="button" value="发 送" class="send-btn fr" @click="sendMsg"/> -->
+                <a class="send-btn fr">
+                  <span class="line line-top"></span>
+                  <span class="line line-right"></span>
+                  <span class="line line-bottom"></span>
+                  <span class="line line-left"></span>
+                  SEND
+              </a>
             </section>
             <!-- 中间聊天内容 end-->
         </div>
@@ -55,21 +68,31 @@ export default {
                 disc: '库连接放',
                 iconNum: '8'
             }],
-            msgId:0,
-            msgText:'<img data-v-68781400="" src="https://b-gold-cdn.xitu.io/v3/static/img/greeting.1415c1c.png" alt="头像" width="60" height="60">',
-            msgList:[{
-              id:0,
-              text:'',
-              icon:''
+            msgId: 0,
+            msgText: '<img data-v-68781400="" src="https://b-gold-cdn.xitu.io/v3/static/img/greeting.1415c1c.png" alt="头像" width="60" height="60">',
+            msgList: [{
+                id: 0,
+                dateTime: '',
+                text: '',
+                icon: 'https://b-gold-cdn.xitu.io/v3/static/img/greeting.1415c1c.png'
             }]
         }
     },
     methods: {
-      // 发送消息
-      sendMsg(){
-        console.log(this.msgText)
-        this.msgList.push({id: this.msgId+=1,text:this.msgText})
-      },
+        // 点击聊天组
+        onClickGroup(e) {
+            console.log(e.target)
+        },
+        // 发送消息
+        sendMsg() {
+            this.msgText = this.$refs.msgTexts.innerHTML
+            console.log("msgText : ", this.msgText)
+            this.msgList.push({
+                id: this.msgId += 1,
+                text: this.msgText,
+                dateTime: Date()
+            })
+        },
     },
     mounted() {
         setHeight()
@@ -166,18 +189,116 @@ export default {
     .content {
         // border:5px solid yellow;
         display: inline-block;
-          width: 62%;
-        .content-box{
-          height: 80%;
-          overflow: scroll;
-          padding: 5px;
-          // li span{
-          //   border-right: 1px solid silver;
-          // }
+        width: 62%;
+
+        .content-box {
+            height: 80%;
+            overflow: scroll;
+            padding: 5px;
+
+            // 用户信息
+            .user-info {
+                img {
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    border: 1px solid gray;
+
+                    &:hover {
+                        box-shadow: 2px 2px 2px silver;
+                    }
+                }
+            }
         }
-        .content-textarea{
-          width: 90%;
-          height: 16%;
+
+        .content-textarea {
+            display: inline-block;
+            border: 1px solid silver;
+            margin: 0;
+            width: 93%;
+            height: 18%;
+        }
+
+        // 发送按钮
+        .send-btn {
+            display: block;
+            width: 6%;
+            height: 50px;
+            line-height: 50px;
+            text-decoration: none;
+            color: #2dcb70;
+            background-color: #333;
+            font-family: Arial;
+            font-weight: bolder;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            text-align: center;
+            margin: 0 auto; // background: url(../images/allow.png) no-repeat 130px center;
+            box-sizing: border-box;
+            transition: 0.4s ease;
+            position: relative;
+
+            &:hover {
+                border: 2px solid rgba(255, 255, 255, 1);
+                background-position: 140px center;
+
+                .line {
+                    background: #2dcb70;
+                }
+
+                .line-top {
+                    width: 70px;
+                    left: -2px;
+                }
+
+                .line-right {
+                    height: 50px;
+                    top: -2px;
+                }
+
+                .line-bottom {
+                    width: 70px;
+                    right: -2px;
+                }
+
+                .line-left {
+                    height: 50px;
+                    bottom: -2px;
+                }
+            }
+
+            .line {
+                position: absolute;
+                background: none;
+                transition: 0.4s;
+            }
+
+            .line-top {
+                width: 0px;
+                height: 2px;
+                top: -2px;
+                left: -110%;
+            }
+
+            .line-right {
+                width: 2px;
+                height: 0px;
+                right: -2px;
+                top: -110%;
+            }
+
+            .line-bottom {
+                width: 0px;
+                height: 2px;
+                bottom: -2px;
+                right: -110%;
+            }
+
+            .line-left {
+                width: 2px;
+                height: 0px;
+                left: -2px;
+                bottom: -110%;
+            }
         }
     }
 }
