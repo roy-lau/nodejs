@@ -24,3 +24,7 @@ yarn run test
 ```
 yarn run lint
 ```
+
+依赖：
+
+[better-scroll](https://github.com/ustbhuangyi/better-scroll)[中文文档](https://ustbhuangyi.github.io/better-scroll/doc/zh-hans/)

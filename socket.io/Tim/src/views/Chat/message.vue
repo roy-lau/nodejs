@@ -3,9 +3,9 @@
     <div id="message">
         <div class="message-bg">
             <!-- 左侧边栏 消息组 start -->
-            <aside class="aside-group">
+            <aside class="aside-group" ref="listScroll">
                 <ul>
-                    <li v-for="item in groupList" @click.self="onClickGroup">
+                    <li v-for="item in groupList" @click="onClickGroup(item.id)" :key="item.id" :class="{'active':isActiveId==item.id}">
                         <img class="imgs fl" :src="item.img" :title="item.title" alt="头像" width="50" height="50" />
                         <h4 class="texts title fl" v-text="item.title" :title="item.title"></h4>
                         <p class="texts disc fl" v-text="item.disc" :title="item.disc"></p><br />
@@ -45,24 +45,43 @@
 </template>
 <script>
 import setHeight from '@/utils/setHeight'
+import BScroll from 'better-scroll'
 export default {
     name: 'message',
     components: {},
     props: {},
-    computed: {},
+    computed: {
+
+    },
     data() {
         return {
+            isActiveId: null,
             groupList: [{
+                id: 0,
                 img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1544710583177&di=cf8d727301416363f28d614c234a7505&imgtype=0&src=http%3A%2F%2Fpic5.997788.com%2Fpic_search%2F00%2F16%2F70%2F40%2Fse16704032.jpg',
                 title: '红袖添香',
                 disc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non consequatur, ducimus optio sequi consectetur, aliquid natus animi voluptatibus laudantium unde, facilis ut officiis nihil a libero repellendus. Reprehenderit, totam, omnis.',
                 iconNum: '60'
             }, {
+                id: 1,
                 img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1544710583177&di=cf8d727301416363f28d614c234a7505&imgtype=0&src=http%3A%2F%2Fpic5.997788.com%2Fpic_search%2F00%2F16%2F70%2F40%2Fse16704032.jpg',
                 title: '上古的猿群 ',
                 disc: '库连接放大了圣诞节了打飞机阿萨德了开发啥发送到',
                 iconNum: '80'
             }, {
+                id: 2,
+                img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1544710583177&di=cf8d727301416363f28d614c234a7505&imgtype=0&src=http%3A%2F%2Fpic5.997788.com%2Fpic_search%2F00%2F16%2F70%2F40%2Fse16704032.jpg',
+                title: '酒',
+                disc: '库连接放',
+                iconNum: '8'
+            }, {
+                id: 3,
+                img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1544710583177&di=cf8d727301416363f28d614c234a7505&imgtype=0&src=http%3A%2F%2Fpic5.997788.com%2Fpic_search%2F00%2F16%2F70%2F40%2Fse16704032.jpg',
+                title: '酒',
+                disc: '库连接放',
+                iconNum: '8'
+            }, {
+                id: 4,
                 img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1544710583177&di=cf8d727301416363f28d614c234a7505&imgtype=0&src=http%3A%2F%2Fpic5.997788.com%2Fpic_search%2F00%2F16%2F70%2F40%2Fse16704032.jpg',
                 title: '酒',
                 disc: '库连接放',
@@ -75,13 +94,25 @@ export default {
                 dateTime: '',
                 text: '',
                 icon: 'https://b-gold-cdn.xitu.io/v3/static/img/greeting.1415c1c.png'
-            }]
+            }],
+            // BScroll 配置参数
+            bscrollConf: {
+                click: true,
+                mouseWheel: { // 是否启用鼠标滚轮
+                    speed: 20, // 鼠标滚轮滚动的速度
+                    easeTime: 300 // 滚动动画的缓动时长
+                },
+                scrollbar: {
+                    fade: true, // 当滚动停止的时候滚动条是否需要渐隐
+                    interactive: true //表示滚动条是否可以交互
+                }
+            }
         }
     },
     methods: {
         // 点击聊天组
-        onClickGroup(e) {
-            console.log(e.target)
+        onClickGroup(id) {
+            this.isActiveId = id;
         },
         // 发送消息
         sendMsg() {
@@ -95,7 +126,10 @@ export default {
         },
     },
     mounted() {
-        setHeight()
+        this.$nextTick(() => {
+            setHeight()
+            this.scroll = new BScroll(this.$refs.listScroll, this.bscrollConf)
+        })
     }
 }
 </script>
@@ -107,18 +141,23 @@ export default {
 
     // 左侧消息组
     .aside-group {
-        border-right: 1px solid silver;
+        position: relative;
+        // border-right: 1px solid silver;
         vertical-align: top;
         display: inline-block;
         width: 18%;
         background-color: #FAFAFE;
-        // overflow-x:  scroll;
+        overflow: hidden;
 
         // 整行消息
         ul li {
             list-style-type: none;
             height: 60px;
             transition: all .5s;
+
+            &.active {
+                background-color: #EBEBEB;
+            }
 
             &:hover {
                 background-color: #EBEBEB;
@@ -168,7 +207,7 @@ export default {
                 height: 20px;
                 text-align: center;
                 line-height: 20px;
-                margin-right: 5px;
+                margin-right: 8px;
                 border-radius: 45%;
             }
 
