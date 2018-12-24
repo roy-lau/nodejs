@@ -10,34 +10,30 @@
                         <h4 class="texts title fl" v-text="item.title" :title="item.title"></h4>
                         <p class="texts disc fl" v-text="item.disc" :title="item.disc"></p><br />
                         <span class="icon num fr" v-text="item.iconNum"></span>
-                        <span class="icon close fr">X</span>
+                        <span class="icon close fr" title="删除">X</span>
                     </li>
                 </ul>
             </aside>
             <!-- 左侧边栏 消息组 end-->
             <!-- 中间聊天内容 start-->
             <section class="content">
-                <ul class="content-box">
-                    <li v-for="msg in msgList">
-                        <p class="user-info">
-                            <img :src="msg.icon" alt="" />
-                            <span v-text="msg.id"></span>—
-                            <span v-text="msg.name"></span>—
-                            <span v-text="msg.dateTime"></span>
-                        </p>
-                        <span v-html="msg.text"></span>
-                    </li>
-                </ul>
+                <div ref="msgScroll" class="content-box">
+                    <ul>
+                        <li v-for="msg in msgList">
+                            <p class="user-info" :class="{'user-self-info':msg.isSelf}">
+                                <img :src="msg.icon" :alt="msg.id"/>
+                                <span v-text="msg.name"></span>
+                                <!-- <span v-text="msg.dateTime"></span> -->
+                            </p>
+                            <div class="msg-box" :class="{'is-self':msg.isSelf}">
+                                <span v-html="msg.text"></span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
                 <!-- <textarea class="content-textarea" v-model="msgText" ></textarea> -->
-                <p contenteditable="true" class="content-textarea" ref="msgTexts"></p>
-                <!-- <input type="button" value="发 送" class="send-btn fr" @click="sendMsg"/> -->
-                <a class="send-btn fr">
-                  <span class="line line-top"></span>
-                  <span class="line line-right"></span>
-                  <span class="line line-bottom"></span>
-                  <span class="line line-left"></span>
-                  SEND
-              </a>
+                <p contenteditable="true" class="content-textarea" ref="msgTexts" @keyup.enter="sendMsg"></p>
+                <input type="button" value="发 送" class="send-btn fr" @click="sendMsg" />
             </section>
             <!-- 中间聊天内容 end-->
         </div>
@@ -51,45 +47,18 @@ export default {
     components: {},
     props: {},
     computed: {
-
+        // msgList(newVal,oldVal){
+        //     console.log(newVal,oldVal)
+        // },
     },
     data() {
         return {
             isActiveId: null,
-            groupList: [{
-                id: 0,
-                img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1544710583177&di=cf8d727301416363f28d614c234a7505&imgtype=0&src=http%3A%2F%2Fpic5.997788.com%2Fpic_search%2F00%2F16%2F70%2F40%2Fse16704032.jpg',
-                title: '红袖添香',
-                disc: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non consequatur, ducimus optio sequi consectetur, aliquid natus animi voluptatibus laudantium unde, facilis ut officiis nihil a libero repellendus. Reprehenderit, totam, omnis.',
-                iconNum: '60'
-            }, {
-                id: 1,
-                img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1544710583177&di=cf8d727301416363f28d614c234a7505&imgtype=0&src=http%3A%2F%2Fpic5.997788.com%2Fpic_search%2F00%2F16%2F70%2F40%2Fse16704032.jpg',
-                title: '上古的猿群 ',
-                disc: '库连接放大了圣诞节了打飞机阿萨德了开发啥发送到',
-                iconNum: '80'
-            }, {
-                id: 2,
-                img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1544710583177&di=cf8d727301416363f28d614c234a7505&imgtype=0&src=http%3A%2F%2Fpic5.997788.com%2Fpic_search%2F00%2F16%2F70%2F40%2Fse16704032.jpg',
-                title: '酒',
-                disc: '库连接放',
-                iconNum: '8'
-            }, {
-                id: 3,
-                img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1544710583177&di=cf8d727301416363f28d614c234a7505&imgtype=0&src=http%3A%2F%2Fpic5.997788.com%2Fpic_search%2F00%2F16%2F70%2F40%2Fse16704032.jpg',
-                title: '酒',
-                disc: '库连接放',
-                iconNum: '8'
-            }, {
-                id: 4,
-                img: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1544710583177&di=cf8d727301416363f28d614c234a7505&imgtype=0&src=http%3A%2F%2Fpic5.997788.com%2Fpic_search%2F00%2F16%2F70%2F40%2Fse16704032.jpg',
-                title: '酒',
-                disc: '库连接放',
-                iconNum: '8'
-            }],
+            groupList: require("@/data/message.json"),
             msgId: 0,
             msgText: '<img data-v-68781400="" src="https://b-gold-cdn.xitu.io/v3/static/img/greeting.1415c1c.png" alt="头像" width="60" height="60">',
             msgList: [{
+                isSelf: true,
                 id: 0,
                 dateTime: '',
                 text: '',
@@ -117,18 +86,38 @@ export default {
         // 发送消息
         sendMsg() {
             this.msgText = this.$refs.msgTexts.innerHTML
-            console.log("msgText : ", this.msgText)
+            console.log("msgTextSay : ", this.msgText)
             this.msgList.push({
                 id: this.msgId += 1,
                 text: this.msgText,
                 dateTime: Date()
             })
+            // 最后一个li
+            let msgUl = this.$refs.msgScroll.children[0],
+                lastLi = msgUl.lastChild
+            console.log(lastLi)
+            if (this.msgScroll.maxScrollY !== 0) {
+                this.msgScrollTo(this.msgScroll.x, this.msgScroll.maxScrollY)
+            }
         },
+        /**
+         * 滚动到指定的位置
+         *
+         * {Number} x 横轴坐标（单位 px）
+         * {Number} y 纵轴坐标（单位 px）
+         * {Number} time 滚动动画执行的时长（单位 ms）
+         * {Object} easing 缓动函数，一般不建议修改，如果想修改，参考源码中的 ease.js 里的写法
+         */
+        msgScrollTo(x, y, time, easing) {
+            this.msgScroll.scrollTo(x, y, time, easing)
+        }
     },
     mounted() {
         this.$nextTick(() => {
-            setHeight()
-            this.scroll = new BScroll(this.$refs.listScroll, this.bscrollConf)
+            setHeight('aside-group', 80)
+            setHeight('content', 80)
+            this.listScroll = new BScroll(this.$refs.listScroll, this.bscrollConf)
+            this.msgScroll = new BScroll(this.$refs.msgScroll, this.bscrollConf)
         })
     }
 }
@@ -231,15 +220,22 @@ export default {
         width: 62%;
 
         .content-box {
+            position: relative;
+            border-right: 1px solid silver;
             height: 80%;
-            overflow: scroll;
+            overflow: hidden;
             padding: 5px;
 
             // 用户信息
             .user-info {
+                height: 50px;
+                line-height: 50px;
+                vertical-align: middle;
+
                 img {
-                    width: 50px;
                     height: 50px;
+                    width: 50px;
+                    float: left;
                     border-radius: 50%;
                     border: 1px solid gray;
 
@@ -247,6 +243,46 @@ export default {
                         box-shadow: 2px 2px 2px silver;
                     }
                 }
+
+                span {
+                    margin-left: 3px;
+                    float: left;
+                }
+            }
+
+            .user-self-info {
+                height: 50px;
+                line-height: 50px;
+                vertical-align: middle;
+
+                img {
+                    height: 50px;
+                    width: 50px;
+                    float: right;
+                    border-radius: 50%;
+                    border: 1px solid gray;
+
+                    &:hover {
+                        box-shadow: 2px 2px 2px silver;
+                    }
+                }
+
+                span {
+                    margin-right: 3px;
+                    float: right;
+                }
+            }
+
+            // 消息框
+            .msg-box {
+                padding: 5px;
+                margin: 8px;
+                border-radius: 5px;
+                background-color: #EEE;
+            }
+
+            .is-self {
+                background-color: Khaki;
             }
         }
 
@@ -256,6 +292,8 @@ export default {
             margin: 0;
             width: 93%;
             height: 18%;
+            overflow-y: scroll;
+
         }
 
         // 发送按钮
@@ -264,7 +302,6 @@ export default {
             width: 6%;
             height: 50px;
             line-height: 50px;
-            text-decoration: none;
             color: #2dcb70;
             background-color: #333;
             font-family: Arial;
@@ -274,69 +311,9 @@ export default {
             margin: 0 auto; // background: url(../images/allow.png) no-repeat 130px center;
             box-sizing: border-box;
             transition: 0.4s ease;
-            position: relative;
 
             &:hover {
                 border: 2px solid rgba(255, 255, 255, 1);
-                background-position: 140px center;
-
-                .line {
-                    background: #2dcb70;
-                }
-
-                .line-top {
-                    width: 70px;
-                    left: -2px;
-                }
-
-                .line-right {
-                    height: 50px;
-                    top: -2px;
-                }
-
-                .line-bottom {
-                    width: 70px;
-                    right: -2px;
-                }
-
-                .line-left {
-                    height: 50px;
-                    bottom: -2px;
-                }
-            }
-
-            .line {
-                position: absolute;
-                background: none;
-                transition: 0.4s;
-            }
-
-            .line-top {
-                width: 0px;
-                height: 2px;
-                top: -2px;
-                left: -110%;
-            }
-
-            .line-right {
-                width: 2px;
-                height: 0px;
-                right: -2px;
-                top: -110%;
-            }
-
-            .line-bottom {
-                width: 0px;
-                height: 2px;
-                bottom: -2px;
-                right: -110%;
-            }
-
-            .line-left {
-                width: 2px;
-                height: 0px;
-                left: -2px;
-                bottom: -110%;
             }
         }
     }

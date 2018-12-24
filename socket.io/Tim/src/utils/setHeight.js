@@ -14,18 +14,12 @@ function _getClassNameBySetHeight(className, Height, offset) {
     }
 
 }
-let setHeight = function() {
+let setHeight = function(className,offset=0) {
     let _clientHeight = (document.documentElement.clientHeight || document.body.clientHeight);
     // 设置 body 的高度
     // document.body.style.height = _clientHeight + "px";
     // document.documentElement.style.height = _clientHeight + "px";
-
-    // 设置背景颜色的高度
-    _getClassNameBySetHeight('bg-color', _clientHeight, 0)
-    // 设置侧边的高度
-    _getClassNameBySetHeight('aside-group', _clientHeight, 80)
-    // 设置中间的高度
-    _getClassNameBySetHeight('content', _clientHeight, 80)
+    _getClassNameBySetHeight(className, _clientHeight, offset)
 
     // console.log(document.documentElement.clientHeight || document.body.clientHeight)
 }

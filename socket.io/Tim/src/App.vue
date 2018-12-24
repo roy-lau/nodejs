@@ -21,7 +21,7 @@ export default {
 
     },
     mounted() {
-        setHeight()
+        setHeight('bg-color',0)
     }
 }
 </script>
