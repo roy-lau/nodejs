@@ -112,6 +112,11 @@ export default {
             this.msgScroll.scrollTo(x, y, time, easing)
         }
     },
+   created() {
+        this.$nextTick(() => {
+             this.qqData=JSON.parse(sessionStorage.getItem("qq-login-data"))
+        })
+    },
     mounted() {
         this.$nextTick(() => {
             setHeight('aside-group', 80)

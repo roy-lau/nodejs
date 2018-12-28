@@ -2,7 +2,7 @@
     <div id="nav-bar">
         <div class="nav">
             <div class="people-box fl">
-                <img src="https://b-gold-cdn.xitu.io/v3/static/img/greeting.1415c1c.png" alt="头像" width="60" height="60" />
+                <img :src="qqData.figureurl_1 || icon" alt="头像" width="60" height="60" />
             </div>
                 <div class="search fl"><input type="text" placeholder="查询" /></div>
                 <div class="lists fl">
@@ -10,14 +10,33 @@
                     <router-link to="/Chat/contact">联系人</router-link>
                     <router-link to="/Chat/about">关于</router-link>
                 </div>
-                 <router-link to="/login" class="logout"> 退 出 </router-link>
+                <a @click="onLogout" href="javaScript:void(0)" class="logout"> 退 出 </a>
             </div>
         </div>
 </template>
 <script>
 export default {
     name: 'nav-bar',
-    props: {}
+    props: {},
+    data() {
+        return {
+            qqData: {},
+            icon: 'https://b-gold-cdn.xitu.io/v3/static/img/greeting.1415c1c.png'
+        }
+    },
+    methods: {
+        // 退出登录
+        onLogout() {
+            QC.Login.signOut()
+        }
+    },
+    created() {
+        this.$nextTick(() => {
+             this.qqData=JSON.parse(sessionStorage.getItem("qq-login-data"))
+        })
+    },
+    mounted() {
+    }
 }
 </script>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -59,27 +78,30 @@ export default {
 
     // 导航列表
     .lists {
-      margin-left: 30%;
-      a{
-        // color: white;
-        margin: 8px;
-      }
+        margin-left: 30%;
+
+        a {
+            // color: white;
+            margin: 8px;
+        }
     }
 
     // 退出
     .logout {
-          text-decoration: none;
+        text-decoration: none;
         color: white;
         float: right;
         margin-right: 20px;
     }
 }
+
 @media screen and (max-width: 520px) {
 
-   // 导航列表
+    // 导航列表
     .nav .lists {
-      margin-left: 10px;
+        margin-left: 10px;
     }
+
     // 搜索框
     .nav .search {
         display: none;

@@ -35,7 +35,8 @@
             <div class="content-box">
                 <ul class="user-info-box">
                     <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2244649555,922047850&fm=26&gp=0.jpg" alt="" height="80" />
-                    <h3>人名</h3>
+                    <!-- {{qqData}} -->
+                    <h3 v-text="qqData.nickname"></h3>
                     <li>人生如戏！！！！！！！</li>
                     <br />
                     <li>账号： 8888888888</li>
@@ -49,9 +50,9 @@
                     <li>邮箱： 123@qq.com</li>
                     <li>职业： 风投</li>
                     <li>个人： 18 女 天平座</li>
-                    <li>所在地： 北京</li>
+                    <li>所在地： {{qqData.province}}</li>
                     <li>学习： 北大</li>
-                    <li>故乡： </li>
+                    <li>故乡： {{qqData.city}}</li>
                     <li>备注信息： </li>
                 </ul>
             </div>
@@ -70,6 +71,7 @@ export default {
     data() {
         return {
             isActiveId: null,
+            qqData:{},
             groupList: [{
                 num: 100,
                 text: "三千弱水",
@@ -92,7 +94,11 @@ export default {
     methods: {
 
     },
-    created() {},
+ created() {
+        this.$nextTick(() => {
+             this.qqData=JSON.parse(sessionStorage.getItem("qq-login-data"))
+        })
+    },
     mounted() {
         this.$nextTick(() => {
             setHeight('aside-group', 80)
