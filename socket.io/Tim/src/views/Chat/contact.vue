@@ -2,7 +2,7 @@
 <template>
     <div id="contact">
         <!-- 左侧边栏 start -->
-        <aside class="aside-group fl" ref="listScroll">
+        <aside class="aside-group over-fill fl">
             <!-- 好友组 start -->
             <div class="tebs-line">
                 <span>好友</span>
@@ -31,7 +31,7 @@
         </aside>
         <!-- 左侧边栏 end-->
        <!-- 中间内容 start-->
-        <section class="content">
+        <section class="content over-fill">
             <div class="content-box">
                 <ul class="user-info-box">
                     <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=2244649555,922047850&fm=26&gp=0.jpg" alt="" height="80" />
@@ -61,8 +61,6 @@
     </div>
 </template>
 <script>
-import setHeight from '@/utils/setHeight'
-import BScroll from 'better-scroll'
 export default {
     name: 'contact',
     components: {},
@@ -100,11 +98,7 @@ export default {
         })
     },
     mounted() {
-        this.$nextTick(() => {
-            setHeight('aside-group', 80)
-            setHeight('content', 80)
-            this.listScroll = new BScroll(this.$refs.listScroll, this.bscrollConf)
-        })
+
     }
 }
 </script>
@@ -144,7 +138,6 @@ export default {
 }
 /* 侧边 */
 .aside-group {
-    position: relative;
     width: 18%;
     background-color: #FAFAFE;
     overflow: hidden;
@@ -227,6 +220,7 @@ export default {
     display: inline-block;
     width: 82%;
     background-color: white;
+    margin: 80px 0 0 18%; /* 80px 是头部的，18%是左侧列表的*/
 
     .content-box{
       width: 50%;

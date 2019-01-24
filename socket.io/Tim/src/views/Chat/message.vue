@@ -3,7 +3,7 @@
     <div id="message">
         <div class="message-bg">
             <!-- 左侧边栏 消息组 start -->
-            <aside class="aside-group" ref="listScroll">
+            <aside class="aside-group over-fill">
                 <ul>
                     <li v-for="item in groupList" @click="onClickGroup(item.id)" :key="item.id" :class="{'active':isActiveId==item.id}">
                         <img class="imgs fl" :src="item.img" :title="item.title" alt="头像" width="50" height="50" />
@@ -16,8 +16,8 @@
             </aside>
             <!-- 左侧边栏 消息组 end-->
             <!-- 中间聊天内容 start-->
-            <section class="content">
-                <div ref="msgScroll" class="content-box">
+            <section class="content over-fill">
+                <div class="content-msg-area">
                     <ul>
                         <li v-for="msg in msgList">
                             <p class="user-info" :class="{'user-self-info':msg.isSelf}">
@@ -31,17 +31,18 @@
                         </li>
                     </ul>
                 </div>
-                <!-- <textarea class="content-textarea" v-model="msgText" ></textarea> -->
-                <p contenteditable="true" class="content-textarea" ref="msgTexts" @keyup.enter="sendMsg"></p>
-                <input type="button" value="发 送" class="send-btn fr" @click="sendMsg" />
+                <div class="content-text-area">
+                    <!-- <textarea class="content-textarea" v-model="msgText" ></textarea> -->
+                    <p contenteditable="true" class="input-text fl" ref="msgTexts" @keyup.enter="sendMsg">
+                    </p>
+                    <a class="send-btn" @click="sendMsg" > 发 <br />送</a>
+                </div>
             </section>
             <!-- 中间聊天内容 end-->
         </div>
     </div>
 </template>
 <script>
-import setHeight from '@/utils/setHeight'
-import BScroll from 'better-scroll'
 export default {
     name: 'message',
     components: {},
@@ -87,30 +88,16 @@ export default {
         sendMsg() {
             this.msgText = this.$refs.msgTexts.innerHTML
             console.log("msgTextSay : ", this.msgText)
+            if (!this.msgText) {
+                alert("输入内容不能为空！")
+                return;
+            }
             this.msgList.push({
                 id: this.msgId += 1,
                 text: this.msgText,
                 dateTime: Date()
             })
-            // 最后一个li
-            let msgUl = this.$refs.msgScroll.children[0],
-                lastLi = msgUl.lastChild
-            console.log(lastLi)
-            if (this.msgScroll.maxScrollY !== 0) {
-                this.msgScrollTo(this.msgScroll.x, this.msgScroll.maxScrollY)
-            }
         },
-        /**
-         * 滚动到指定的位置
-         *
-         * {Number} x 横轴坐标（单位 px）
-         * {Number} y 纵轴坐标（单位 px）
-         * {Number} time 滚动动画执行的时长（单位 ms）
-         * {Object} easing 缓动函数，一般不建议修改，如果想修改，参考源码中的 ease.js 里的写法
-         */
-        msgScrollTo(x, y, time, easing) {
-            this.msgScroll.scrollTo(x, y, time, easing)
-        }
     },
    created() {
         this.$nextTick(() => {
@@ -118,12 +105,7 @@ export default {
         })
     },
     mounted() {
-        this.$nextTick(() => {
-            setHeight('aside-group', 80)
-            setHeight('content', 80)
-            this.listScroll = new BScroll(this.$refs.listScroll, this.bscrollConf)
-            this.msgScroll = new BScroll(this.$refs.msgScroll, this.bscrollConf)
-        })
+
     }
 }
 </script>
@@ -135,13 +117,12 @@ export default {
 
     // 左侧消息组
     .aside-group {
-        position: relative;
+        width: 18%;
         // border-right: 1px solid silver;
         vertical-align: top;
         display: inline-block;
-        width: 18%;
         background-color: #FAFAFE;
-        overflow: hidden;
+        overflow: auto;
 
         // 整行消息
         ul li {
@@ -223,12 +204,14 @@ export default {
         // border:5px solid yellow;
         display: inline-block;
         width: 62%;
+        background-color: white;
+        margin: 80px 0 0 18%; /* 80px 是头部的，18%是左侧列表的*/
 
-        .content-box {
-            position: relative;
+        // 消息显示框
+        .content-msg-area {
             border-right: 1px solid silver;
-            height: 80%;
-            overflow: hidden;
+            height: 85%;
+            overflow: auto;
             padding: 5px;
 
             // 用户信息
@@ -290,35 +273,28 @@ export default {
                 background-color: Khaki;
             }
         }
-
-        .content-textarea {
-            display: inline-block;
-            border: 1px solid silver;
-            margin: 0;
-            width: 93%;
-            height: 18%;
-            overflow-y: scroll;
-
-        }
-
-        // 发送按钮
-        .send-btn {
-            display: block;
-            width: 6%;
-            height: 50px;
-            line-height: 50px;
-            color: #2dcb70;
-            background-color: #333;
-            font-family: Arial;
-            font-weight: bolder;
-            border: 2px solid rgba(255, 255, 255, 0.6);
+        // 文本输入区域
+        .content-text-area{
+            height: 13%;
             text-align: center;
-            margin: 0 auto; // background: url(../images/allow.png) no-repeat 130px center;
-            box-sizing: border-box;
-            transition: 0.4s ease;
+            // 文本输入
+            .input-text {
+                border: 1px solid silver;
+                text-align: left;
+                margin: 0;
+                width: 95%;
+                height: 100%;
+                overflow-y: auto;
+            }
 
-            &:hover {
-                border: 2px solid rgba(255, 255, 255, 1);
+            // 发送按钮
+            .send-btn {
+                background-color: ;
+                transition: 0.4s ease;
+
+                &:hover {
+                    // border: 2px solid rgba(255, 255, 255, 1);
+                }
             }
         }
     }
@@ -338,8 +314,6 @@ export default {
 
     // 左侧消息组
     .message-bg .aside-group {
-        width: 13%;
-        position: relative;
 
         // 标题名 && 消息内容 描述
         .title,

@@ -6,7 +6,6 @@
     </div>
 </template>
 <script>
-import setHeight from '@/utils/setHeight'
 export default {
     name: 'app',
     components: {},
@@ -21,7 +20,6 @@ export default {
 
     },
     mounted() {
-        setHeight('bg-color',0)
     }
 }
 </script>
@@ -30,6 +28,7 @@ export default {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
 }
 
 html,
@@ -39,8 +38,11 @@ body {
 }
 
 div.bg-color {
-    // width: 100%;
-    // height: 100%;
+ position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background: linear-gradient(125deg, #227afc, #3e50af, #227afc, #3e50af);
     background-size: 800% 800%;
     animation: bgGradient 8s ease infinite;
@@ -79,7 +81,14 @@ ul {
         list-style-type: none;
     }
 }
-
+.over-fill{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-top: 80px;
+}
 @media screen and (max-width: 420px) {
 
     body {

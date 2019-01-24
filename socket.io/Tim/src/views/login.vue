@@ -123,7 +123,8 @@ export default {
 // qq登录按钮
 #qqLoginBtn:hover,
 img[alt="QQ登录"] {
-    background-color: red;
-    transform: scale(1.5);
+    display: inline-block;
+    transform: scale(1.3);
 }
+
 </style>
