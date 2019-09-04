@@ -85,6 +85,8 @@ function compareDataFile(data) {
             } else if(!/无|不做|未测/.test(data.itemValue)){ // 如果没有字典且……
                 return data.itemValue
             }
+        }else{ //code 不同可能是 引流管 随访……
+            return data.itemValue
         }
     }
 

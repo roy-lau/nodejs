@@ -88,29 +88,35 @@ class HandleXlsx {
     saveXlsx(json) {
         // 构建 workbook 对象
         let wb = {
-            SheetNames: ['PAT_VISIT', 'PAT_SD_ITEM_RESULT', 'HOSPITAL_INFO','PAT_DRAINAGE_TUBE'],
+            SheetNames: ['PAT_VISIT', 'PAT_SD_ITEM_RESULT', 'HOSPITAL_INFO', 'PAT_DRAINAGE_TUBE'],
             Sheets: {
                 'PAT_VISIT': XLSX.utils.json_to_sheet(json.sheet_PAT_VISIT),
                 'PAT_SD_ITEM_RESULT': XLSX.utils.json_to_sheet(json.sheet_PAT_SD_ITEM_RESULT),
                 'HOSPITAL_INFO': XLSX.utils.json_to_sheet([{ 'HOSPITAL_CODE': null, 'HOSPITAL_NAME': null }]),
-                'PAT_DRAINAGE_TUBE': XLSX.utils.json_to_sheet(json.sheet_PAT_DRAINAGE_TUBE)
+                // 'PAT_DRAINAGE_TUBE': XLSX.utils.json_to_sheet(json.sheet_PAT_DRAINAGE_TUBE)
             }
             // Styles:workbook['Styles']
         }
 
         // 导出 Excel
         XLSX.writeFile(wb, './out/OK-' + Date.now() + '.xlsx');
-        console.log('OK ',Date.now())
+        console.log('OK ', Date.now())
     }
+    /**
+     * sheet 3. 处理生成 PAT_SD_ITEM_RESULT 引流管
+     * @param  {[type]} tableData [description]
+     * @return {[type]}           [description]
+     */
     generate_sheet_PAT_DRAINAGE_TUBE(tableData) {
-         let filtertableData = filterKeys(tableData.source, 2)
-         console.log(filtertableData)
+        let filtertableData = filterKeys(tableData.source, 2)
+        console.log(filtertableData)
 
 
         console.info("sheet3 处理引流管！")
         tableData.sheet_PAT_DRAINAGE_TUBE = filtertableData
         return tableData
     }
+
     /**
      * sheet 2. 处理生成 PAT_SD_ITEM_RESULT
      * @param  {[type]} tableData 原来的格式
@@ -129,23 +135,23 @@ class HandleXlsx {
      */
     generate_sheet_PAT_SD_ITEM_RESULT(tableData) {
 
-        let filtertableData = filterKeys(tableData.source, 1)
-        let _source = tableData.source
-        let _tableData = []
-        for (let i = 0; i < filtertableData.length; i++) {
-            for (let k in filtertableData[i]) {
-                let json = {
-                    PATIENT_NO: _source[i].PATIENT_NO,
-                    SD_CODE: 'YXA_O',
-                    SD_ITEM_CODE: k.split("#")[1],
-                    SD_ITEM_VALUE: filtertableData[i][k],
-                }
-                _tableData.push(json)
-            }
-        }
+        let list = filterKeys(tableData.source, 1)
+        // let _source = tableData.source
+        // let _tableData = []
+        // for (let i = 0; i < filtertableData.length; i++) {
+        //     for (let k in filtertableData[i]) {
+        //         let json = {
+        //             PATIENT_NO: _source[i].PATIENT_NO,
+        //             SD_CODE: 'YXA_O',
+        //             SD_ITEM_CODE: k.split("#")[1],
+        //             SD_ITEM_VALUE: filtertableData[i][k],
+        //         }
+        //         _tableData.push(json)
+        //     }
+        // }
 
         console.info("sheet2 处理数据元字典！")
-        tableData.sheet_PAT_SD_ITEM_RESULT = _tableData
+        tableData.sheet_PAT_SD_ITEM_RESULT = list
         return tableData
     }
     /**
@@ -153,28 +159,28 @@ class HandleXlsx {
      * @return {[type]} [description]
      */
     generate_sheet_PAT_VISIT(data) {
-        let filtertableData = filterKeys(data.source, 0)
+        let list = filterKeys(data.source, 0)
 
-        let _tableData = []
-        for (let i = 0; i < filtertableData.length; i++) {
-            _tableData.push({
-                PATIENT_NO: filtertableData[i].PATIENT_NO, // GUID
-                PATIENT_ID: filtertableData[i]['病案号'] || null, // 患者id
-                INP_NO: filtertableData[i]['病案号'] || null, // 病案号
-                NAME: filtertableData[i]['患者姓名'] || filtertableData[i]['病人姓名'] || null, // 患者姓名
-                SEX: filtertableData[i]['病人性别'] || null, // 性别
-                AGE: filtertableData[i]['病人年龄'] || null, // 年龄
-                ADMISSION_DATE: filtertableData[i]['入院日期'] || null, // 入院日期
-                DISCHARGE_DATE: filtertableData[i]['出院日期'] || null, // 出院日期
-                OUT_STATUS: '医嘱离院', // 离院方式，默认 医嘱离院
-                SD_CODE: 'YXA_O', // 默认：YXA_O
-                VERSION_NUM: '1.0', // 版本号，默认 1.0
-                IS_ICF: null, //
-            })
-        }
+        // let _tableData = []
+        // for (let i = 0; i < filtertableData.length; i++) {
+        //     _tableData.push({
+        //         PATIENT_NO: filtertableData[i].PATIENT_NO, // GUID
+        //         PATIENT_ID: filtertableData[i]['病案号'] || null, // 患者id
+        //         INP_NO: filtertableData[i]['病案号'] || null, // 病案号
+        //         NAME: filtertableData[i]['患者姓名'] || filtertableData[i]['病人姓名'] || null, // 患者姓名
+        //         SEX: filtertableData[i]['病人性别'] || null, // 性别
+        //         AGE: filtertableData[i]['病人年龄'] || null, // 年龄
+        //         ADMISSION_DATE: filtertableData[i]['入院日期'] || null, // 入院日期
+        //         DISCHARGE_DATE: filtertableData[i]['出院日期'] || null, // 出院日期
+        //         OUT_STATUS: '医嘱离院', // 离院方式，默认 医嘱离院
+        //         SD_CODE: 'YXA_O', // 默认：YXA_O
+        //         VERSION_NUM: '1.0', // 版本号，默认 1.0
+        //         IS_ICF: null, //
+        //     })
+        // }
 
         console.info("sheet1 处理基本信息！")
-        data.sheet_PAT_VISIT = _tableData
+        data.sheet_PAT_VISIT = list
         return data
     }
 
@@ -231,12 +237,13 @@ class HandleXlsx {
             // 将表格数据处理后转换为json
             .then(this.xlsxToJson)
 
-            // 处理生成 PAT_VISIT sheet
+            // 处理生成 PAT_VISIT sheet 患者基本信息
             .then(this.generate_sheet_PAT_VISIT)
 
             // 处理生成 PAT_SD_ITEM_RESULT sheet
             .then(this.generate_sheet_PAT_SD_ITEM_RESULT)
 
+            // 处理生成 PAT_DRAINAGE_TUBE sheet 引流管
             .then(this.generate_sheet_PAT_DRAINAGE_TUBE)
 
             // 保存表格
@@ -256,10 +263,13 @@ new HandleXlsx()
  */
 function filterKeys(fileData, code) {
 
-    let filterKeysMaps = []
+    let filterKeysMaps = [],
+        list_PAT_VISIT = [],
+        list_PAT_SD_ITEM_RESULT = [],
+        list_PAT_DRAINAGE_TUBE = []
 
     for (let i = 0; i < fileData.length; i++) {
-        let haveData = {}, // 有 井号
+        let haveData = {}, // 一个 # 号
             existData = {}, // 没有 井号
             AData = {}
 
@@ -268,20 +278,59 @@ function filterKeys(fileData, code) {
                 let len = key.split('#').length
 
                 if (len === 2) { // 一个 # 号
-                    haveData[key] = fileData[i][key]
-                }else if (len === 3) { // 两个井号
-                    AData[key] = fileData[i][key]
+                    // haveData[key] = fileData[i][key]
+                    let list = pattern_sheet_PAT_SD_ITEM_RESULT(fileData[i], key, fileData[i][key])
+                    list_PAT_SD_ITEM_RESULT.push(list)
+
+                } else if (len === 3) { // 两个井号
+                    // AData[key] = fileData[i][key]
+                   let list = pattern_sheet_PAT_DRAINAGE_TUBE(fileData[i], key, fileData[i][key])
+                    list_PAT_DRAINAGE_TUBE.push(list)
                 }
 
-            } else {
-                existData[key] = fileData[i][key]
+            } else { // 没有 井号 (基本信息和特殊情况)
+                existData = pattern_sheet_PAT_VISIT(fileData[i])
             }
         }
-        filterKeysMaps.push([existData,haveData,AData][code])
+                list_PAT_VISIT.push(existData)
     }
 
-    return filterKeysMaps
+    return [list_PAT_VISIT,list_PAT_SD_ITEM_RESULT,list_PAT_DRAINAGE_TUBE][code]
 }
+
+function pattern_sheet_PAT_VISIT(value) {
+    return {
+        PATIENT_NO: value.PATIENT_NO, // GUID
+        PATIENT_ID: value['病案号'] || null, // 患者id
+        INP_NO: value['病案号'] || null, // 病案号
+        NAME: value['患者姓名'] || value['病人姓名'] || null, // 患者姓名
+        SEX: value['病人性别'] || null, // 性别
+        AGE: value['病人年龄'] || null, // 年龄
+        ADMISSION_DATE: value['入院日期'] || null, // 入院日期
+        DISCHARGE_DATE: value['出院日期'] || null, // 出院日期
+        OUT_STATUS: '医嘱离院', // 离院方式，默认 医嘱离院
+        SD_CODE: 'YXA_O', // 默认：YXA_O
+        VERSION_NUM: '1.0', // 版本号，默认 1.0
+        IS_ICF: null, //
+    }
+}
+
+function pattern_sheet_PAT_SD_ITEM_RESULT(source, key, value) {
+    return {
+        PATIENT_NO: source.PATIENT_NO,
+        SD_CODE: 'YXA_O',
+        SD_ITEM_CODE: key.split("#")[1],
+        SD_ITEM_VALUE: value,
+    }
+}
+
+function pattern_sheet_PAT_DRAINAGE_TUBE(source,key,value) {
+    return {
+        PATIENT_NO:  source.PATIENT_NO,
+        [key]: value
+    }
+}
+
 /**
  * 保存文件
  * @param  {[type]} data     文件内容
@@ -300,6 +349,7 @@ function saveFile(data, fileName = "tmp.json") {
     // 处理流事件 --> data, end, and error
     writerStream.on('finish', function() {
         console.log(fileName, "写入完成。");
+        process.exit()
     });
 
     writerStream.on('error', function(err) {
