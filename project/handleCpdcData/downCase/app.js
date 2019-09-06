@@ -9,8 +9,8 @@ const sql = require('mssql'),
 
 /**
  * 写入文件
- * @param  {[type]} fileName [description]
- * @param  {[type]} data     [description]
+ * @param  {String} fileName 文件名
+ * @param  {String} data     要保存的数据，需是字符串
  * @return {[type]}          [description]
  */
 async function saveFile(fileName, data) {
@@ -46,33 +46,19 @@ const query_PAT_VISIT = async (patient_no) => {
 
             // 查询数据元 和数据项做对比
             list_PAT_SD_ITEM_RESULT = await sql.query `SELECT
-	            a.PATIENT_NO,
-				b.ITEM_NAME,
-				a.SD_ITEM_VALUE,
-				b.ITEM_UNIT
-			FROM
-				[dbo].[PAT_SD_ITEM_RESULT] AS a,
-				[dbo].[SD_ITEM_DICT] AS b
-			WHERE
-				a.PATIENT_NO IN (${patient_no})
-				AND a.SD_ITEM_CODE= b.ITEM_CODE
-				AND b.ITEM_CV_CODE= ''
-			UNION ALL
-			SELECT
-				a.PATIENT_NO,
-				b.ITEM_NAME,
-				c.CV_VALUE_TEXT,
-				b.ITEM_UNIT
-			FROM
-				[dbo].[PAT_SD_ITEM_RESULT] AS a,
-				[dbo].[SD_ITEM_DICT] AS b,
-				[dbo].[SD_ITEM_CV_DICT] AS c
-			WHERE
-				a.PATIENT_NO IN (${patient_no})
-				AND c.SD_CODE= 'YXA_O'
-				AND a.SD_ITEM_CODE= b.ITEM_CODE
-				AND b.ITEM_CV_CODE= c.CV_CODE
-				AND a.SD_ITEM_VALUE= c.CV_VALUE`,
+                result.PATIENT_NO,
+                b.ITEM_NAME,
+                'ret_value' = ( CASE result.SD_ITEM_VALUE WHEN c.CV_VALUE THEN c.CV_VALUE_TEXT ELSE result.SD_ITEM_VALUE END ),
+                b.ITEM_UNIT
+            FROM
+                [dbo].[PAT_SD_ITEM_RESULT] AS result
+                LEFT JOIN [dbo].[SD_ITEM_DICT] AS b ON result.SD_ITEM_CODE= b.ITEM_CODE
+                LEFT JOIN [dbo].[SD_ITEM_CV_DICT] AS c ON b.ITEM_CV_CODE= c.CV_CODE
+                AND result.SD_ITEM_VALUE= c.CV_VALUE
+            WHERE
+                result.PATIENT_NO IN (${patient_no})
+                AND result.SD_CODE= 'YXA_O'
+                ORDER BY b.DISPLAY_ORDER`,
             ret_PAT_SD_ITEM_RESULT = list_PAT_SD_ITEM_RESULT.recordset
 
         let retPatVisit = ret_PAT_VISIT
@@ -90,7 +76,7 @@ const query_PAT_VISIT = async (patient_no) => {
                         '' + ret_PAT_SD_ITEM_RESULT[k].ITEM_NAME + '(' + ret_PAT_SD_ITEM_RESULT[k].ITEM_UNIT + ')' :
                         '' + ret_PAT_SD_ITEM_RESULT[k].ITEM_NAME
 
-                    retPatVisit[i][_key] = ret_PAT_SD_ITEM_RESULT[k].SD_ITEM_VALUE
+                    retPatVisit[i][_key] = ret_PAT_SD_ITEM_RESULT[k].ret_value
                 }
             }
         }
@@ -234,6 +220,12 @@ const query_PAT_FOLLOW_UP_TREAT = async (patient_no) => {
     }
 }
 
+/**
+ * 保存表格
+ * @param  {String} fileName  文件名
+ * @param  {Array} numberArr 患者 数组
+ * @return {[type]}           [description]
+ */
 async function saveXlsx(fileName, numberArr) {
 
 
