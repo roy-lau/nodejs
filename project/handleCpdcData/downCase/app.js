@@ -230,26 +230,10 @@ async function saveXlsx(fileName, numberArr) {
         await sql.connect(SQL_ADDR)
 
         const
-            PAT_VISIT = await query_PAT_VISIT(numberArr),
-            PAT_DRAINAGE_TUBE = await query_PAT_DRAINAGE_TUBE(numberArr),
-            PAT_FOLLOW_UP_RESULT = await query_PAT_FOLLOW_UP_RESULT(numberArr),
-            PAT_FOLLOW_UP_TREAT = await query_PAT_FOLLOW_UP_TREAT(numberArr)
+            PAT_VISIT = await query_PAT_VISIT(numberArr)
 
-            // 构建 workbook 对象
-            let wb = {
-                SheetNames: ['基本信息', '引流管', '随访', '化疗'],
-                Sheets: {
-                    '基本信息': XLSX.utils.json_to_sheet(PAT_VISIT),
-                    '引流管': XLSX.utils.json_to_sheet(PAT_DRAINAGE_TUBE),
-                    '随访': XLSX.utils.json_to_sheet(PAT_FOLLOW_UP_RESULT),
-                    '化疗': XLSX.utils.json_to_sheet(PAT_FOLLOW_UP_TREAT),
-                }
-                // Styles:workbook['Styles']
-            }
+            console.log(PAT_VISIT)
 
-            // 导出 Excel
-            XLSX.writeFile(wb, './out/my/' + fileName + '.xlsx');
-            console.log('OK ', Date.now())
         }catch(e){
             console.error('处理数据出错： ',e)
         }
@@ -458,14 +442,3 @@ const listId = ["17df255e56d5f1e2",
     "7682418bcd125b15"
 ]
 saveXlsx('十地区病例', listId)
-// async function main() {
-
-//     const config = require('./config.json')
-//     await sql.connect(SQL_ADDR)
-//     config.forEach(item => {
-//         saveXlsx(item.addr, item.list)
-
-//     })
-// }
-
-// main()

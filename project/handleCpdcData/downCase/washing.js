@@ -3,47 +3,69 @@
  */
 
 'use strict';
-const XLSX = require("xlsx"),
-{ saveFile } = require('./utils')
+const Excel = require('exceljs'),
+    { saveFile } = require('./utils')
 
+
+
+const workBook = new Excel.Workbook(),
+    Xlsx = workBook.xlsx,
+    // readPath = './input/demo.xlsx',
+    readPath = './input/十地区病例.xlsx',
+    writePath = './out/washing/十地区病例_清洗-' + Date.now() + '.xlsx'
 
 /**
- * 读取表格
- * @param  {String} xlsxFileName 读取路径
- * @param  {String} outName      导出表格文件名
- * @return {[type]}              [description]
+ * 根据 其他既往史#YXA_O_024（ AF ）列，新增一列 有无高血压
  */
-function readrXlsx(xlsxFileName, outName) {
-    const workbook = XLSX.readFile(xlsxFileName,{ cellDates: true, dateNF: 'YYYY/MM/dd',cellStyles: true }), // 获取表格数据
-        sheetNames = workbook.SheetNames, // 获取表格里的每个 sheet
-        worksheet = workbook.Sheets[sheetNames[0]]; // 获取第一个 sheet
+function addHighBlood(firstWS) {
+    let col_AF = firstWS.getColumn('AF'), // 其他既往史#YXA_O_024（ AF ）
+        col_AF1 = [],
+        col_AG = []
 
-    let json = XLSX.utils.sheet_to_json(worksheet, { raw: false }) // 处理为 json 格式
-    saveFile('./out/washing/worksheet-style.json',JSON.stringify(worksheet,null,2))
-    // saveFile('./out/washing/worksheet-date.json',JSON.stringify(worksheet,null,2))
-    // saveFile('xlsx.json',JSON.stringify(json,null,2))
-    // saveFile('./out/washing/worksheet-to-json.json',JSON.stringify(json,null,2))
+    col_AF.eachCell({ includeEmpty: true }, function(cell, rowNumber) {
+        // console.log(rowNumber)
+        col_AF1[rowNumber - 1] = cell.value
+        col_AG[rowNumber - 1] = (/高血压/).test(cell.value) ? '有' : '无'
 
-    json.map(item => {
-        // 其他既往史 高血压
+    });
+    col_AG[0] = '有无高血压'
 
-        item['有无高血压'] = (/高血压/).test(item['其他既往史#YXA_O_024']) ?'有' : '无'
-
-        return item
-    })
-    // 构建 workbook 对象
-    let wb = {
-        SheetNames: sheetNames,
-        Sheets: {
-            [sheetNames[0]]: XLSX.utils.json_to_sheet(json),
-            [sheetNames[1]]: workbook.Sheets[sheetNames[1]],
-            [sheetNames[2]]: workbook.Sheets[sheetNames[2]],
-            [sheetNames[3]]: workbook.Sheets[sheetNames[3]]
-        }
+    // 删除一行并再插入两行
+    firstWS.spliceColumns(col_AF.number, 1, col_AF1, col_AG);
+    firstWS.getColumn(col_AF.number + 1).font = {
+        color: { argb: 'FFAA0000' },
+        bold: true
     };
-
-    // 导出 Excel
-    XLSX.writeFile(wb, './out/washing/' + outName + '.xlsx');
 }
 
-readrXlsx('./input/十地区病例.xlsx', '十地区病例_清洗')
+function commentLN(firstWS) {
+    let col_ER = firstWS.getColumn('ER') // N：LN检测总数#YXA_O_223
+
+    col_ER.eachCell(function(cell, rowNumber) {
+        if (cell.value > 30) {
+            cell.note = '超过 30'
+
+            console.log(cell.address)
+
+            cell.font = { bold: true };
+        }
+    });
+
+}
+
+Xlsx.readFile(readPath)
+    .then(res => {
+        const worksheet = workBook.worksheets,
+            firstWS = worksheet[0]; // 获取第一个 sheet
+
+
+        addHighBlood(firstWS)
+        commentLN(firstWS)
+
+
+        return Xlsx.writeFile(writePath)
+    }).then(res => {
+        console.log('表格写入完成！', writePath)
+    }).catch(error => {
+        console.error('exceljs catch in: ', error)
+    })
