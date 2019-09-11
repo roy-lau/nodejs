@@ -229,7 +229,8 @@ class HandleXlsx {
     init() {
         // const filterFile = './input/瑞金胰腺癌患者补录数据_2017-2018.6——整理.xlsx' // 过滤的文件名
         // const filterFile = './input/胰腺癌单病种数据元2018.1-2019.4——整理.xlsx' // 过滤的文件名
-        const filterFile = './input/demo.xlsx' // 过滤的文件名
+        const filterFile = './input/胰腺癌单病种数据元2019.5-7——整理.xlsx' // 过滤的文件名
+        // const filterFile = './input/demo.xlsx' // 过滤的文件名
 
         // 第一步： 过滤数据并写入表格中，以便查阅
         this.filterXlsx(filterFile)
