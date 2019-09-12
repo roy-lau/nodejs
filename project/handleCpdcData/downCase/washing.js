@@ -53,8 +53,9 @@ function commentLN(firstWS) {
 
 }
 
+
 Xlsx.readFile(readPath)
-    .then(res => {
+    .then(async res => {
         const worksheet = workBook.worksheets,
             firstWS = worksheet[0]; // 获取第一个 sheet
 
