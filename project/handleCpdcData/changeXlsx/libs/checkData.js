@@ -1,8 +1,8 @@
 'use strict';
 const sql = require('mssql')
-const fs = require("fs");
+const uuid = require("uuid");
 
-const CONNECT_SQL = 'mssql://sa:sa@123@192.168.1.253/RYCPDC_C20190827'
+const CONNECT_SQL = 'mssql://sa:sa@123@192.168.1.253/RYCPDC_C20190902'
 
 /**
  * 根据数据库做字典对比，稍慢
@@ -64,14 +64,15 @@ function compareDataFile(data) {
 
     let checkedValue = ''
     for (let i = 0; i < SD_ITEM_DICT.length; i++) {
+        // console.log(SD_ITEM_DICT[i].ITEM_CODE, splitCode)
         if (SD_ITEM_DICT[i].ITEM_CODE === splitCode) { // 先判断 code 是否相同
 
             // console.log(SD_ITEM_DICT[i], data.itemValue)
 
-            if (SD_ITEM_DICT[i].ITEM_CV_CODE) { // 如果有字典
+            if (SD_ITEM_DICT[i].ITEM_CV_CODE) { // 如果code相同，且 cv_code 存在
                 const SD_ITEM_CV_DICT = require("../data/sd_item_cv_dict.json")
 
-                // 通过字典code过滤出一个数组
+                // 通过 cv_code 过滤出一个数组
                 const filterCvDist = SD_ITEM_CV_DICT.filter(item => item.CV_CODE === SD_ITEM_DICT[i].ITEM_CV_CODE)
 
                 for (let k = 0; k < filterCvDist.length; k++) {
@@ -79,16 +80,24 @@ function compareDataFile(data) {
                         return filterCvDist[k].CV_VALUE
                     } else if(!/无|不做|未测/.test(data.itemValue)){
                         checkedValue = data.itemValue
+                        // return data.itemValue 如果在这里 return 将会打断循环 X
                     }
                 }
                 return checkedValue
-            } else if(!/无|不做|未测/.test(data.itemValue)){ // 如果没有字典且……
+            } else if(!/|无|不做|未测/.test(data.itemValue)){ // 如果没有 cv_code 且……
                 return data.itemValue
+            }else if(data.itemValue==0){ // 删除 0 || '0'
+                // console.log(splitCode,data.itemValue)
+                return null
             }
-        }else{ //code 不同可能是 引流管 随访……
-            return data.itemValue
+        }else{ //code 不同 可能是 引流管 随访……
+            if (!/无|不做|未测|外院/.test(data.itemValue)) {
+                checkedValue = data.itemValue
+            }
+
         }
     }
+    return checkedValue
 
 }
 
@@ -96,31 +105,19 @@ module.exports = {
 
     // 插入 PATIENT_NO
    async insertPATIENT_NO(json) {
-            // return sql.connect(CONNECT_SQL)
-            //     .then(() => {
-            //         console.log(json)
-            //         for (let i = 0; i < json.length; i++) {
-            //             let result = sql.query`SELECT * FROM [dbo].[PAT_VISIT] WHERE PATIENT_ID=${json[i]['病案号']} AND SD_CODE='YXA_O'`
-
-            //             json[i].PATIENT_NO = result.recordset[0].PATIENT_NO
-            //         }
-
-            //         return json
-
-            //     }).catch(err => {
-            //        console.error('ERR insert ',err)
-            //     })
-
-
-
         try {
             await sql.connect(CONNECT_SQL)
 
             for (let i = 0; i < json.length; i++) {
                 // console.log(PAT_VISIT[i]['病案号'])
                 const list = await sql.query `SELECT * FROM [dbo].[PAT_VISIT] WHERE PATIENT_ID=${json[i]['病案号']} AND SD_CODE='YXA_O'`
-                json[i].PATIENT_NO = list.recordset[0].PATIENT_NO
-                // console.log(list.recordset[0].PATIENT_NO, list.recordset[0].PATIENT_ID, patint_id[id])
+                if (list.recordset.length){ // PATIENT_NO 能从数据库中查到（修改）
+                    json[i].PATIENT_NO = list.recordset[0].PATIENT_NO
+                }else{// PATIENT_NO 不能从数据库中查到（新增）
+                    let _uuid4 = uuid.v4().replace(/-/g,'')
+                    json[i].PATIENT_NO = _uuid4.substr(5,16)
+                }
+
             }
 
             return json
@@ -130,7 +127,6 @@ module.exports = {
     },
 
     PAT_SD_ITEM_RESULT(list) {
-
         let filterKeysMaps = []
         for (let i = 0; i < list.length; i++) {
             let _data = {}
