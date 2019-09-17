@@ -3,7 +3,7 @@
  */
 'use strict';
 const sql = require('mssql'),
-    XLSX = require("xlsx"),
+    Excel = require('exceljs'),
     fs = require('fs'),
     { desensitization, saveFileSync } = require('./utils'),
     SQL_ADDR = 'mssql://sa:sa@123@192.168.1.253/RYCPDC_C20190902'
@@ -14,21 +14,18 @@ const query_PAT_VISIT = async (patient_no) => {
         // await sql.connect(SQL_ADDR)
         // 查询患者基本信息
         const list_PAT_VISIT = await sql.query `SELECT
-                a.PATIENT_NO,
-                a.PATIENT_ID AS '住院ID',
-                a.INP_NO AS '住院流水号',
+                PATIENT_NO,
+                PATIENT_ID AS '住院ID',
+                INP_NO AS '住院流水号',
                 '患者性别' = ( CASE SEX WHEN '0' THEN '女' WHEN '1' THEN '男' END ),
-                a.AGE AS '患者年龄',
-                a.ADMISSION_DATE AS '入院日期',
-                a.DISCHARGE_DATE AS '出院日期',
-                a.OUT_STATUS AS '离院方式',
-                b.HOSPITAL_NAME AS '医院'
+                AGE AS '患者年龄',
+                ADMISSION_DATE AS '入院日期',
+                DISCHARGE_DATE AS '出院日期',
+                OUT_STATUS AS '离院方式'
             FROM
-                [dbo].[PAT_VISIT] AS a
-                LEFT JOIN [dbo].[HOSPITAL_DICT] as b ON a.HOSPITAL_ID=b.HOSPITAL_ID
+                [dbo].[PAT_VISIT]
             WHERE
-                a.PATIENT_NO IN ( ${patient_no})
-                AND a.SD_CODE = 'YXA_O'`,
+            PATIENT_NO IN (${patient_no}) AND SD_CODE='YXA_O'`,
             ret_PAT_VISIT = list_PAT_VISIT.recordset
 
         let retPatVisit = ret_PAT_VISIT
@@ -65,10 +62,14 @@ const query_PAT_VISIT = async (patient_no) => {
                         '' + ret_PAT_SD_ITEM_RESULT[k].ITEM_NAME + '(' + ret_PAT_SD_ITEM_RESULT[k].ITEM_UNIT + ')' + '#' + ret_PAT_SD_ITEM_RESULT[k].ITEM_CODE :
                         '' + ret_PAT_SD_ITEM_RESULT[k].ITEM_NAME + '#' + ret_PAT_SD_ITEM_RESULT[k].ITEM_CODE
 
-                    // if (_key === '其他既往史#YXA_O_024') {
-                    //     retPatVisit[i][_key] = ret_PAT_SD_ITEM_RESULT[k].ret_value
-                    //     retPatVisit[i]['有无高血压'] = (/高血压/).test(ret_PAT_SD_ITEM_RESULT[k].ret_value) ? '有' : '无'
-                    // }
+
+                    // 脱敏
+                    if (_key === '患者住址#YXA_O_003') retPatVisit[i][_key] = desensitization(ret_PAT_SD_ITEM_RESULT[k].ret_value, 3, 25);
+                    if (_key === '主刀医师#YXA_O_005') retPatVisit[i][_key] = desensitization(ret_PAT_SD_ITEM_RESULT[k].ret_value, 3, 25);
+                    if (_key === '其他既往史#YXA_O_024') {
+                        retPatVisit[i][_key] = ret_PAT_SD_ITEM_RESULT[k].ret_value
+                        retPatVisit[i]['有无高血压'] = (/高血压/).test(ret_PAT_SD_ITEM_RESULT[k].ret_value) ? '有' : '无'
+                    }
                     retPatVisit[i][_key] = ret_PAT_SD_ITEM_RESULT[k].ret_value
                 }
             }
@@ -77,20 +78,12 @@ const query_PAT_VISIT = async (patient_no) => {
         // console.log(list_PAT_SD_ITEM_RESULT)
         // console.log(ret_PAT_SD_ITEM_RESULT)
         // console.log(retPatVisit)
-        // await saveFileSync('./out/list_PAT_VISIT.json', JSON.stringify(list_PAT_VISIT.recordsets[0], null, 2))
+        // await saveFileSync('./out/ret_PAT_VISIT.json', JSON.stringify(ret_PAT_VISIT, null, 2))
         // await saveFileSync('./out/./out/retPatVisit.json', JSON.stringify(retPatVisit, null, 2))
 
         return ret_PAT_VISIT
             // 排序
             .sort((a, b) => a['患者住址#YXA_O_003'] > b['患者住址#YXA_O_003'] ? 1 : -1)
-            // 脱敏
-            .map(item => {
-
-                item['患者住址#YXA_O_003'] = desensitization(item['患者住址#YXA_O_003'], 3, 25)
-                item['主刀医师#YXA_O_005'] = item['主刀医师#YXA_O_005'] && desensitization(item['主刀医师#YXA_O_005'], 1, 3).substr(0, 2)
-
-                return item
-            })
 
     } catch (err) {
         console.error(err)
@@ -235,136 +228,86 @@ async function saveXlsx(fileName, numberArr) {
     try {
         await sql.connect(SQL_ADDR)
 
-        const
-            PAT_VISIT = await query_PAT_VISIT(numberArr),
-            PAT_DRAINAGE_TUBE = await query_PAT_DRAINAGE_TUBE(numberArr),
-            PAT_FOLLOW_UP_RESULT = await query_PAT_FOLLOW_UP_RESULT(numberArr),
-            PAT_FOLLOW_UP_TREAT = await query_PAT_FOLLOW_UP_TREAT(numberArr)
+        const list_PAT_VISIT = await query_PAT_VISIT(numberArr)
+        const workBook = new Excel.Workbook(),
+            Xlsx = workBook.xlsx,
+            firstWs = workBook.addWorksheet('基本信息'),
+            writePath = './out/my/exceljs-' + Date.now() + '.xlsx'
 
-        // 构建 workbook 对象
-        let wb = {
-            SheetNames: ['基本信息', '引流管', '随访', '化疗'],
-            Sheets: {
-                '基本信息': XLSX.utils.json_to_sheet(PAT_VISIT),
-                '引流管': XLSX.utils.json_to_sheet(PAT_DRAINAGE_TUBE),
-                '随访': XLSX.utils.json_to_sheet(PAT_FOLLOW_UP_RESULT),
-                '化疗': XLSX.utils.json_to_sheet(PAT_FOLLOW_UP_TREAT),
+
+        // list_PAT_VISIT.forEach(item => {
+        //     firstWs.columns = Object.keys(item)
+        //     firstWs.addRow(item)
+        // })
+
+        // firstWs.columns = Object.keys(list_PAT_VISIT[0])
+        // firstWs.addRow(list_PAT_VISIT)
+
+        // firstWs.columns = [
+        //     { header: 'Id', key: 'id',name:'hi',value:'roy', width: 10 },
+        //     { header: 'Name', key: 'name',name:'hi',value:'roy', width: 32 },
+        //     { header: 'D.O.B.', key: 'dob',name:'hi',value:'roy', width: 10, outlineLevel: 1 }
+        // ];
+        // firstWs.addRow({id: 2, name: 'Jane Doe', dob: new Date(1965,1,7)})
+
+        let headers = []
+        for (let _key in list_PAT_VISIT[0]) {
+            if (_key === '其他既往史#YXA_O_024') {
+                headers.push({ header: _key, key: _key, style: { font: { color: { argb: 'FFAA0000' } } } })
+            } else {
+                headers.push({ header: _key, key: _key })
             }
-            // Styles:workbook['Styles']
+        }
+        firstWs.columns = headers
+
+        for (let i = 0; i < list_PAT_VISIT.length; i++) {
+            list_PAT_VISIT[i].style = { font: { color: { argb: 'FF00AA00' } } }
+
+            firstWs.addRow(list_PAT_VISIT[i])
         }
 
-        // 导出 Excel
-        XLSX.writeFile(wb, './out/my/' + fileName + '.xlsx');
-        console.log('OK ', Date.now())
+
+        Xlsx.writeFile(writePath).then(function() {
+            console.log(writePath, ' 写入完成！')
+        })
+
+
     } catch (e) {
         console.error('处理数据出错： ', e)
     }
 
 }
 
-const listId = ["185c63b975e6fc72",
-    "28247d2f5fc3de05",
-    "33b21e248cd01ab8",
-    "33bfb3e3a406dcc7",
-    "35e360e120aa6947",
-    "38c4f4eef5c9ba3b",
-    "49801de5776c2423",
-    "607b84d49bccef48",
-    "882288cfc8bbe033",
-    "8fd468160f9247f3",
-    "957191fd14c03f67",
-    "9991204ff92b85b5",
-    "ade02906c88104f4",
-    "beb088300e57044",
-    "366e86f071f3f5f3",
-    "5d0fc7518b2bcc8c",
-    "79aa46699581fac6",
-    "927852950fd3aba1",
-    "a1f1731a91b8f787",
-    "af315f698ba2ce99",
-    "cc637a5b659de006",
-    "eb7caf39c4f1f46d",
-    "577a910c56d5bb4c",
-    "5ce3d9f06f5efcac",
-    "5f76e67f8ededd6c",
-    "6df284a05fe483bf",
-    "7b7fa7d1bdfb9910",
-    "8b3ef73f6e0bfac0",
-    "b7093cdf290bd17d",
-    "c35bd7abd7595373",
-    "da2ae2d6716c3487",
-    "19efa0207b7506e9",
-    "1b0a2f530508b6cd",
-    "1bae83f11929bd67",
-    "326611938912fe6b",
-    "4dbed50f362dc94e",
-    "5452b3cb61ac798c",
-    "5953920be8f103a7",
-    "7240e03de7f0ce90",
-    "7aa86bcf9fe4f145",
-    "7e56551be5ad380a",
-    "7fb82703622695b6",
-    "888ed68425ded6a8",
-    "a9881f7435971188",
-    "b0e2ae2f43ed56a6",
-    "b56e10e096b07805",
-    "c05078c58316a730",
-    "ced770a40b0fd64",
-    "d4dffb059d1bb431",
-    "e145fda074e98f67",
-    "164e2cda7026e80a",
-    "375d28e455614389",
-    "40e90c33d6fb5287",
-    "4d3c2761d1fca159",
-    "658c3f057e6a5b1b",
-    "65b2264e6941c3fb",
-    "8e442fb229d40cd",
-    "adac2b4b7783b08d",
-    "bcb2bf98fa45910b",
-    "c3e3090f08064c62",
-    "cc6666b031bab4c8",
-    "cdb293712da438f4",
-    "db87772d63380777",
-    "e948e0993966f441",
-    "f303db224298192d",
-    "f9897c89b03f5df3",
-    "fed4f70321d4a477",
-    "1b992fc0f3526214",
-    "31de1e86b16fbdf9",
-    "56afd8ab092ff500",
-    "97dfd175fc8d4a3a",
-    "ca67dc031f7a7ebe",
-    "ecd2aa379ca81275",
-    "309dad1c2b6dc121",
-    "30f97038d5f6cbc1",
-    "3b910986d4ef4825",
-    "5eb7c6abaca8a7ad",
-    "8399c9c275d763a3",
-    "9d5f3199f62d4005",
-    "b7f148f84716dbf4",
-    "dc23d87739787404",
-    "fc9288b98770daf",
-    "1e8c7de57a3925e4",
-    "3bb03c924b44f17b",
-    "6dbd2c44b34e507",
-    "8ca023eb6dd98d3",
-    "9a8eada418f66968",
-    "bd670ec0839bb0e6",
-    "c40badde162445df",
-    "c7ae8927ae7a774e",
-    "d3d7eb1af1760c0c",
-    "e88455b6c95573e5",
-    "ee4ac5263e6bd20f"
-]
-saveXlsx('是放化疗-2018年', listId)
-// async function main() {
+// const listId =['c2963ab9145003a0',
+// '4d3f302f55ab03a0',
+// 'd5ef871ded7657a4',
+// 'd6b0233e441b9879',
+// '8c9af72ba027ba0',
+// 'd134fe680add19d2',
+// '12229ad7c4fe293c',
+// '14464c6497704496',
+// '17c91b901eb8651d',
+// '625ca5f4b4b07299',
+// 'a718eceadd7b6b98',
+// 'eea906bb345c03a0',
+// '255f19a870983e9a',
+// 'a18355c543684e0',
+// 'a526461abcbc6a80',
+// '3e0de600460613da',
+// '4000573f546c57e0',
+// '4435ff40f68961e7',
+// 'b58aa8ba2ee953fa',
+// 'faf66cb88c4f87b5']
+// saveXlsx('是放疗-2016年', listId)
 
-//     const config = require('./config.json')
-//     await sql.connect(SQL_ADDR)
-//     config.forEach(item => {
-//         saveXlsx(item.name, item.list)
+async function main() {
 
-//     })
-// }
+    const config = require('./config.json')
+    await sql.connect(SQL_ADDR)
+    config.forEach(item => {
+        saveXlsx(item.name, item.list)
 
-// main()
+    })
+}
+
+main()
