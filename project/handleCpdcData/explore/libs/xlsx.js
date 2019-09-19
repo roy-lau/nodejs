@@ -20595,7 +20595,8 @@ function make_json_row(sheet, r, R, cols, header, hdr, dense, o) {
 			if(hdr[C] != null) { row[hdr[C]] = defval; }
 			continue;
 		}
-		var v = val.v;
+		// var v = val.v;
+		var v = { value: val.v, comment: (val.c||[]).map(cmnt => cmnt.t).join("") };
 		switch(val.t){
 			case 'z': if(v == null) break; continue;
 			case 'e': v = void 0; break;
@@ -20656,7 +20657,6 @@ function sheet_to_json(sheet, opts) {
 	}
 	for (R = r.s.r + offset; R <= r.e.r; ++R) {
 		var row = make_json_row(sheet, r, R, cols, header, hdr, dense, o);
-		console.log(row)
 		if((row.isempty === false) || (header === 1 ? o.blankrows !== false : !!o.blankrows)) out[outi++] = row.row;
 	}
 	out.length = outi;

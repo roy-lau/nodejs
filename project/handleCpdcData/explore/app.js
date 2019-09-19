@@ -3,8 +3,10 @@
  */
 
 'use strict';
-const XLSX = require("xlsx"),
-    { saveFile } = require('../downCase/utils.js')
+const XLSX = require("./libs/xlsx"),
+    {
+        saveFile
+    } = require('../downCase/utils.js')
 
 
 /**
@@ -14,31 +16,48 @@ const XLSX = require("xlsx"),
  * @return {[type]}              [description]
  */
 function readrXlsx(xlsxFileName, outName) {
-    var workbook = XLSX.readFile("demo.xlsx", { cellStyles: true, bookFiles: true })
+    var workbook = XLSX.readFile("demo.xlsx", {
+        cellStyles: true,
+        bookFiles: true
+    })
     var worksheet = workbook.Sheets[workbook.SheetNames[0]];
     // var result = XLSX.utils.sheet_to_formulae(worksheet);
     // console.log(worksheet['B2'])
-    worksheet['A1'].s = {
-        font: {
-            color: {
-                rgb: 'FF0000FF'
-            }
-        }
+    // worksheet['A1'].s = {
+    //     font: {
+    //         color: {
+    //             rgb: 'FF0000FF'
+    //         }
+    //     }
+    // }
+
+    // worksheet['B1'].s = {
+    //     fill: {
+    //         fgColor: {
+    //             rgb: 'FF0000FF'
+    //         }
+    //     }
+    // }
+
+    XLSX.utils.cell_add_comment(worksheet['C1'], 'hi this is a text', 'my')
+    const json = XLSX.utils.sheet_to_json(worksheet);
+    // if(!json[1]['身份证'].comment) json[1]['身份证'].comment = [];
+    // json[1]['身份证'].comment.hidden = true;
+    // json[1]['身份证'].comment.push({a:"SheetJS", t:"This comment will be hidden"});
+    // console.log(json)
+  // 构建 workbook 对象
+  let wb = {
+    SheetNames: ['sheet'],
+    Sheets: {
+        'sheet': XLSX.utils.json_to_sheet(json)
     }
-
-    worksheet['B1'].s = {
-        fill: {
-            fgColor: {
-                rgb: 'FF0000FF'
-            }
-        }
-    }
-
-XLSX1.utils.cell_add_comment(worksheet['C1'],'hi this is a text','my')
-
-    saveFile('B2.json', JSON.stringify(worksheet, null, 2))
+    // Styles:workbook['Styles']
+}
+    // saveFile('B2.json', JSON.stringify(worksheet, null, 2))
     // 导出 Excel
-    XLSX1.writeFile(workbook, './' + outName + '-' + Date.now() + '.xlsx', { cellStyles: true });
+    XLSX.writeFile(wb, './' + outName + '-' + Date.now() + '.xlsx', {
+        cellStyles: true
+    });
 }
 
 readrXlsx('./demo.xlsx', 'out')

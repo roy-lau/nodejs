@@ -127,12 +127,12 @@ const query_PAT_DRAINAGE_TUBE = async (patient_no) => {
 }
 
 // 下载随访信息
-const query_PAT_FOLLOW_UP_RESULT = async (patient_no,PAT_VISIT) => {
+const query_PAT_FOLLOW_UP_RESULT = async (patient_no) => {
     console.log('处理随访表')
     try {
-        // await sql.connect(SQL_ADDR)
+        const pool1 = await new sql.ConnectionPool(SQL_ADDR).connect();
         // 查询随访时间和时长
-        const list_PAT_FOLLOW_UP = await sql.query `SELECT
+        const list_PAT_FOLLOW_UP = await pool1.query `SELECT
                     PATIENT_NO,
                     FU_TIMES,
                     FOLLOW_UP_DATE AS '随访时间',
@@ -149,7 +149,7 @@ const query_PAT_FOLLOW_UP_RESULT = async (patient_no,PAT_VISIT) => {
 
         for (let i = 0; i < ret_PAT_FOLLOW_UP.length; i++) {
             // 查询随访结果
-            const list_PAT_FOLLOW_UP_RESULT = await sql.query `SELECT
+            const list_PAT_FOLLOW_UP_RESULT = await pool1.query `SELECT
                 dist.PATIENT_NO,
                 dist.FU_TIMES,
                 dist.SD_ITEM_CODE,
@@ -182,26 +182,18 @@ const query_PAT_FOLLOW_UP_RESULT = async (patient_no,PAT_VISIT) => {
                         if (cur_ret.SD_ITEM_VALUE) {
                             let death_PATIENT_NO = cur_ret.PATIENT_NO, // 有死亡时间的患者
                                 // 查询死亡患者的手术时间
-                                // list_death = await sql.query `SELECT
-                                // SD_ITEM_VALUE FROM [dbo].[PAT_SD_ITEM_RESULT]
-                                // WHERE SD_ITEM_CODE='YXA_O_161'
-                                // AND PATIENT_NO=${death_PATIENT_NO}`,
-                                // ret_death = list_death.recordset[0]
-                                surgeryDate =''
+                                list_death = await pool1.query `SELECT
+                                SD_ITEM_VALUE FROM [dbo].[PAT_SD_ITEM_RESULT]
+                                WHERE SD_ITEM_CODE='YXA_O_161'
+                                AND PATIENT_NO=${death_PATIENT_NO}`,
+                                ret_death = list_death.recordset[0]
 
-                                PAT_VISIT.forEach(item=>{
-                                    if(item.PATIENT_NO === death_PATIENT_NO){
-                                        surgeryDate= item['手术日期#YXA_O_161']
-                                    }
-                                })
                             // 死亡时间 - 手术时间 = 随访时长
-                            _FOLLOW_UP_MONTHS_new = moment(cur_ret.SD_ITEM_VALUE).diff(surgeryDate, 'M')
+                            _FOLLOW_UP_MONTHS_new = moment(cur_ret.SD_ITEM_VALUE).diff(ret_death.SD_ITEM_VALUE, 'M')
                             // console.log(cur_ret.SD_ITEM_CODE, cur_ret.SD_ITEM_VALUE, ret_death.SD_ITEM_VALUE, _FOLLOW_UP_MONTHS_new)
 
                             // retPatFollowUP[i]['=手术时间='] = ret_death.SD_ITEM_VALUE
                             retPatFollowUP[i]['随访时长'] = _FOLLOW_UP_MONTHS_new
-
-
                         }
                     }
                 }
@@ -217,7 +209,7 @@ const query_PAT_FOLLOW_UP_RESULT = async (patient_no,PAT_VISIT) => {
         console.error(err)
     }
 }
-// query_PAT_FOLLOW_UP_RESULT(["4cb915fd7c0543a1"])
+
 // 下载随访化疗信息
 const query_PAT_FOLLOW_UP_TREAT = async (patient_no) => {
     console.log('处理化疗信息表')
@@ -266,7 +258,7 @@ async function saveXlsx(fileName, numberArr) {
         const
             PAT_VISIT = await query_PAT_VISIT(numberArr),
             PAT_DRAINAGE_TUBE = await query_PAT_DRAINAGE_TUBE(numberArr),
-            PAT_FOLLOW_UP_RESULT = await query_PAT_FOLLOW_UP_RESULT(numberArr,PAT_VISIT),
+            PAT_FOLLOW_UP_RESULT = await query_PAT_FOLLOW_UP_RESULT(numberArr),
             PAT_FOLLOW_UP_TREAT = await query_PAT_FOLLOW_UP_TREAT(numberArr)
 
         // 构建 workbook 对象

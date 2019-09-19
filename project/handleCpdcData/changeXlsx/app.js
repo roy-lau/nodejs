@@ -82,13 +82,12 @@ class HandleXlsx {
 
     /**
      * 保存表格
-     *
      * @param {Object } json
      */
     saveXlsx(json) {
         // 构建 workbook 对象
         let wb = {
-            SheetNames: ['PAT_VISIT', 'PAT_SD_ITEM_RESULT', 'HOSPITAL_INFO', 'PAT_DRAINAGE_TUBE','PAT_FOLLOW_UP'],
+            SheetNames: ['PAT_VISIT', 'PAT_SD_ITEM_RESULT', 'HOSPITAL_INFO', 'PAT_DRAINAGE_TUBE', 'PAT_FOLLOW_UP', 'PAT_FOLLOW_UP_RESULT', 'PAT_FOLLOW_UP_TREAT'],
             Sheets: {
                 'PAT_VISIT': XLSX.utils.json_to_sheet(json.sheet_PAT_VISIT),
                 'PAT_SD_ITEM_RESULT': XLSX.utils.json_to_sheet(json.sheet_PAT_SD_ITEM_RESULT),
@@ -96,7 +95,48 @@ class HandleXlsx {
                     'HOSPITAL_CODE': null,
                     'HOSPITAL_NAME': null
                 }]),
-                // 'PAT_DRAINAGE_TUBE': XLSX.utils.json_to_sheet(json.sheet_PAT_DRAINAGE_TUBE)
+                'PAT_DRAINAGE_TUBE': XLSX.utils.json_to_sheet(json.sheet_PAT_DRAINAGE_TUBE),
+                'PAT_FOLLOW_UP': XLSX.utils.json_to_sheet([{
+                    "SD_CODE": null,
+                    "PATIENT_NO": null,
+                    "FU_TIMES": null,
+                    "FOLLOW_UP_DATE": null,
+                    "FOLLOW_UP_MONTHS": null,
+                    "FU_STATUS": null,
+                    "FU_REASON": null,
+                    "DISPLAY_ORDER": null
+                }]),
+                "PAT_FOLLOW_UP_RESULT": XLSX.utils.json_to_sheet([{
+                    "SD_CODE": null,
+                    "PATIENT_NO": null,
+                    "FU_TIMES": null,
+                    "SD_ITEM_CODE": null,
+                    "SD_ITEM_VALUE": null,
+                    "SD_ITEM_U_VALUE": null
+                }]),
+                "PAT_FOLLOW_UP_TREAT": XLSX.utils.json_to_sheet([{
+                    "SD_CODE": null,
+                    "PATIENT_NO": null,
+                    "FU_TIMES": null,
+                    "TREAT_NAME": null,
+                    "DRUG_NAME": null,
+                    "DRUG_DOSE": null,
+                    "TREAT_METHOD": null,
+                    "TREAT_EFFECT": null,
+                    "TREAT_COST": null,
+                    "CA199_FRONT": null,
+                    "CEA_FRONT": null,
+                    "CA125_FRONT": null,
+                    "TREAT_EVALUTE_FRONT": null,
+                    "CA199_AFTER": null,
+                    "CEA_AFTER": null,
+                    "CA125_AFTER": null,
+                    "TREAT_EVALUTE_AFTER": null,
+                    "CREATE_DATE_TIME": null,
+                    "TREAT_CYCLE": null,
+                    "DRUG_NAME_TRADE": null
+                }])
+
             }
             // Styles:workbook['Styles']
         }
@@ -111,10 +151,26 @@ class HandleXlsx {
      * @return {[type]}           [description]
      */
     generate_sheet_PAT_DRAINAGE_TUBE(tableData) {
+        console.info("sheet3 处理引流管！")
         let filtertableData = filterKeys(tableData.source, 2)
 
-        console.info("sheet3 处理引流管！")
-        tableData.sheet_PAT_DRAINAGE_TUBE = filtertableData
+        // saveFile(JSON.stringify(filtertableData, null, 2), "out/2-1.filtertableData.json")
+        tableData.sheet_PAT_DRAINAGE_TUBE = filtertableData.map(item => {
+            return {
+                "SD_CODE": "YXA_O",
+                "PATIENT_NO": item.PATIENT_NO || null,
+                "TUBE_NAME": item.TUBE_NAME || null,
+                "RETENTION_DAYS": item.RETENTION_DAYS || null,
+                "POD1": item.POD1 || null,
+                "POD3": item.POD3 || null,
+                "POD7": item.POD7 || null,
+                "AMY_POD1": item.AMY_POD1 || null,
+                "AMY_POD3": item.AMY_POD3 || null,
+                "AMY_POD7": item.AMY_POD7 || null,
+                "AMY_POD_DRAW": item.AMY_POD_DRAW || null,
+                "CREATE_DATE_TIME": item.CREATE_DATE_TIME || null
+            }
+        })
         return tableData
     }
 
@@ -137,19 +193,6 @@ class HandleXlsx {
     generate_sheet_PAT_SD_ITEM_RESULT(tableData) {
 
         let list = filterKeys(tableData.source, 1)
-        // let _source = tableData.source
-        // let _tableData = []
-        // for (let i = 0; i < filtertableData.length; i++) {
-        //     for (let k in filtertableData[i]) {
-        //         let json = {
-        //             PATIENT_NO: _source[i].PATIENT_NO,
-        //             SD_CODE: 'YXA_O',
-        //             SD_ITEM_CODE: k.split("#")[1],
-        //             SD_ITEM_VALUE: filtertableData[i][k],
-        //         }
-        //         _tableData.push(json)
-        //     }
-        // }
 
         console.info("sheet2 处理数据元字典！")
         tableData.sheet_PAT_SD_ITEM_RESULT = list
@@ -174,9 +217,11 @@ class HandleXlsx {
     async xlsxToJson(tableData) {
         let insertdData = await Check.insertPATIENT_NO(tableData) // 插入GUID
 
-        saveFile(JSON.stringify(insertdData, null, 2), "out/2.xlsx-source.json")
+        // saveFile(JSON.stringify(insertdData, null, 2), "out/2.xlsx-source.json")
 
-        return { source: insertdData }
+        return {
+            source: insertdData
+        }
 
     }
 
@@ -221,10 +266,10 @@ class HandleXlsx {
     }
 
     init() {
-        // const filterFile = './input/瑞金胰腺癌患者补录数据_2017-2018.6——整理.xlsx' // 过滤的文件名
+        // const filterFile = path.join(__dirname, './input/demo.xlsx') // 过滤的文件名
+        const filterFile = './input/瑞金胰腺癌患者补录数据_2017-2018.6——整理.xlsx' // 过滤的文件名
         // const filterFile = path.join(__dirname, './input/胰腺癌单病种数据元2018.1-2019.4——整理.xlsx') // 过滤的文件名
-        const filterFile = path.join(__dirname, './input/胰腺癌单病种数据元2019.5-7——整理.xlsx') // 过滤的文件名
-        // const filterFile = './input/demo.xlsx' // 过滤的文件名
+        // const filterFile = path.join(__dirname, './input/胰腺癌单病种数据元2019.5-7——整理.xlsx') // 过滤的文件名
 
         // 第一步： 过滤数据并写入表格中，以便查阅
         this.filterXlsx(filterFile)
@@ -265,23 +310,19 @@ function filterKeys(fileData, code) {
 
     for (let i = 0; i < fileData.length; i++) {
         let haveData = {}, // 一个 # 号
-            existData = {}, // 没有 井号
-            AData = {}
+            existData = {} // 没有 井号
 
         for (let key in fileData[i]) {
             if (key.indexOf("#") > -1) {
                 let len = key.split('#').length
 
                 if (len === 2) { // 一个 # 号
-                    // haveData[key] = fileData[i][key]
                     if (fileData[i][key]) {
                         let list = pattern_sheet_PAT_SD_ITEM_RESULT(fileData[i], key, fileData[i][key])
                         list_PAT_SD_ITEM_RESULT.push(list)
                     }
-                } else if (len === 3) { // 两个井号
-                    // AData[key] = fileData[i][key]
-                    let list = pattern_sheet_PAT_DRAINAGE_TUBE(fileData[i], key, fileData[i][key])
-                    list_PAT_DRAINAGE_TUBE.push(list)
+                } else if (len === 3 && code === 2) { // 两个井号 且必须是 引流管函数调用
+                    list_PAT_DRAINAGE_TUBE = pattern_sheet_PAT_DRAINAGE_TUBE(fileData[i], key, fileData[i][key])
                 }
 
             } else { // 没有 井号 (基本信息和特殊情况)
@@ -312,19 +353,39 @@ function pattern_sheet_PAT_VISIT(value) {
 }
 
 function pattern_sheet_PAT_SD_ITEM_RESULT(source, key, value) {
-        return {
-            PATIENT_NO: source.PATIENT_NO,
-            SD_CODE: 'YXA_O',
-            SD_ITEM_CODE: key.split("#")[1],
-            SD_ITEM_VALUE: value,
-        }
-}
-
-function pattern_sheet_PAT_DRAINAGE_TUBE(source, key, value) {
     return {
         PATIENT_NO: source.PATIENT_NO,
-        [key]: value
+        SD_CODE: 'YXA_O',
+        SD_ITEM_CODE: key.split("#")[1],
+        SD_ITEM_VALUE: value,
     }
+}
+/**
+ * 引流管
+ * @param {Object} source 源数据
+ * @param {String} key 键
+ * @param {Any} value 值
+ */
+let tmpArr = [],
+    tmpObj = {},
+    objArr = []
+
+function pattern_sheet_PAT_DRAINAGE_TUBE(source, key, value) {
+    // console.log(key, value)
+
+    const _splitKey = key.split('#');
+    if (tmpArr.indexOf(_splitKey[2]) > -1) {
+        tmpObj[_splitKey[1]] = value
+    } else {
+        tmpArr = []
+        tmpObj = {}
+        tmpObj['PATIENT_NO'] = source.PATIENT_NO
+        tmpObj[_splitKey[1]] = value
+        objArr.push(tmpObj)
+
+        tmpArr.push(_splitKey[2])
+    }
+    return objArr
 }
 
 /**

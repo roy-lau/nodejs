@@ -4,8 +4,10 @@
 'use strict';
 const sql = require('mssql'),
     XLSX = require("xlsx"),
-    { saveFileSync } = require('./utils'),
-    SQL_ADDR = 'mssql://sa:sa@123@192.168.1.253/RYCPDC_C20190701'
+    {
+        saveFileSync
+    } = require('./utils'),
+    SQL_ADDR = 'mssql://sa:sa@123@192.168.1.253/RYCPDC_C20190902'
 
 
 /*
@@ -141,10 +143,7 @@ const query_PAT_VISIT = async (patient_no) => {
  * @return {[type]}           [description]
  */
 async function saveXlsx(fileName) {
-
-
-    const
-        PAT_VISIT = await query_PAT_VISIT()
+    const PAT_VISIT = await query_PAT_VISIT()
 
     // 构建 workbook 对象
     let wb = {
