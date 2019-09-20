@@ -386,7 +386,7 @@ async function handlePatItemResult() {
 }
 
 // 计算 患者基本信息
-async function handlePatVisit() {
+async function handlePatVisit(patientNo) {
     console.log('计算患者基本信息')
     try {
         // const pool = await new sql.ConnectionPool(SQL_ADDR).connect();
@@ -404,7 +404,7 @@ async function handlePatVisit() {
                 [dbo].[PAT_VISIT]
             WHERE
                 SD_CODE = 'YXA_O'
-                -- AND PATIENT_NO IN('345bda4fda79e57b','12e9717c4072c91a')`,
+                AND PATIENT_NO IN(${patientNo})`,
             retPatVisit = listPatVisit.recordset
 
         for (let index = 0; index < retPatVisit.length; index++) {
@@ -430,7 +430,7 @@ async function handlePatVisit() {
 (async function() {
     try {
         console.time('用时')
-        await handlePatVisit()
+        await handlePatVisit(['345bda4fda79e57b','12e9717c4072c91a'])
         await handlePatItemResult()
         await handleDrainageTube()
         await handlePatFollowUp()
