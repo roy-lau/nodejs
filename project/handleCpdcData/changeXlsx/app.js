@@ -144,6 +144,7 @@ class HandleXlsx {
         // 导出 Excel
         XLSX.writeFile(wb, './out/OK-' + Date.now() + '.xlsx');
         console.log('OK ', Date.now())
+        process.exit()
     }
     /**
      * sheet 3. 处理生成 PAT_SD_ITEM_RESULT 引流管
@@ -238,7 +239,6 @@ class HandleXlsx {
                     }), // 获取表格数据
                     sheetNames = workbook.SheetNames, // 获取表格里的每个 sheet
                     worksheet = workbook.Sheets[sheetNames[0]]; // 获取第一个 sheet
-
                 let json = XLSX.utils.sheet_to_json(worksheet, {
                     raw: false
                 }) // 处理为 json 格式
@@ -267,9 +267,11 @@ class HandleXlsx {
 
     init() {
         // const filterFile = path.join(__dirname, './input/demo.xlsx') // 过滤的文件名
-        const filterFile = './input/瑞金胰腺癌患者补录数据_2017-2018.6——整理.xlsx' // 过滤的文件名
-        // const filterFile = path.join(__dirname, './input/胰腺癌单病种数据元2018.1-2019.4——整理.xlsx') // 过滤的文件名
+        const filterFile = path.join(__dirname,'./input/瑞金_补录_含随访_2016——整理.xlsx') // 过滤的文件名
+        // const filterFile = path.join(__dirname, './input/瑞金_补录_含随访_2017-2018.6——整理.xlsx') // 过滤的文件名
+        // const filterFile = path.join(__dirname, './input/瑞金_补录_含随访_2018.1-2019.4——整理.xlsx') // 过滤的文件名
         // const filterFile = path.join(__dirname, './input/胰腺癌单病种数据元2019.5-7——整理.xlsx') // 过滤的文件名
+        // console.log(filterFile)
 
         // 第一步： 过滤数据并写入表格中，以便查阅
         this.filterXlsx(filterFile)
