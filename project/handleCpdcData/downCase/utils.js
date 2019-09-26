@@ -41,13 +41,16 @@ exports.desensitization = function(str, beginStr, endStr) {
  * @param  {String} data     要保存的数据，需是字符串
  * @return {[type]}          [description]
  */
-exports.saveFileSync = async function(fileName, data) {
-    fs.writeFile(fileName, data, function(err) {
-        if (err) {
-            console.log(fileName, "数据写入失败！");
-            return console.error(err);
-        }
-        console.log(fileName, "数据写入成功！");
+exports.saveFileSync = function(fileName, data) {
+    return new Promise((resolve, reject) => {
+        fs.writeFile(fileName, data, function(err) {
+            if (err) {
+                console.log(fileName, "数据写入失败！");
+                reject(err)
+            }
+            resolve()
+            console.log(fileName, "数据写入成功！");
+        });
     });
 }
 

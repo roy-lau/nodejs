@@ -9,13 +9,13 @@ const sql = require('mssql'),
         desensitization,
         saveFileSync
     } = require('./utils'),
-    SQL_ADDR = 'mssql://sa:sa@123@192.168.1.253/RYCPDC_C20190902'
+    config = require("../config.js")
 
 // 下载基本信息表
 const query_PAT_VISIT = async (patient_no) => {
     console.log('处理患者基本信息表')
     try {
-        // await sql.connect(SQL_ADDR)
+        // await sql.connect(config.db_addr)
         // 查询患者基本信息
         const list_PAT_VISIT = await sql.query `SELECT
                 a.PATIENT_NO,
@@ -100,7 +100,7 @@ const query_PAT_VISIT = async (patient_no) => {
 const query_PAT_DRAINAGE_TUBE = async (patient_no) => {
     console.log('处理引流管表')
     try {
-        // await sql.connect(SQL_ADDR)
+        // await sql.connect(config.db_addr)
         // 查询引流管信息表
         const list_PAT_DRAINAGE_TUBE = await sql.query `SELECT
                 PATIENT_NO,
@@ -130,7 +130,7 @@ const query_PAT_DRAINAGE_TUBE = async (patient_no) => {
 const query_PAT_FOLLOW_UP_RESULT = async (patient_no) => {
     console.log('处理随访表')
     try {
-        const pool1 = await new sql.ConnectionPool(SQL_ADDR).connect();
+        const pool1 = await new sql.ConnectionPool(config.db_addr).connect();
         // 查询随访时间和时长
         const list_PAT_FOLLOW_UP = await pool1.query `SELECT
                     PATIENT_NO,
@@ -214,7 +214,7 @@ const query_PAT_FOLLOW_UP_RESULT = async (patient_no) => {
 const query_PAT_FOLLOW_UP_TREAT = async (patient_no) => {
     console.log('处理化疗信息表')
     try {
-        // await sql.connect(SQL_ADDR)
+        // await sql.connect(config.db_addr)
         // 查询引流管信息表
         const list_PAT_FOLLOW_UP_TREAT = await sql.query `SELECT
                 PATIENT_NO,
@@ -254,7 +254,7 @@ const query_PAT_FOLLOW_UP_TREAT = async (patient_no) => {
  */
 async function saveXlsx(fileName, numberArr) {
     try {
-        // await sql.connect(SQL_ADDR)
+        // await sql.connect(config.db_addr)
         const
             PAT_VISIT = await query_PAT_VISIT(numberArr),
             PAT_DRAINAGE_TUBE = await query_PAT_DRAINAGE_TUBE(numberArr),
@@ -291,7 +291,7 @@ async function saveXlsx(fileName, numberArr) {
  */
 async function select_addr_year(fileName, address, startDate, endDate) {
     try {
-        // await sql.connect(SQL_ADDR)
+        // await sql.connect(config.db_addr)
         // 查询某地某年的患者
         const list_select_year = await sql.query `SELECT
                 a.PATIENT_NO
@@ -324,7 +324,7 @@ async function select_addr_year(fileName, address, startDate, endDate) {
  */
 async function select_fhl(fileName, startDate, endDate) {
     try {
-        // await sql.connect(SQL_ADDR)
+        // await sql.connect(config.db_addr)
         // 查询某地某年的患者
         const list_select_fhl = await sql.query `SELECT
                 a.PATIENT_NO
@@ -360,7 +360,7 @@ async function main() {
         address_shanghai = '上海%'
 
 
-    await sql.connect(SQL_ADDR)
+    await sql.connect(config.db_addr)
 
     await select_addr_year('上海-16年', address_shanghai, startDate16, endDate16)
     // await select_addr_year('上海-17年', address_shanghai, startDate17, endDate17)

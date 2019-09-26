@@ -1,6 +1,6 @@
 'use strict';
 const sql = require('mssql'),
-    config = require("./config")
+    config = require("../config.js")
 
 
 // 根据38家医院id查询患者id

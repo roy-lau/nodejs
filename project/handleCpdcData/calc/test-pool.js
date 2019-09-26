@@ -1,11 +1,11 @@
 
 'use strict';
 const sql = require('mssql'),
-    SQL_ADDR = 'mssql://sa:sa@123@192.168.1.253/RYCPDC_C20190902'
+    config = require("../config.js")
 
 async function usePool() {
     try {
-        const pool = await new sql.ConnectionPool(SQL_ADDR).connect();
+        const pool = await new sql.ConnectionPool(config.db_addr).connect();
 
         for (var i = 100; i >= 0; i--) {
 			const users = await pool.query `SELECT * FROM [dbo].[PAT_VISIT] WHERE PATIENT_NO='01c7bf8461693338'`
@@ -18,7 +18,7 @@ async function usePool() {
 
 async function noPool() {
     try {
-        await sql.connect(SQL_ADDR)
+        await sql.connect(config.db_addr)
 
         for (var i = 100; i >= 0; i--) {
 			const users = await sql.query `SELECT * FROM [dbo].[PAT_VISIT] WHERE PATIENT_NO='01c7bf8461693338'`

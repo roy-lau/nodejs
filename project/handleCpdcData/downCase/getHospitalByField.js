@@ -3,11 +3,10 @@
  */
 'use strict';
 const sql = require('mssql'),
+    config = require("../config.js"),
     XLSX = require("xlsx"),
-    {
-        saveFileSync
-    } = require('./utils'),
-    SQL_ADDR = 'mssql://sa:sa@123@192.168.1.253/RYCPDC_C20190902'
+    { saveFileSync} = require('./utils')
+
 
 
 /*
@@ -38,7 +37,7 @@ const sql = require('mssql'),
 // 下载基本信息表
 const query_PAT_VISIT = async (patient_no) => {
     try {
-        await sql.connect(SQL_ADDR)
+        await sql.connect(config.db_addr)
         // 查询患者基本信息
         const list_PAT_VISIT = await sql.query `SELECT
                 a.PATIENT_NO,

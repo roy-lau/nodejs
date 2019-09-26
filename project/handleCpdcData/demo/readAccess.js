@@ -1,10 +1,10 @@
 'use strict';
 
-const ADODB = require('node-adodb');
-const fs = require('fs')
-// Provider=Microsoft.Jet.OleDb.4.0;Data Source=localhost\Database\RYCPDC.mdb;Jet OLEDB:Database Password=sa@123
-const connection = ADODB.open('Provider=Microsoft.Jet.OleDb.4.0;Data Source=RYCPDC.mdb;Jet OLEDB:Database Password=sa@123');
-// const connection = ADODB.open('Provider=Microsoft.Jet.OLEDB.4.0;Data Source=RYCPDC.mdb;');
+const ADODB = require('node-adodb'),
+config = require('../config.js'),
+ connection = ADODB.open(config.access_addr),
+ fs = require('fs'),
+
 
 
 	// 删除

@@ -4,7 +4,7 @@
 'use strict';
 const sql = require('mssql'),
     XLSX = require("xlsx"),
-    config = require("./config"),
+    config = require("../config.js"),
     _ = require("lodash"),
     OBJ_CALC = Object.create(null)
 
@@ -280,16 +280,16 @@ module.exports = class CALC {
             const pool = await new sql.ConnectionPool(config.db_addr).connect();
             for (const key in OBJ_CALC) {
                 const listDrainageTube = await pool.query `SELECT
-	                    PATIENT_NO,
-	                    TUBE_NAME,
-	                    RETENTION_DAYS,
-	                    POD1,
-	                    POD3,
-	                    POD7,
-	                    AMY_POD1,
-	                    AMY_POD3,
-	                    AMY_POD7,
-	                    AMY_POD_DRAW
+				    	PATIENT_NO,
+						TUBE_NAME AS '引流管部位',
+						RETENTION_DAYS AS '留置天数',
+						POD1,
+						POD3,
+						POD7,
+						AMY_POD1,
+						AMY_POD3,
+						AMY_POD7,
+						AMY_POD_DRAW AS '拔管前'
 	                FROM
 	                    [dbo].[PAT_DRAINAGE_TUBE]
 	                WHERE
@@ -298,13 +298,17 @@ module.exports = class CALC {
 
                 OBJ_CALC[key].drainageTube_num = 0
                 OBJ_CALC[key].drainageTube_total = 0
+
                 for (let i = 0; i < retDrainageTube.length; i++) {
                     const element = retDrainageTube[i]
 
-                    // console.log(_id,_.compact(Object.values(element)).length)
                     OBJ_CALC[key].drainageTube_num += _.compact(Object.values(element)).length
                     OBJ_CALC[key].drainageTube_total += Object.keys(element).length
+
+                    getkey(element).map(item=> OBJ_CALC[key].dtMissingField.push(`引流管${i+1}——${item}`))
+
                 }
+
                 OBJ_CALC[key].num += OBJ_CALC[key].drainageTube_num
                 OBJ_CALC[key].total += OBJ_CALC[key].drainageTube_total
             }
@@ -394,6 +398,7 @@ module.exports = class CALC {
                      */
                     if (nextItem.ITEM_PARENT_CODE) {
                         parentCode = nextItem.ITEM_PARENT_CODE.split('#')[0]
+                    }
 
                         if (curItem.ITEM_CODE === parentCode) { // 父项。 有三种情况：SD_ITEM_VALUE为1(是)，SD_ITEM_VALUE为2(否)，SD_ITEM_VALUE为空
                             // console.log('Parent: ',curItem.ITEM_NAME,curItem.SD_ITEM_VALUE)
@@ -405,29 +410,29 @@ module.exports = class CALC {
                                 OBJ_CALC[key].itemValue_num += 1
                                 isClacChild = false //不计算子项
                             } else { // SD_ITEM_VALUE为空, 总数加1，分子不增加。 TODO：获取空项数据项名称
-
+	                        	OBJ_CALC[key].dtMissingField.push(curItem.ITEM_NAME+'#'+curItem.ITEM_CODE)
                             }
 
-                        } else if (isClacChild) { // 子项
+                        } else if (curItem.ITEM_PARENT_CODE && isClacChild) { // 子项
                             // console.log('\t child: ',curItem.ITEM_NAME,isClacChild)
                             OBJ_CALC[key].itemValue_total += 1 // 如果需要计算子项，总数加1
                             if (curItem.SD_ITEM_VALUE) {
                                 OBJ_CALC[key].itemValue_num += 1 // 如果子项有值, 分子加1。
                             } else { // SD_ITEM_VALUE为空, 总数加1，分子不增加。 TODO：获取空项数据项名称
-
+	                        	OBJ_CALC[key].dtMissingField.push(curItem.ITEM_NAME+'#'+curItem.ITEM_CODE)
                             }
                         }
-                    }
                     if (!curItem.ITEM_PARENT_CODE && curItem.ITEM_CODE !== parentCode) { // 独项
                         // console.log('-single:',curItem.ITEM_NAME)
                         OBJ_CALC[key].itemValue_total += 1 // 如果需要计算独项，总数加1
                         if (curItem.SD_ITEM_VALUE) {
                             OBJ_CALC[key].itemValue_num += 1 // 如果独项有值, 分子加1。
                         } else { // SD_ITEM_VALUE为空, 总数加1，分子不增加。 TODO：获取空项数据项名称
-
+                        	OBJ_CALC[key].dtMissingField.push(curItem.ITEM_NAME+'#'+curItem.ITEM_CODE)
                         }
                     }
                 }
+                OBJ_CALC[key].dtMissingFieldNum = OBJ_CALC[key].dtMissingField.length
                 OBJ_CALC[key].num += OBJ_CALC[key].itemValue_num
                 OBJ_CALC[key].total += OBJ_CALC[key].itemValue_total
             };
@@ -477,12 +482,25 @@ module.exports = class CALC {
                 //  _.compact([0, 1, false, 2, '', 3]);     返回 [1,2,3]
                 OBJ_CALC[_id].num = OBJ_CALC[_id].patVisit_num = _.compact(Object.values(element)).length
                 OBJ_CALC[_id].total = OBJ_CALC[_id].patVisit_total = Object.keys(element).length
-                console.log(1)
+                OBJ_CALC[_id].dtMissingField = getkey(element)
             }
-            console.log(OBJ_CALC)
+            // console.log(OBJ_CALC)
         } catch (err) {
             console.error('SQL ERR ', err)
         }
     }
 
+}
+
+/**
+ * 获取 json对象里，值为空的 key
+ * @param  {[type]} e [description]
+ * @return {[type]}   [description]
+ */
+function getkey(e){
+	const arr = []
+	for(let k in e){
+		if (!e[k]) arr.push(k)
+	}
+	return arr
 }

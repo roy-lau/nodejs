@@ -6,12 +6,13 @@ const sql = require('mssql'),
     Excel = require('exceljs'),
     fs = require('fs'),
     { desensitization, saveFileSync } = require('./utils'),
-    SQL_ADDR = 'mssql://sa:sa@123@192.168.1.253/RYCPDC_C20190902'
+    config = require("../config.js")
+
 
 // 下载基本信息表
 const query_PAT_VISIT = async (patient_no) => {
     try {
-        // await sql.connect(SQL_ADDR)
+        // await sql.connect(config.db_addr)
         // 查询患者基本信息
         const list_PAT_VISIT = await sql.query `SELECT
                 PATIENT_NO,
@@ -93,7 +94,7 @@ const query_PAT_VISIT = async (patient_no) => {
 // 下载引流管信息表
 const query_PAT_DRAINAGE_TUBE = async (patient_no) => {
     try {
-        // await sql.connect(SQL_ADDR)
+        // await sql.connect(config.db_addr)
         // 查询引流管信息表
         const list_PAT_DRAINAGE_TUBE = await sql.query `SELECT
                 PATIENT_NO,
@@ -123,7 +124,7 @@ const query_PAT_DRAINAGE_TUBE = async (patient_no) => {
 // 下载随访信息
 const query_PAT_FOLLOW_UP_RESULT = async (patient_no) => {
     try {
-        // await sql.connect(SQL_ADDR)
+        // await sql.connect(config.db_addr)
         // 查询随访信息
         const list_PAT_FOLLOW_UP = await sql.query `SELECT
                     PATIENT_NO,
@@ -185,7 +186,7 @@ const query_PAT_FOLLOW_UP_RESULT = async (patient_no) => {
 // 下载随访化疗信息
 const query_PAT_FOLLOW_UP_TREAT = async (patient_no) => {
     try {
-        // await sql.connect(SQL_ADDR)
+        // await sql.connect(config.db_addr)
         // 查询引流管信息表
         const list_PAT_FOLLOW_UP_TREAT = await sql.query `SELECT
                 PATIENT_NO,
@@ -226,7 +227,7 @@ const query_PAT_FOLLOW_UP_TREAT = async (patient_no) => {
  */
 async function saveXlsx(fileName, numberArr) {
     try {
-        await sql.connect(SQL_ADDR)
+        await sql.connect(config.db_addr)
 
         const list_PAT_VISIT = await query_PAT_VISIT(numberArr)
         const workBook = new Excel.Workbook(),
@@ -303,7 +304,7 @@ async function saveXlsx(fileName, numberArr) {
 async function main() {
 
     const config = require('./config.json')
-    await sql.connect(SQL_ADDR)
+    await sql.connect(config.db_addr)
     config.forEach(item => {
         saveXlsx(item.name, item.list)
 

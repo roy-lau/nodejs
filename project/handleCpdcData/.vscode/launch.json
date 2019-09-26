@@ -8,6 +8,11 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Launch downCase-header",
+            "program": "${workspaceFolder}\\downCase\\downHeader.js"
+        },{
+            "type": "node",
+            "request": "launch",
             "name": "Launch changeXlsx-tmp",
             "program": "${workspaceFolder}\\changeXlsx\\tmp.js"
         },{

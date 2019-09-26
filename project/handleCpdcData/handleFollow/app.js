@@ -1,11 +1,11 @@
-const XLSX = require("xlsx")
-const moment = require('moment')
-const fs = require('fs')
-const uuidv4 = require('uuid/v4');
-const { isString } = require("../utils/is.js")
+const XLSX = require("xlsx"),
+    moment = require('moment'),
+    fs = require('fs'),
+    uuidv4 = require('uuid/v4'),
+    { isString } = require("../utils/is.js")
 
-const fileName = '海军长海_2016-2018随访.xlsx'
-const workbook = XLSX.readFile(fileName, { cellDates: true, dateNF: 'YYYY/MM/dd' });
+const fileName = '海军长海_2016-2018随访.xlsx',
+    workbook = XLSX.readFile(fileName, { cellDates: true, dateNF: 'YYYY/MM/dd' });
 
 // 获取 Excel 中所有表名
 const sheetNames = workbook.SheetNames; // 返回 ['sheet1', 'sheet2']
@@ -129,7 +129,7 @@ class HandleXlsx {
                 SQL += `INSERT INTO PAT_FOLLOW_UP(SD_CODE,PATIENT_NO,FU_TIMES,FOLLOW_UP_DATE,FOLLOW_UP_MONTHS,FU_STATUS,DISPLAY_ORDER)VALUES('YXA_O','${item.PATIENT_NO}','${item.FU_TIMES}','${item['随访时间']}','${item['随访时长']}','1','${item.order}');
 INSERT INTO PAT_FOLLOW_UP_RESULT(SD_CODE,PATIENT_NO,FU_TIMES,SD_ITEM_CODE,SD_ITEM_VALUE,SD_ITEM_U_VALUE)VALUES('YXA_O','${item.PATIENT_NO}','${item.FU_TIMES}','YXA_O_256','',1);
 INSERT INTO PAT_FOLLOW_UP_RESULT(SD_CODE,PATIENT_NO,FU_TIMES,SD_ITEM_CODE,SD_ITEM_VALUE,SD_ITEM_U_VALUE)VALUES('YXA_O','${item.PATIENT_NO}','${item.FU_TIMES}','YXA_O_257','','${ moment(item['死亡日期']).format('YYYY-MM-DD')}');\n`
-            }else{
+            } else {
                 /*
                     插入 随访时间 是否死亡（否）
                  */
