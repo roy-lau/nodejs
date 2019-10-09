@@ -13,7 +13,7 @@ hash.setEncoding('hex');
 
 input
     .pipe(hash)
-    .pipe(zlib.createGunzip())
+    // .pipe(zlib.createGunzip())
     .pipe(output);
 
 hash.on('data', function(data) {
