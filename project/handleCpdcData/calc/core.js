@@ -65,7 +65,8 @@ module.exports = class CALC {
                 "姓名": item.name,
                 "诊治完整率": DTIntegrityRate,
                 "随访完整率": followIntegrityRate,
-                "总完整率": totalIntegrityRate
+                "总完整率": totalIntegrityRate,
+                "缺失字段": item.dtMissingField.join()
             })
         })
         this.calcResult = ret
@@ -268,6 +269,7 @@ module.exports = class CALC {
                 OBJ_CALC[key].num += OBJ_CALC[key].patFollowUp_num
                 OBJ_CALC[key].total += OBJ_CALC[key].patFollowUp_total
             }
+            console.log(OBJ_CALC)
         } catch (err) {
             console.error('SQL ERR ', err)
         }
@@ -312,7 +314,7 @@ module.exports = class CALC {
                 OBJ_CALC[key].num += OBJ_CALC[key].drainageTube_num
                 OBJ_CALC[key].total += OBJ_CALC[key].drainageTube_total
             }
-            // console.log(OBJ_CALC)
+            console.log(OBJ_CALC)
         } catch (err) {
             console.error('SQL ERR ', err)
         }
@@ -320,7 +322,7 @@ module.exports = class CALC {
 
     // 计算 数据项结果 2
     async handlePatItemResult() {
-        console.info('计算数据项结果')
+        console.time('计算数据项结果')
         try {
             const pool = await new sql.ConnectionPool(config.db_addr).connect();
             for (const key in OBJ_CALC) {
@@ -405,12 +407,13 @@ module.exports = class CALC {
                             OBJ_CALC[key].itemValue_total += 1 // 不论哪一种情情况，总数都加1
                             if (curItem.SD_ITEM_VALUE && curItem.SD_ITEM_VALUE == 1) { // 不为空且值为'是', 分子加1
                                 OBJ_CALC[key].itemValue_num += 1
-                            }
-                            if (curItem.SD_ITEM_VALUE && curItem.SD_ITEM_VALUE == 2) { // 不为空且值为'否', 分子加1。
+                                isClacChild = true // 计算子项
+                            }else if (curItem.SD_ITEM_VALUE && curItem.SD_ITEM_VALUE == 2) { // 不为空且值为'否', 分子加1。
                                 OBJ_CALC[key].itemValue_num += 1
                                 isClacChild = false //不计算子项
                             } else { // SD_ITEM_VALUE为空, 总数加1，分子不增加。 TODO：获取空项数据项名称
 	                        	OBJ_CALC[key].dtMissingField.push(curItem.ITEM_NAME+'#'+curItem.ITEM_CODE)
+                                isClacChild = true // 计算子项
                             }
 
                         } else if (curItem.ITEM_PARENT_CODE && isClacChild) { // 子项
@@ -432,19 +435,21 @@ module.exports = class CALC {
                         }
                     }
                 }
-                OBJ_CALC[key].dtMissingFieldNum = OBJ_CALC[key].dtMissingField.length
+                // OBJ_CALC[key].dtMissingFieldNum = OBJ_CALC[key].dtMissingField.length // 不能每次都获取长度，最后获取一次就行了
                 OBJ_CALC[key].num += OBJ_CALC[key].itemValue_num
                 OBJ_CALC[key].total += OBJ_CALC[key].itemValue_total
             };
             // console.log(OBJ_CALC)
+            console.timeEnd('计算数据项结果')
         } catch (err) {
+            console.timeEnd('计算数据项结果')
             console.error('SQL ERR ', err)
         }
     }
 
     // 计算 患者基本信息
     async handlePatVisit() {
-        console.log('计算患者基本信息')
+        console.time('计算患者基本信息')
         try {
             // const pool = await new sql.ConnectionPool(config.db_addr).connect();
             await sql.connect(config.db_addr)
@@ -473,6 +478,7 @@ module.exports = class CALC {
                 OBJ_CALC[_id] = Object.create(null) // 创建一个纯净的对象
                 OBJ_CALC[_id].dtMissingField = [] // 创建一个数组，用来存放诊治缺失字段
                 OBJ_CALC[_id].fuMissingField = [] // 创建一个数组，用来存放随访缺失字段
+
                 // 写入 id 和 name
                 OBJ_CALC[_id].id = element.PATIENT_NO
                 OBJ_CALC[_id].patientId = element.PATIENT_ID
@@ -485,7 +491,11 @@ module.exports = class CALC {
                 OBJ_CALC[_id].dtMissingField = getkey(element)
             }
             // console.log(OBJ_CALC)
+            console.timeEnd('计算患者基本信息')
+            return OBJ_CALC
+
         } catch (err) {
+            console.timeEnd('计算患者基本信息')
             console.error('SQL ERR ', err)
         }
     }

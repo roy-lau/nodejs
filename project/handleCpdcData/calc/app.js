@@ -9,8 +9,8 @@
             calc = new CALC(['345bda4fda79e57b', '12e9717c4072c91a','179aa12a972196d9'])
 
         await calc.handlePatVisit()
-        // await calc.handlePatItemResult()
-        await calc.handleDrainageTube()
+        await calc.handlePatItemResult() // 数据项结果 验证通过 —— ok
+        await calc.handleDrainageTube() // 引流管 验证通过 —— ok
         // await calc.handlePatFollowUp()
         // await calc.handlePatFollowUpResult()
         // await calc.handlePatFollowUpTreat()
