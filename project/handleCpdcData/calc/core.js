@@ -51,13 +51,13 @@ module.exports = class CALC {
 
             const totalIntegrityRate = (item.num / item.total * 100).toFixed(2) + '%',
 
-                DTIntegrityRate = ((item.patVisit_num + item.itemValue_num + item.drainageTube_num)
-                	/ (item.patVisit_total + item.itemValue_total + item.drainageTube_total)
-                	* 100).toFixed(2) + '%',
+                DTIntegrityRate = ((item.patVisit_num + item.itemValue_num + item.drainageTube_num) /
+                    (item.patVisit_total + item.itemValue_total + item.drainageTube_total) *
+                    100).toFixed(2) + '%',
 
-                followIntegrityRate = ((item.patFollowUp_num + item.patFollowUpResult_num + item.patFollowUpTreat_num)
-                	/ (item.patFollowUp_total + item.patFollowUpResult_total + item.patFollowUpTreat_total)
-                	* 100).toFixed(2) + '%'
+                followIntegrityRate = ((item.patFollowUp_num + item.patFollowUpResult_num + item.patFollowUpTreat_num) /
+                    (item.patFollowUp_total + item.patFollowUpResult_total + item.patFollowUpTreat_total) *
+                    100).toFixed(2) + '%'
 
             ret.push({
                 "住院号": item.patientId,
@@ -79,26 +79,26 @@ module.exports = class CALC {
             const pool = await new sql.ConnectionPool(config.db_addr).connect();
             for (const key in OBJ_CALC) {
                 const listPatFollowUpTreat = await pool.query `SELECT
-	                        PATIENT_NO,
-	                        FU_TIMES,
-	                        TREAT_NAME AS '治疗方式',
-	                        DRUG_NAME AS '药品名称',
-	                        DRUG_DOSE AS '剂量',
-	                        TREAT_METHOD AS '化疗方法',
-	                        TREAT_EFFECT AS '是否好转',
-	                        TREAT_COST AS '化疗费用',
-	                        CA199_FRONT AS '治疗前CA199',
-	                        CEA_FRONT AS '治疗前CEA',
-	                        CA125_FRONT AS '治疗前CA125',
-	                        TREAT_EVALUTE_FRONT AS '术前CT评价',
-	                        CA199_AFTER AS '治疗后CA199',
-	                        CEA_AFTER AS '治疗后CEA',
-	                        CA125_AFTER AS '治疗后CA125',
-	                        TREAT_EVALUTE_AFTER AS '术后CT评价'
-	                    FROM
-	                        [dbo].[PAT_FOLLOW_UP_TREAT]
-	                    WHERE
-	                    PATIENT_NO=${key}`,
+                            PATIENT_NO,
+                            FU_TIMES,
+                            TREAT_NAME AS '治疗方式',
+                            DRUG_NAME AS '药品名称',
+                            DRUG_DOSE AS '剂量',
+                            TREAT_METHOD AS '化疗方法',
+                            TREAT_EFFECT AS '是否好转',
+                            TREAT_COST AS '化疗费用',
+                            CA199_FRONT AS '治疗前CA199',
+                            CEA_FRONT AS '治疗前CEA',
+                            CA125_FRONT AS '治疗前CA125',
+                            TREAT_EVALUTE_FRONT AS '术前CT评价',
+                            CA199_AFTER AS '治疗后CA199',
+                            CEA_AFTER AS '治疗后CEA',
+                            CA125_AFTER AS '治疗后CA125',
+                            TREAT_EVALUTE_AFTER AS '术后CT评价'
+                        FROM
+                            [dbo].[PAT_FOLLOW_UP_TREAT]
+                        WHERE
+                        PATIENT_NO=${key}`,
                     retPatFollowUpTreat = listPatFollowUpTreat.recordset
 
                 // console.log(retPatFollowUpTreat)
@@ -116,7 +116,7 @@ module.exports = class CALC {
             }
             // console.log(OBJ_CALC)
         } catch (err) {
-            console.error('SQL ERR ', err)
+            console.error('handle ERR ', err)
         }
     }
 
@@ -133,15 +133,15 @@ module.exports = class CALC {
                     2，根据数据项字典对比数据项结果
                  */
                 const listPatFollowUpResult = await pool.query `SELECT
-	                    result.PATIENT_NO,
-	                    dist.ITEM_CODE,
-	                    dist.ITEM_NAME,
-	                    dist.ITEM_PARENT_CODE,
-	                    result.SD_ITEM_VALUE
-	                FROM
-	                    [dbo].[FU_SD_ITEM_DICT] AS dist
-	                    LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS result ON dist.ITEM_CODE= result.SD_ITEM_CODE
-	                    AND result.PATIENT_NO= ${key}`,
+                        result.PATIENT_NO,
+                        dist.ITEM_CODE,
+                        dist.ITEM_NAME,
+                        dist.ITEM_PARENT_CODE,
+                        result.SD_ITEM_VALUE
+                    FROM
+                        [dbo].[FU_SD_ITEM_DICT] AS dist
+                        LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS result ON dist.ITEM_CODE= result.SD_ITEM_CODE
+                        AND result.PATIENT_NO= ${key}`,
                     retPatFollowUpResult = listPatFollowUpResult.recordset
 
                 // console.log(retPatFollowUpResult.length)
@@ -237,24 +237,63 @@ module.exports = class CALC {
                 // console.log(OBJ_CALC[key])
             };
         } catch (err) {
-            console.error('SQL ERR ', err)
+            console.error('handle ERR ', err)
         }
     }
+    /**
+     * [_needFollowCount 计算此患者需随访次数]
+     * @param  {String} key 患者id
+     * @return {Number}     需随访次数
+     */
+    async _needFollowCount(key) {
+        // PAT_SD_ITEM_RESULT       YXA_O_209 院内死亡 -> 6c45d5448d05847a
+        // PAT_SD_ITEM_RESULT       YXA_O_161 手术日期
+        // PAT_FOLLOW_UP_RESULT     YXA_O_256 是否死亡
+        // PAT_FOLLOW_UP_RESULT     YXA_O_257 死亡日期
+        try {
+            const pool = await new sql.ConnectionPool(config.db_addr).connect();
+            // 查询 是否院内死亡 和 手术日期
+            const listIsDeadAndDateOfSurgery = await pool.query `SELECT
+                            *
+                        FROM
+                            [dbo].[PAT_SD_ITEM_RESULT] AS a
+                        WHERE
+                            PATIENT_NO = ${key}
+                            AND (
+                            a.SD_ITEM_CODE= 'YXA_O_209'
+                            OR a.SD_ITEM_CODE= 'YXA_O_161')`,
+                retIsDeadAndDateOfSurgery = listIsDeadAndDateOfSurgery.recordset,
+                _dateOfSurgery = retIsDeadAndDateOfSurgery[0],
+                _isDead = retIsDeadAndDateOfSurgery[1],
+                dateOfSurgery = _dateOfSurgery.SD_ITEM_VALUE, // 手术日期
+                isDead = _isDead.SD_ITEM_VALUE // 是否院内死亡
 
+            // console.log(isDead, dateOfSurgery, key)
+            if (isDead == '1') { // 院内死亡
+                OBJ_CALC[key].needFollowCount = 0
+                return
+            } else {
+
+            }
+        } catch (err) {
+            console.error('handle ERR ', err)
+        }
+    }
     // 计算 随访时间 3
     async handlePatFollowUp() {
         console.info('计算 随访时间')
         try {
             const pool = await new sql.ConnectionPool(config.db_addr).connect();
             for (const key in OBJ_CALC) {
+                const needFollowCount = await this._needFollowCount(key)
                 const listPatFollowUp = await pool.query `SELECT
-	                        PATIENT_NO,
-	                        FOLLOW_UP_DATE,
-	                        FOLLOW_UP_MONTHS
-	                    FROM
-	                        [dbo].[PAT_FOLLOW_UP]
-	                    WHERE
-	                    PATIENT_NO=${key}`,
+                            PATIENT_NO,
+                            FOLLOW_UP_DATE,
+                            FOLLOW_UP_MONTHS
+                        FROM
+                            [dbo].[PAT_FOLLOW_UP]
+                        WHERE
+                        PATIENT_NO=${key}`,
                     retPatFollowUp = listPatFollowUp.recordset
 
                 OBJ_CALC[key].patFollowUp_num = 0
@@ -269,9 +308,9 @@ module.exports = class CALC {
                 OBJ_CALC[key].num += OBJ_CALC[key].patFollowUp_num
                 OBJ_CALC[key].total += OBJ_CALC[key].patFollowUp_total
             }
-            console.log(OBJ_CALC)
+            // console.log(OBJ_CALC)
         } catch (err) {
-            console.error('SQL ERR ', err)
+            console.error('handle ERR ', err)
         }
     }
 
@@ -282,20 +321,20 @@ module.exports = class CALC {
             const pool = await new sql.ConnectionPool(config.db_addr).connect();
             for (const key in OBJ_CALC) {
                 const listDrainageTube = await pool.query `SELECT
-				    	PATIENT_NO,
-						TUBE_NAME AS '引流管部位',
-						RETENTION_DAYS AS '留置天数',
-						POD1,
-						POD3,
-						POD7,
-						AMY_POD1,
-						AMY_POD3,
-						AMY_POD7,
-						AMY_POD_DRAW AS '拔管前'
-	                FROM
-	                    [dbo].[PAT_DRAINAGE_TUBE]
-	                WHERE
-	                PATIENT_NO=${key}`,
+                        PATIENT_NO,
+                        TUBE_NAME AS '引流管部位',
+                        RETENTION_DAYS AS '留置天数',
+                        POD1,
+                        POD3,
+                        POD7,
+                        AMY_POD1,
+                        AMY_POD3,
+                        AMY_POD7,
+                        AMY_POD_DRAW AS '拔管前'
+                    FROM
+                        [dbo].[PAT_DRAINAGE_TUBE]
+                    WHERE
+                    PATIENT_NO=${key}`,
                     retDrainageTube = listDrainageTube.recordset
 
                 OBJ_CALC[key].drainageTube_num = 0
@@ -307,7 +346,7 @@ module.exports = class CALC {
                     OBJ_CALC[key].drainageTube_num += _.compact(Object.values(element)).length
                     OBJ_CALC[key].drainageTube_total += Object.keys(element).length
 
-                    getkey(element).map(item=> OBJ_CALC[key].dtMissingField.push(`引流管${i+1}——${item}`))
+                    getkey(element).map(item => OBJ_CALC[key].dtMissingField.push(`引流管${i+1}——${item}`))
 
                 }
 
@@ -316,7 +355,7 @@ module.exports = class CALC {
             }
             console.log(OBJ_CALC)
         } catch (err) {
-            console.error('SQL ERR ', err)
+            console.error('handle ERR ', err)
         }
     }
 
@@ -332,18 +371,18 @@ module.exports = class CALC {
                     2，根据数据项字典对比数据项结果
                  */
                 const listPatItemResult = await pool.query `SELECT
-	                    result.PATIENT_NO,
-	                    dist.ITEM_CODE,
-	                    dist.ITEM_NAME,
-	                    dist.ITEM_PARENT_CODE,
-	                    result.SD_ITEM_VALUE
-	                FROM
-	                    [dbo].[SD_ITEM_DICT] AS dist
-	                    LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS result
-	                    ON dist.ITEM_CODE= result.SD_ITEM_CODE
-	                    AND result.PATIENT_NO= ${key}
-	                WHERE
-	                    dist.SD_CODE= 'YXA_O'`,
+                        result.PATIENT_NO,
+                        dist.ITEM_CODE,
+                        dist.ITEM_NAME,
+                        dist.ITEM_PARENT_CODE,
+                        result.SD_ITEM_VALUE
+                    FROM
+                        [dbo].[SD_ITEM_DICT] AS dist
+                        LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS result
+                        ON dist.ITEM_CODE= result.SD_ITEM_CODE
+                        AND result.PATIENT_NO= ${key}
+                    WHERE
+                        dist.SD_CODE= 'YXA_O'`,
                     retPatItemResult = listPatItemResult.recordset
 
                 // console.log(retPatItemResult.length)
@@ -402,36 +441,36 @@ module.exports = class CALC {
                         parentCode = nextItem.ITEM_PARENT_CODE.split('#')[0]
                     }
 
-                        if (curItem.ITEM_CODE === parentCode) { // 父项。 有三种情况：SD_ITEM_VALUE为1(是)，SD_ITEM_VALUE为2(否)，SD_ITEM_VALUE为空
-                            // console.log('Parent: ',curItem.ITEM_NAME,curItem.SD_ITEM_VALUE)
-                            OBJ_CALC[key].itemValue_total += 1 // 不论哪一种情情况，总数都加1
-                            if (curItem.SD_ITEM_VALUE && curItem.SD_ITEM_VALUE == 1) { // 不为空且值为'是', 分子加1
-                                OBJ_CALC[key].itemValue_num += 1
-                                isClacChild = true // 计算子项
-                            }else if (curItem.SD_ITEM_VALUE && curItem.SD_ITEM_VALUE == 2) { // 不为空且值为'否', 分子加1。
-                                OBJ_CALC[key].itemValue_num += 1
-                                isClacChild = false //不计算子项
-                            } else { // SD_ITEM_VALUE为空, 总数加1，分子不增加。 TODO：获取空项数据项名称
-	                        	OBJ_CALC[key].dtMissingField.push(curItem.ITEM_NAME+'#'+curItem.ITEM_CODE)
-                                isClacChild = true // 计算子项
-                            }
-
-                        } else if (curItem.ITEM_PARENT_CODE && isClacChild) { // 子项
-                            // console.log('\t child: ',curItem.ITEM_NAME,isClacChild)
-                            OBJ_CALC[key].itemValue_total += 1 // 如果需要计算子项，总数加1
-                            if (curItem.SD_ITEM_VALUE) {
-                                OBJ_CALC[key].itemValue_num += 1 // 如果子项有值, 分子加1。
-                            } else { // SD_ITEM_VALUE为空, 总数加1，分子不增加。 TODO：获取空项数据项名称
-	                        	OBJ_CALC[key].dtMissingField.push(curItem.ITEM_NAME+'#'+curItem.ITEM_CODE)
-                            }
+                    if (curItem.ITEM_CODE === parentCode) { // 父项。 有三种情况：SD_ITEM_VALUE为1(是)，SD_ITEM_VALUE为2(否)，SD_ITEM_VALUE为空
+                        // console.log('Parent: ',curItem.ITEM_NAME,curItem.SD_ITEM_VALUE)
+                        OBJ_CALC[key].itemValue_total += 1 // 不论哪一种情情况，总数都加1
+                        if (curItem.SD_ITEM_VALUE && curItem.SD_ITEM_VALUE == 1) { // 不为空且值为'是', 分子加1
+                            OBJ_CALC[key].itemValue_num += 1
+                            isClacChild = true // 计算子项
+                        } else if (curItem.SD_ITEM_VALUE && curItem.SD_ITEM_VALUE == 2) { // 不为空且值为'否', 分子加1。
+                            OBJ_CALC[key].itemValue_num += 1
+                            isClacChild = false //不计算子项
+                        } else { // SD_ITEM_VALUE为空, 总数加1，分子不增加。 TODO：获取空项数据项名称
+                            OBJ_CALC[key].dtMissingField.push(curItem.ITEM_NAME + '#' + curItem.ITEM_CODE)
+                            isClacChild = true // 计算子项
                         }
+
+                    } else if (curItem.ITEM_PARENT_CODE && isClacChild) { // 子项
+                        // console.log('\t child: ',curItem.ITEM_NAME,isClacChild)
+                        OBJ_CALC[key].itemValue_total += 1 // 如果需要计算子项，总数加1
+                        if (curItem.SD_ITEM_VALUE) {
+                            OBJ_CALC[key].itemValue_num += 1 // 如果子项有值, 分子加1。
+                        } else { // SD_ITEM_VALUE为空, 总数加1，分子不增加。 TODO：获取空项数据项名称
+                            OBJ_CALC[key].dtMissingField.push(curItem.ITEM_NAME + '#' + curItem.ITEM_CODE)
+                        }
+                    }
                     if (!curItem.ITEM_PARENT_CODE && curItem.ITEM_CODE !== parentCode) { // 独项
                         // console.log('-single:',curItem.ITEM_NAME)
                         OBJ_CALC[key].itemValue_total += 1 // 如果需要计算独项，总数加1
                         if (curItem.SD_ITEM_VALUE) {
                             OBJ_CALC[key].itemValue_num += 1 // 如果独项有值, 分子加1。
                         } else { // SD_ITEM_VALUE为空, 总数加1，分子不增加。 TODO：获取空项数据项名称
-                        	OBJ_CALC[key].dtMissingField.push(curItem.ITEM_NAME+'#'+curItem.ITEM_CODE)
+                            OBJ_CALC[key].dtMissingField.push(curItem.ITEM_NAME + '#' + curItem.ITEM_CODE)
                         }
                     }
                 }
@@ -443,7 +482,7 @@ module.exports = class CALC {
             console.timeEnd('计算数据项结果')
         } catch (err) {
             console.timeEnd('计算数据项结果')
-            console.error('SQL ERR ', err)
+            console.error('handle ERR ', err)
         }
     }
 
@@ -454,21 +493,21 @@ module.exports = class CALC {
             // const pool = await new sql.ConnectionPool(config.db_addr).connect();
             await sql.connect(config.db_addr)
             const listPatVisit = await sql.query `SELECT
-	                PATIENT_NO,
-	                PATIENT_ID,
-	                INP_NO,
-	                NAME,
-	                SEX,
-	                AGE,
-	                ADMISSION_DATE,
-	                DISCHARGE_DATE,
-	                OUT_STATUS,
-	                HOSPITAL_ID
-	            FROM
-	                [dbo].[PAT_VISIT]
-	            WHERE
-	                SD_CODE = 'YXA_O'
-	                AND PATIENT_NO IN(${this.patientNo})`,
+                    PATIENT_NO,
+                    PATIENT_ID,
+                    INP_NO,
+                    NAME,
+                    SEX,
+                    AGE,
+                    ADMISSION_DATE,
+                    DISCHARGE_DATE,
+                    OUT_STATUS,
+                    HOSPITAL_ID
+                FROM
+                    [dbo].[PAT_VISIT]
+                WHERE
+                    SD_CODE = 'YXA_O'
+                    AND PATIENT_NO IN(${this.patientNo})`,
                 retPatVisit = listPatVisit.recordset
 
             for (let index = 0; index < retPatVisit.length; index++) {
@@ -496,7 +535,7 @@ module.exports = class CALC {
 
         } catch (err) {
             console.timeEnd('计算患者基本信息')
-            console.error('SQL ERR ', err)
+            console.error('handle ERR ', err)
         }
     }
 
@@ -507,10 +546,10 @@ module.exports = class CALC {
  * @param  {[type]} e [description]
  * @return {[type]}   [description]
  */
-function getkey(e){
-	const arr = []
-	for(let k in e){
-		if (!e[k]) arr.push(k)
-	}
-	return arr
+function getkey(e) {
+    const arr = []
+    for (let k in e) {
+        if (!e[k]) arr.push(k)
+    }
+    return arr
 }

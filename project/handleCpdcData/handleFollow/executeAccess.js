@@ -1,6 +1,7 @@
 'use strict';
 
 const ADODB = require('node-adodb'),
+    cluster = require('cluster'),
     config = require('../config.js'),
     connection = ADODB.open(config.access_addr_c),
     moment = require('moment'),
@@ -41,7 +42,6 @@ async function query_PAT_VISIT() {
             console.log(err.stack);
         });
 
-
     } catch (error) {
         console.error(error)
     }
@@ -79,5 +79,64 @@ async function del_INSERT_PAT_FOLLOW_UP() {
         console.error(error)
     }
 }
+// 清空三个随访表
+async function clearByFollowTable() {
+    // console.time('清空三个随访表-用时')
+    try {
+        await connection.execute('DELETE FROM PAT_FOLLOW_UP');
+        await connection.execute('DELETE FROM PAT_FOLLOW_UP_RESULT');
+        await connection.execute('DELETE FROM PAT_FOLLOW_UP_TREAT');
+    } catch (error) {
+        console.error(error)
+    }
+    // console.timeEnd('清空三个随访表-用时')
+}
 
-updata_PAT_SD_QUEUE()
+// 插入SQL （随访三个表）
+async function insertByFollowTable(index, count) {
+    await clearByFollowTable()
+    console.time('插入用时')
+    try {
+        const SQL_STR = await fs.readFileSync("./sql.txt", "utf-8"),
+            SQL_ARR = SQL_STR.split('\n')
+
+        let len = SQL_ARR.length, // 长度(总)
+            interval = len / count, // 区间
+            _index = Math.floor(interval * index),
+            _count = Math.ceil(interval * (index + 1))
+
+        for (let i = _index; i < _count; i++) {
+            console.log(`第${index}个核心在工作，进度${_count}/${i}`)
+            await connection.execute(SQL_ARR[i]);
+        }
+
+    } catch (error) {
+        console.error(error)
+    }
+    console.timeEnd('插入用时')
+}
+
+/*function test_cluster(index, count) {
+    const len = 100, // 长度(总)
+        interval = len / count, // 区间
+        _index = interval * index,
+        _count = interval * (index+1)
+    // console.log(_index,_count)
+
+    for (let i = _index; i < _count; i++) {
+        console.log(index+'--'+ i)
+    }
+}
+*/
+if (cluster.isMaster) {
+    let numCPUs = require('os').cpus().length;
+    for (let i = 0; i < numCPUs; i++) {
+        let worker = cluster.fork();
+        worker.on('message', (msg)=> {
+            // console.log(msg.cmd)
+            insertByFollowTable(i, numCPUs)
+        })
+    }
+} else {
+    process.send({ cmd: 'notifyRequest' });
+}
