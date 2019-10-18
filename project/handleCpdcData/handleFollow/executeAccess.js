@@ -81,21 +81,21 @@ async function del_INSERT_PAT_FOLLOW_UP() {
 }
 // 清空三个随访表
 async function clearByFollowTable() {
-    // console.time('清空三个随访表-用时')
+    console.time('清空三个随访表-用时')
     try {
         await connection.execute('DELETE FROM PAT_FOLLOW_UP');
         await connection.execute('DELETE FROM PAT_FOLLOW_UP_RESULT');
-        await connection.execute('DELETE FROM PAT_FOLLOW_UP_TREAT');
+        const idNum = await connection.execute('DELETE FROM PAT_FOLLOW_UP_TREAT', 'SELECT @@Identity AS id');
+        console.log(JSON.stringify(idNum, null, 2));
     } catch (error) {
         console.error(error)
     }
-    // console.timeEnd('清空三个随访表-用时')
+    console.timeEnd('清空三个随访表-用时')
 }
 
 // 插入SQL （随访三个表）
 async function insertByFollowTable(index, count) {
-    await clearByFollowTable()
-    console.time('插入用时')
+    // await clearByFollowTable()
     try {
         const SQL_STR = await fs.readFileSync("./sql.txt", "utf-8"),
             SQL_ARR = SQL_STR.split('\n')
@@ -113,7 +113,6 @@ async function insertByFollowTable(index, count) {
     } catch (error) {
         console.error(error)
     }
-    console.timeEnd('插入用时')
 }
 
 /*function test_cluster(index, count) {
@@ -128,15 +127,21 @@ async function insertByFollowTable(index, count) {
     }
 }
 */
+    // clearByFollowTable()
 if (cluster.isMaster) {
+
     let numCPUs = require('os').cpus().length;
+
+    console.time('插入用时')
     for (let i = 0; i < numCPUs; i++) {
         let worker = cluster.fork();
-        worker.on('message', (msg)=> {
+        worker.on('message', async (msg) => {
             // console.log(msg.cmd)
-            insertByFollowTable(i, numCPUs)
+            await insertByFollowTable(i, numCPUs)
         })
     }
+    console.timeEnd('插入用时')
+
 } else {
     process.send({ cmd: 'notifyRequest' });
 }

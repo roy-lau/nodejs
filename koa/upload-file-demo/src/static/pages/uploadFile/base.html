@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>上传文件-基础</title>
+</head>
+
+<body>
+    <h1>最原始的上传文件操作 - 单文件上传</h1>
+    <h2>使用 form 表单直接请求,不用 js,页面会刷新</h2>
+	<br /><br />
+    <form method="post" action="/upload-single" enctype="multipart/form-data">
+        <label for="f1">Choose file to upload：
+        <input type="file" id="f1" name="f1" />（input 必须设置 name 属性，否则数据无法发送）<br />
+        </label>
+        标题：<input type="text" name="title" />
+        <br />
+        <button type="submit" id="btn-0">上 传</button>
+    </form>
+</body>
+
+</html>
