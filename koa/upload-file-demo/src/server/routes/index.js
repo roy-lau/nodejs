@@ -7,6 +7,10 @@ module.exports = (routes) => {
             ctx.body = { message: 'hi! this is test API , ok ', }
         })
 
-        .post('/upload-base',uploadFile.base)
+        // 上传文件- 单
+        .post('/upload-single',uploadFile.single)
+        // 上传文件- 多
         .post('/upload-multiple',uploadFile.multiple)
+        // 上传文件- 分片
+        .post('/upload-fragmentation',uploadFile.fragmentation)
 }

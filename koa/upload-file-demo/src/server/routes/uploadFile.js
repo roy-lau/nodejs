@@ -5,8 +5,8 @@ const fs = require('fs'),
 /**
  * class UploadFile 上传文件类
  * @description
- * 	koa-body 中间件配置后会自动上传的保存文件，这个接口只是修改了下文件名
- * 	ctx.request.files  koa 使用 koa-body 中间件后获取上传文件的方法
+ *  koa-body 中间件配置后会自动上传的保存文件，这个接口只是修改了下文件名
+ *  ctx.request.files  koa 使用 koa-body 中间件后获取上传文件的方法
  */
 class UploadFile {
     /**
@@ -30,10 +30,7 @@ class UploadFile {
             };
         } catch (e) {
             console.error('UploadFile multiple ERR: ', e)
-            ctx.body = {
-                "code": 1,
-                "message": 'error -' + e,
-            };
+            ctx.body = { "code": 1, "message": 'error -' + e };
         }
     }
 
@@ -54,10 +51,141 @@ class UploadFile {
             };
         } catch (e) {
             console.error('UploadFile multiple ERR: ', e)
+            ctx.body = { "code": 1, "message": 'error -' + e };
+        }
+    }
+    /**
+     * [fragmentation 大文件分片上传]
+     * @param  {[type]} ctx [description]
+     * @return {[type]}     [description]
+     */
+    fragmentation(ctx) {
+        var body = ctx.request.body;
+        var files = ctx.request.files ? ctx.request.files.f1 : []; //得到上传文件的数组
+        var result = [];
+        var fileToken = ctx.request.body.token; // 文件标识
+        var fileIndex = ctx.request.body.index; //文件顺序
+
+        // console.log('files');
+        // console.log(files);
+
+        if (files && !Array.isArray(files)) { //单文件上传容错
+            files = [files];
+        }
+
+        files && files.forEach(item => {
+            var path = item.path;
+            var fname = item.name; //原文件名称
+            var nextPath = path.slice(0, path.lastIndexOf('/') + 1) + fileIndex + '-' + fileToken;
+            if (item.size > 0 && path) {
+                //得到扩展名
+                var extArr = fname.split('.');
+                var ext = extArr[extArr.length - 1];
+                //var nextPath = path + '.' + ext;
+                //重命名文件
+                fs.renameSync(path, nextPath);
+
+                result.push(config.uploadHost + nextPath.slice(nextPath.lastIndexOf('/') + 1));
+            }
+        });
+
+        ctx.body = {
+            "code": 0,
+            "message": "success",
+            "fileUrl": result
+        };
+
+        if (body.type === 'merge') {
+            //合并文件
+            var filename = body.filename,
+                chunkCount = body.chunkCount,
+                folder = path.resolve(__dirname, '../../static/uploads') + '/';
+
+            var writeStream = fs.createWriteStream(`${folder}${filename}`);
+
+            var cindex = 0;
+            //合并文件
+            function fnMergeFile() {
+                var fname = `${folder}${cindex}-${fileToken}`;
+                var readStream = fs.createReadStream(fname);
+                readStream.pipe(writeStream, { end: false });
+                readStream.on("end", function() {
+                    fs.unlink(fname, function(err) {
+                        if (err) {
+                            throw err;
+                        }
+                    });
+                    if (cindex + 1 < chunkCount) {
+                        cindex += 1;
+                        fnMergeFile();
+                    }
+                });
+            }
+
+            fnMergeFile();
+
             ctx.body = {
-                "code": 1,
-                "message": 'error -' + e,
+                "code": 0,
+                "message": "merge ok 200"
             };
+        }
+
+    }
+    fragmentation1(ctx) {
+        try {
+            const body = ctx.request.body,
+                {
+                    token: fileToken, // 文件标识
+                    index: fileIndex // 文件顺序
+                } = body,
+                files = ctx.request.files ? ctx.request.files.f1 : []; // 得到上传文件的数组
+
+            // console.log('files:---', files);
+            if (files) {
+
+                const result = _handleFile(files)
+
+                ctx.body = {
+                    "code": 0,
+                    "message": "success"
+                };
+            } else if (body.type === 'merge') {
+                // 合并文件
+                let filename = body.filename,
+                    chunkCount = body.chunkCount,
+                    folder = path.resolve(__dirname, '../../static/uploads') + '/';
+                // console.log(filename)
+                let writeStream = fs.createWriteStream(`${folder}${filename}`);
+
+                let cindex = 0;
+                // 合并文件
+                function fnMergeFile() {
+                    let fname = `${folder}${cindex}-${fileToken}`;
+                    let readStream = fs.createReadStream(fname);
+                    readStream.pipe(writeStream, { end: false });
+                    readStream.on("end", function() {
+                        fs.unlink(fname, function(err) {
+                            if (err) {
+                                throw err;
+                            }
+                        });
+                        if (cindex + 1 < chunkCount) {
+                            cindex += 1;
+                            fnMergeFile();
+                        }
+                    });
+                }
+
+                fnMergeFile();
+
+                ctx.body = { "code": 0, "message": 'merge ok 200' };
+
+            } else {
+                ctx.body = { "code": 2, "message": '发送参数有误！' };
+            }
+        } catch (e) {
+            console.error('UploadFile fragmentation ERR: ', e)
+            ctx.body = { "code": 1, "message": 'error -' + e };
         }
     }
 }
@@ -71,13 +199,14 @@ function _handleFile(files) {
     let result = [];
 
     //单文件上传容错
-    if (!Array.isArray(files)) {
+    if (files && !Array.isArray(files)) {
         files = [files];
     }
 
     files && files.forEach(item => {
         const oldPath = item.path, // 文件路径
             fileName = item.name; // 原文件名称
+        console.log(fileName)
         if (item.size > 0 && oldPath) {
             const oldFilePath = path.dirname(oldPath), // 存放文件的原始路径（/root/to/path）
                 oldFileName = path.parse(oldPath).name, // 原始文件名（upload_556d23584b2705ce6f6cc5b49fa35b3d）没有后缀
