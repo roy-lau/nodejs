@@ -60,76 +60,27 @@ class UploadFile {
      * @return {[type]}     [description]
      */
     fragmentation(ctx) {
-        var body = ctx.request.body;
-        var files = ctx.request.files ? ctx.request.files.f1 : []; //得到上传文件的数组
-        var result = [];
-        var fileToken = ctx.request.body.token; // 文件标识
-        var fileIndex = ctx.request.body.index; //文件顺序
+        try {
+            const body = ctx.request.body,
+                {
+                    type,
+                    chunkNum,
+                    chunkCount
+                } = body;
 
-        // console.log('files');
-        // console.log(files);
+            if (type && type === 'chunk') { // 上传分片
+                const files = ctx.request.files.f1 // 分片文件
 
-        if (files && !Array.isArray(files)) { //单文件上传容错
-            files = [files];
-        }
+            } else if (type && type === 'merge') { // 合并分片
 
-        files && files.forEach(item => {
-            var path = item.path;
-            var fname = item.name; //原文件名称
-            var nextPath = path.slice(0, path.lastIndexOf('/') + 1) + fileIndex + '-' + fileToken;
-            if (item.size > 0 && path) {
-                //得到扩展名
-                var extArr = fname.split('.');
-                var ext = extArr[extArr.length - 1];
-                //var nextPath = path + '.' + ext;
-                //重命名文件
-                fs.renameSync(path, nextPath);
-
-                result.push(config.uploadHost + nextPath.slice(nextPath.lastIndexOf('/') + 1));
-            }
-        });
-
-        ctx.body = {
-            "code": 0,
-            "message": "success",
-            "fileUrl": result
-        };
-
-        if (body.type === 'merge') {
-            //合并文件
-            var filename = body.filename,
-                chunkCount = body.chunkCount,
-                folder = path.resolve(__dirname, '../../static/uploads') + '/';
-
-            var writeStream = fs.createWriteStream(`${folder}${filename}`);
-
-            var cindex = 0;
-            //合并文件
-            function fnMergeFile() {
-                var fname = `${folder}${cindex}-${fileToken}`;
-                var readStream = fs.createReadStream(fname);
-                readStream.pipe(writeStream, { end: false });
-                readStream.on("end", function() {
-                    fs.unlink(fname, function(err) {
-                        if (err) {
-                            throw err;
-                        }
-                    });
-                    if (cindex + 1 < chunkCount) {
-                        cindex += 1;
-                        fnMergeFile();
-                    }
-                });
+            } else {
+                ctx.body = { "code": 1, "message": 'type is undefind' };
             }
 
-            fnMergeFile();
-
-            ctx.body = {
-                "code": 0,
-                "message": "merge ok 200"
-            };
+        } catch (e) {
+            console.error('UploadFile fragmentation ERR: ', e)
+            ctx.body = { "code": 1, "message": 'error -' + e };
         }
-
     }
     fragmentation1(ctx) {
         try {
