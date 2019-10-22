@@ -32,19 +32,24 @@ function fileSplit(inputFile, splitSize) {
              * 获取文件信息
              * http://nodejs.cn/api/fs.html#fs_fs_statsync_path_options
              */
-            const statFile = fs.statSync(inputFile),
+            const { size: fileTotalSize } = fs.statSync(inputFile),
                 /**
                  * 将文件路径格式化
                  * http://nodejs.cn/api/path.html#path_path_parse_path
                  */
-                _parse = path.parse(inputFile),
+                _parse = path.parse(inputFile)
+
+            if (splitSize < fileTotalSize) { // 切片大小 小于 文件总大小 （需切片）
                 /**
                  * 生成临时文件名 + 8位随机字符串的目录
                  * http://nodejs.cn/api/fs.html#fs_fs_mkdtempsync_prefix_options
                  */
-                folder = fs.mkdtempSync(path.join(__dirname, _parse.name))
-
-            saveChunk(inputFile, splitSize, statFile.size, folder)
+                const folder = fs.mkdtempSync(path.join(__dirname, _parse.name))
+                saveChunk(inputFile, splitSize, fileTotalSize, folder)
+            } else { // 否则不用切片直接写入
+                fs.createReadStream(inputFile)
+                    .pipe(fs.createWriteStream(path.join(_parse.dir, _parse.name +'_'+ Date.now() + _parse.ext)));
+            }
         } else {
             console.error(inputFile, "文件不存在")
         }
@@ -54,7 +59,8 @@ function fileSplit(inputFile, splitSize) {
     }
 
 }
-const inputFile = path.join(__dirname, './Xshell6_wm.exe'),
+const inputFile = path.join(__dirname, './chunkFile.js'),
+    // const inputFile = path.join(__dirname, './Xshell6_wm.exe'),
     splitSize = 2 * 1024 * 1024; // 2M
 
 fileSplit(inputFile, splitSize, __dirname)
