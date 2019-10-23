@@ -20,8 +20,8 @@ const
     path = require('path')
 
 
-    // 将路由传递下去
-     Routes(route)
+// 将路由传递下去
+Routes(route)
 
 App
     // logger
@@ -39,23 +39,27 @@ App
     .use(bodyparser({
         enableTypes: ['json', 'form', 'text'],
         onerror: (err, ctx) => {
-            ctx.throw('数据解析出错： '+err, 422);
+            ctx.throw('数据解析出错： ' + err, 422);
         }
     }))
     // 使用 ctx.request.files 获取文件信息
     .use(koaBody({
         multipart: true, // 支持文件上传
         formidable: {
+            keepExtensions: true, // 保留后缀
             //设置文件的默认保存目录，不设置则保存在系统临时目录下  os.tmpdir()
             uploadDir: path.resolve(__dirname, '../static/uploads'),
             // maxFileSize: 200*1024*1024    // 设置上传文件大小最大限制，默认2M
-        },
-        onError: (err, ctx) => {
-            ctx.throw('文件上传出错：'+err, 423);
+            // onFileBegin: (name, file) => {
+            //     console.log(name, file)
+            // },
+            onError: (err, ctx) => {
+                ctx.throw('文件上传出错：' + err, 423);
+            }
         }
     }))
     // 静态文件夹
-    .use(koaStatic( path.resolve(__dirname, '../static') ))
+    .use(koaStatic(path.resolve(__dirname, '../static')))
 
     .use(setHeaders) // 设置响应头
 
