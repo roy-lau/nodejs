@@ -7,16 +7,21 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>粘贴上传文件</title>
     <style type="text/css">
-    .editor-box {
-        height: 200px;
-        width: 500px;
-        border: solid 1px #000;
-        margin-bottom: 30px;
-    }
+        body {
+            width: 600px;
+            margin: 0 auto;
+        }
 
-    .over {
-        background-color: green;
-    }
+        .editor-box {
+            height: 200px;
+            width: 500px;
+            border: solid 1px #000;
+            margin-bottom: 30px;
+        }
+
+        .over {
+            background-color: green;
+        }
     </style>
 </head>
 
@@ -30,6 +35,8 @@
         <li>测试中发现复制多个文件无效，只有最后一个文件上传</li>
         <h3>问题二：</h3>
         <li>mac系统可以支持从磁盘复制文件后上传，windows 系统测试未通过，剪贴板的数据未拿到</li>
+        <h3>问题三：</h3>
+        <li>只能粘贴网络图片，不能从本地粘贴</li>
     </ul>
 </body>
 

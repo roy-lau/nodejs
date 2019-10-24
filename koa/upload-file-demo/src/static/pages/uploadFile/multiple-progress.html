@@ -7,6 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>上传文件- 多文件,多进度条</title>
     <style type="text/css">
+        body{width: 600px;margin: 0 auto;}
         .progress {
             height: 20px;
             width: 70%;
@@ -97,6 +98,7 @@ const fileMaxCount = 6,
     // 保存待上传的文件以及相关附属信息
     willUploadFile = [];
 let imgBox = document.getElementsByClassName('img-box')[0];
+
 document.getElementById('f1').addEventListener('change', function(e) {
     let fileList = document.getElementById('f1').files;
 

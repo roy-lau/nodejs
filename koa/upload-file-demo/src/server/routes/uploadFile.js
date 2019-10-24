@@ -112,63 +112,7 @@ class UploadFile {
             ctx.body = { "code": 1, "message": 'error -' + e };
         }
     }
-    fragmentation1(ctx) {
-        try {
-            const body = ctx.request.body,
-                {
-                    token: fileToken, // 文件标识
-                    index: fileIndex // 文件顺序
-                } = body,
-                files = ctx.request.files ? ctx.request.files.f1 : []; // 得到上传文件的数组
 
-            // console.log('files:---', files);
-            if (files) {
-
-                const result = _handleFile(files)
-
-                ctx.body = {
-                    "code": 0,
-                    "message": "success"
-                };
-            } else if (body.type === 'merge') {
-                // 合并文件
-                let filename = body.filename,
-                    chunkCount = body.chunkCount,
-                    folder = path.resolve(__dirname, '../../static/uploads') + '/';
-                // console.log(filename)
-                let writeStream = fs.createWriteStream(`${folder}${filename}`);
-
-                let cindex = 0;
-                // 合并文件
-                function fnMergeFile() {
-                    let fname = `${folder}${cindex}-${fileToken}`;
-                    let readStream = fs.createReadStream(fname);
-                    readStream.pipe(writeStream, { end: false });
-                    readStream.on("end", function() {
-                        fs.unlink(fname, function(err) {
-                            if (err) {
-                                throw err;
-                            }
-                        });
-                        if (cindex + 1 < chunkCount) {
-                            cindex += 1;
-                            fnMergeFile();
-                        }
-                    });
-                }
-
-                fnMergeFile();
-
-                ctx.body = { "code": 0, "message": 'merge ok 200' };
-
-            } else {
-                ctx.body = { "code": 2, "message": '发送参数有误！' };
-            }
-        } catch (e) {
-            console.error('UploadFile fragmentation ERR: ', e)
-            ctx.body = { "code": 1, "message": 'error -' + e };
-        }
-    }
 }
 
 /**
