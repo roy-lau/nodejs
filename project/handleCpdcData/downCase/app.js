@@ -13,7 +13,7 @@ const sql = require('mssql'),
 
 // 下载基本信息表
 const query_PAT_VISIT = async (patient_no) => {
-    console.log('处理患者基本信息表')
+    console.time('处理患者基本信息表')
     try {
         // await sql.connect(config.db_addr)
         // 查询患者基本信息
@@ -94,11 +94,12 @@ const query_PAT_VISIT = async (patient_no) => {
     } catch (err) {
         console.error(err)
     }
+    console.timeEnd('处理患者基本信息表')
 }
 
 // 下载引流管信息表
 const query_PAT_DRAINAGE_TUBE = async (patient_no) => {
-    console.log('处理引流管表')
+    console.time('处理引流管表')
     try {
         // await sql.connect(config.db_addr)
         // 查询引流管信息表
@@ -124,11 +125,12 @@ const query_PAT_DRAINAGE_TUBE = async (patient_no) => {
     } catch (err) {
         console.error(err)
     }
+    console.timeEnd('处理引流管表')
 }
 
 // 下载随访信息
 const query_PAT_FOLLOW_UP_RESULT = async (patient_no) => {
-    console.log('处理随访表')
+    console.time('处理随访表')
     try {
         const pool1 = await new sql.ConnectionPool(config.db_addr).connect();
         // 查询随访时间和时长
@@ -208,11 +210,12 @@ const query_PAT_FOLLOW_UP_RESULT = async (patient_no) => {
     } catch (err) {
         console.error(err)
     }
+    console.timeEnd('处理随访表')
 }
 
 // 下载随访化疗信息
 const query_PAT_FOLLOW_UP_TREAT = async (patient_no) => {
-    console.log('处理化疗信息表')
+    console.time('处理化疗信息表')
     try {
         // await sql.connect(config.db_addr)
         // 查询引流管信息表
@@ -244,6 +247,7 @@ const query_PAT_FOLLOW_UP_TREAT = async (patient_no) => {
     } catch (err) {
         console.error(err)
     }
+    console.timeEnd('处理化疗信息表')
 }
 
 /**
@@ -281,6 +285,7 @@ async function saveXlsx(fileName, numberArr) {
     }
 
 }
+
 
 /**
  * 查询某地某年的患者
@@ -349,7 +354,60 @@ async function select_fhl(fileName, startDate, endDate) {
         console.error(err)
     }
 }
+/**
+ * 胰腺癌晚期 进行术前放化疗患者
+ * @return {[type]} [description]
+ */
+async function select_late_pancreatic_cancer1(fileName){
+    try {
+        // await sql.connect(config.db_addr)
+        // 胰腺癌晚期 进行术前放化疗患者
+        const list_select_late_pancreatic_cancer1 = await sql.query `SELECT
+                a.PATIENT_NO
+            FROM
+                [dbo].[PAT_SD_ITEM_RESULT] AS a
+            WHERE
+                (a.SD_ITEM_CODE = 'YXA_O_224'
+                OR a.SD_ITEM_CODE = 'YXA_O_117')
+                AND a.SD_ITEM_CODE = 'YXA_O_117'
+                AND a.SD_ITEM_VALUE = '1'
+                AND a.SD_CODE = 'YXA_O'
+                `,
+            ret_select_late_pancreatic_cancer1 = list_select_late_pancreatic_cancer1.recordset
 
+
+        await saveXlsx(fileName, ret_select_late_pancreatic_cancer1.map(item => item.PATIENT_NO))
+
+    } catch (err) {
+        console.error(err)
+    }
+}
+/**
+ * 胰腺癌晚期 后续化疗
+ * @return {[type]} [description]
+ */
+async function select_late_pancreatic_cancer2(fileName){
+    try {
+        // await sql.connect(config.db_addr)
+        // 胰腺癌晚期 后续化疗
+        const list_select_late_pancreatic_cancer2 = await sql.query `SELECT
+                a.PATIENT_NO
+            FROM
+                [dbo].[PAT_SD_ITEM_RESULT] AS a
+                LEFT JOIN [dbo].[PAT_FOLLOW_UP_TREAT] AS b ON a.PATIENT_NO= b.PATIENT_NO
+            WHERE
+                a.SD_ITEM_CODE= 'YXA_O_224'
+                AND a.SD_ITEM_VALUE = '1'
+                AND b.TREAT_NAME= '化疗'`,
+            ret_select_late_pancreatic_cancer2 = list_select_late_pancreatic_cancer2.recordset
+
+
+        await saveXlsx(fileName, ret_select_late_pancreatic_cancer2.map(item => item.PATIENT_NO))
+
+    } catch (err) {
+        console.error(err)
+    }
+}
 async function main() {
     const startDate16 = '2016-01-01 00:00:00.000',
         endDate16 = '2016-12-31 00:00:00.000',
@@ -362,7 +420,10 @@ async function main() {
 
     await sql.connect(config.db_addr)
 
-    await select_addr_year('上海-16年', address_shanghai, startDate16, endDate16)
+    // await select_late_pancreatic_cancer1('胰腺癌晚期_进行术前放化疗患者')
+    // await select_late_pancreatic_cancer2('胰腺癌晚期_后续化疗')
+
+    // await select_addr_year('上海-16年', address_shanghai, startDate16, endDate16)
     // await select_addr_year('上海-17年', address_shanghai, startDate17, endDate17)
     // await select_addr_year('上海-18年', address_shanghai, startDate18, endDate18)
 
