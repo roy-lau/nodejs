@@ -191,11 +191,11 @@ const query_PAT_FOLLOW_UP_RESULT = async (patient_no) => {
                                 ret_death = list_death.recordset[0]
 
                             // 死亡时间 - 手术时间 = 随访时长
-                            _FOLLOW_UP_MONTHS_new = moment(cur_ret.SD_ITEM_VALUE).diff(ret_death.SD_ITEM_VALUE, 'M')
+                            //****// _FOLLOW_UP_MONTHS_new = moment(cur_ret.SD_ITEM_VALUE).diff(ret_death.SD_ITEM_VALUE, 'M')
                             // console.log(cur_ret.SD_ITEM_CODE, cur_ret.SD_ITEM_VALUE, ret_death.SD_ITEM_VALUE, _FOLLOW_UP_MONTHS_new)
 
                             // retPatFollowUP[i]['=手术时间='] = ret_death.SD_ITEM_VALUE
-                            retPatFollowUP[i]['随访时长'] = _FOLLOW_UP_MONTHS_new
+                            //****// retPatFollowUP[i]['随访时长'] = _FOLLOW_UP_MONTHS_new
                         }
                     }
                 }
@@ -408,6 +408,37 @@ async function select_late_pancreatic_cancer2(fileName){
         console.error(err)
     }
 }
+
+/**
+ * 有死亡时间的患者
+ * @return {[type]} [description]
+ */
+async function select_in_die(fileName){
+    try {
+        const list_select_in_die = await sql.query `SELECT DISTINCT TOP 2080
+                PATIENT_NO
+            FROM
+                [dbo].[PAT_FOLLOW_UP_RESULT]
+            WHERE
+                SD_ITEM_CODE = 'YXA_O_257'
+                AND SD_ITEM_VALUE != ''
+                AND PATIENT_NO IN (
+                SELECT
+                    PATIENT_NO
+                FROM
+                    [dbo].[PAT_VISIT]
+                WHERE
+                    SD_GROUP = '1'
+                    AND SD_CODE = 'YXA_O' )`,
+            ret_select_in_die = list_select_in_die.recordset
+
+        await saveXlsx(fileName, ret_select_in_die.map(item => item.PATIENT_NO))
+
+    } catch (err) {
+        console.error(err)
+    }
+}
+
 async function main() {
     const startDate16 = '2016-01-01 00:00:00.000',
         endDate16 = '2016-12-31 00:00:00.000',
@@ -420,6 +451,7 @@ async function main() {
 
     await sql.connect(config.db_addr)
 
+    await select_in_die('三年胰腺导管腺癌有死亡时间的患者')
     // await select_late_pancreatic_cancer1('胰腺癌晚期_进行术前放化疗患者')
     // await select_late_pancreatic_cancer2('胰腺癌晚期_后续化疗')
 
