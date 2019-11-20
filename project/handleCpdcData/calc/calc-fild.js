@@ -1,5 +1,5 @@
 /*
-	计算字段的完整度
+	计算随访字段的完整度
  */
 
 'use strict';
@@ -16,7 +16,6 @@ async function saveCalcResult(fileName) {
         let data = [],_num = 0
         delete OBJ_CALC._ids
         _.forEach(OBJ_CALC, (value, key) => {
-            // console.log({'数据项':key,'完整率':value});
             data.push({ '数据项': key, '完整率': value })
             _num += Number(value.replace("%",""))
         });
@@ -35,7 +34,7 @@ async function saveCalcResult(fileName) {
         XLSX.writeFile(wb, './out/字段完整度_' + fileName + '.xlsx');
         console.log(fileName, '-OK ', Date.now())
     } catch (e) {
-        console.error('处理数据出错： ', e)
+        console.error('处理表格数据出错： ', e)
     }
 }
 // 计算 随访结果表 --- 验证通过(字段前后逻辑未做处理)
@@ -101,7 +100,7 @@ async function initFollowDist() {
         console.error('initFollowDist ERR ', err)
     }
 }
-// 计算 随访治疗信息
+// 计算 随访治疗信息 -- 验证通过
 async function handlePatFollowUpTreat() {
     console.info('计算 随访治疗信息')
     try {
