@@ -2,48 +2,52 @@
  * 下载病例
  */
 'use strict';
-const sql = require('mssql'),
+const sql = require('../dbs/sqlServer.js'),
     XLSX = require("xlsx"),
     moment = require('moment'),
     {
         desensitization,
         saveFileSync
-    } = require('./utils'),
-    config = require("../config.js")
+    } = require('./utils')
 
 // 下载基本信息表
 const query_PAT_VISIT = async (patient_no) => {
     console.time('处理患者基本信息表')
     try {
-        // await sql.connect(config.db_addr)
+
         // 查询患者基本信息
-        const list_PAT_VISIT = await sql.query `SELECT
+        const list_PAT_VISIT = await sql.query(`SELECT
                 a.PATIENT_NO,
-                a.PATIENT_ID AS '住院ID',
-                a.INP_NO AS '住院流水号',
-                '患者性别' = ( CASE SEX WHEN '0' THEN '女' WHEN '1' THEN '男' END ),
-                a.AGE AS '患者年龄',
-                a.ADMISSION_DATE AS '入院日期',
-                a.DISCHARGE_DATE AS '出院日期',
-                a.OUT_STATUS AS '离院方式',
-                b.HOSPITAL_NAME AS '医院'
+                -- a.PATIENT_ID AS '住院ID',
+                -- a.INP_NO AS '住院流水号',
+                a.NAME AS '姓名',
+                '患者性别' = ( CASE SEX WHEN '0' THEN '女' WHEN '1' THEN '男' END )
+                -- a.AGE AS '患者年龄',
+                -- a.ADMISSION_DATE AS '入院日期',
+                -- a.DISCHARGE_DATE AS '出院日期',
+                -- a.OUT_STATUS AS '离院方式',
+                -- b.HOSPITAL_NAME AS '医院'
             FROM
                 [dbo].[PAT_VISIT] AS a
                 LEFT JOIN [dbo].[HOSPITAL_DICT] as b ON a.HOSPITAL_ID=b.HOSPITAL_ID
             WHERE
-                a.PATIENT_NO IN ( ${patient_no})
-                AND a.SD_CODE = 'YXA_O'`,
+                a.PATIENT_NO IN ( ${patient_no} )
+                AND a.SD_CODE = 'YXA_O'`),
             ret_PAT_VISIT = list_PAT_VISIT.recordset
+
+        // console.log(patient_no)
 
         let retPatVisit = ret_PAT_VISIT
 
         for (let i = 0; i < ret_PAT_VISIT.length; i++) {
             // 查询数据元 和数据项做对比
-            const list_PAT_SD_ITEM_RESULT = await sql.query `SELECT
+            const list_PAT_SD_ITEM_RESULT = await sql.query(`SELECT
                 result.PATIENT_NO,
                 b.ITEM_NAME,
                 b.ITEM_CODE,
                 'ret_value' = ( CASE result.SD_ITEM_VALUE WHEN c.CV_VALUE THEN c.CV_VALUE_TEXT ELSE result.SD_ITEM_VALUE END ),
+                b.ITEM_FORMAT,
+                b.ITEM_CV_CODE,
                 b.ITEM_UNIT
             FROM
                 [dbo].[PAT_SD_ITEM_RESULT] AS result
@@ -51,42 +55,114 @@ const query_PAT_VISIT = async (patient_no) => {
                 LEFT JOIN [dbo].[SD_ITEM_CV_DICT] AS c ON b.ITEM_CV_CODE= c.CV_CODE
                 AND result.SD_ITEM_VALUE= c.CV_VALUE
             WHERE
-                result.PATIENT_NO= ${ret_PAT_VISIT[i].PATIENT_NO}
+                result.PATIENT_NO='${ret_PAT_VISIT[i].PATIENT_NO}'
                 AND result.SD_CODE= 'YXA_O'
-                AND NOT b.ITEM_CODE IN ('YXA_O_001','YXA_O_004')
-                ORDER BY b.DISPLAY_ORDER`,
+                AND b.ITEM_CODE IN ('YXA_O_003',
+'YXA_O_006',
+'YXA_O_009',
+'YXA_O_010',
+'YXA_O_011',
+'YXA_O_012',
+'YXA_O_013',
+'YXA_O_014',
+'YXA_O_015',
+'YXA_O_016',
+'YXA_O_017',
+'YXA_O_018',
+'YXA_O_019',
+'YXA_O_020',
+'YXA_O_021',
+'YXA_O_022',
+'YXA_O_023',
+'YXA_O_024',
+'YXA_O_025',
+'YXA_O_026',
+'YXA_O_027',
+'YXA_O_028',
+'YXA_O_029',
+'YXA_O_030',
+'YXA_O_031',
+'YXA_O_032',
+'YXA_O_096',
+'YXA_O_117',
+'YXA_O_118',
+'YXA_O_905',
+'YXA_O_119',
+'YXA_O_120',
+'YXA_O_121',
+'YXA_O_123',
+'YXA_O_128',
+'YXA_O_131',
+'YXA_O_134',
+'YXA_O_161',
+'YXA_O_210',
+'YXA_O_211',
+'YXA_O_215',
+'YXA_O_220',
+'YXA_O_221',
+'YXA_O_222',
+'YXA_O_223',
+'YXA_O_224',
+'YXA_O_300',
+'YXA_O_919',
+'YXA_O_301',
+'YXA_O_302',
+'YXA_O_303',
+'YXA_O_304',
+'YXA_O_314',
+'YXA_O_918',
+'YXA_O_920',
+'YXA_O_921',
+'YXA_O_195',
+'YXA_O_159',
+'YXA_O_305')
+                ORDER BY b.DISPLAY_ORDER`),
                 ret_PAT_SD_ITEM_RESULT = list_PAT_SD_ITEM_RESULT.recordset
 
 
             for (let k = 0; k < ret_PAT_SD_ITEM_RESULT.length; k++) {
-                if (retPatVisit[i].PATIENT_NO === ret_PAT_SD_ITEM_RESULT[k].PATIENT_NO) {
+
+                const result = ret_PAT_SD_ITEM_RESULT[k]
+
+                if (retPatVisit[i].PATIENT_NO === result.PATIENT_NO) {
                     /**
                      * 拼接出一个表头
                      * 如果有单位( ITEM_UNIT ) 表头为 字段名(ITEM_NAME) 加 单位(ITEM_UNIT)
                      * 如果没有单位( ITEM_UNIT ) 表头为 字段名(ITEM_NAME)
                      */
-                    let _key = !!ret_PAT_SD_ITEM_RESULT[k].ITEM_UNIT ?
-                        '' + ret_PAT_SD_ITEM_RESULT[k].ITEM_NAME + '(' + ret_PAT_SD_ITEM_RESULT[k].ITEM_UNIT + ')' + '#' + ret_PAT_SD_ITEM_RESULT[k].ITEM_CODE :
-                        '' + ret_PAT_SD_ITEM_RESULT[k].ITEM_NAME + '#' + ret_PAT_SD_ITEM_RESULT[k].ITEM_CODE
+                    let _key = !!result.ITEM_UNIT ?
+                        '' + result.ITEM_NAME + '(' + result.ITEM_UNIT + ')' + '#' + result.ITEM_CODE :
+                        '' + result.ITEM_NAME + '#' + result.ITEM_CODE
+                    /**
+                     * 处理多选的结果值
+                     */
+                    if (result.ITEM_FORMAT == 6) {
+                        // console.log(result)
+                        // 将多选值 已井号拆分
+                        const valueArr = result.ret_value.split('#'),
+                                _valLen = valueArr.length
+                        // 拆分后的数组长度大于 0
+                        if (_valLen > 1) {
+                            result.ret_value = await handleMultipleValue(valueArr,_valLen,result.ITEM_CV_CODE)
+                            // console.log(result.ret_value)
+                        }
+                    }
 
-                    // if (_key === '其他既往史#YXA_O_024') {
-                    //     retPatVisit[i][_key] = ret_PAT_SD_ITEM_RESULT[k].ret_value
-                    //     retPatVisit[i]['有无高血压'] = (/高血压/).test(ret_PAT_SD_ITEM_RESULT[k].ret_value) ? '有' : '无'
-                    // }
-                    retPatVisit[i][_key] = ret_PAT_SD_ITEM_RESULT[k].ret_value
+                    retPatVisit[i][_key] = result.ret_value
                 }
             }
         }
         // await saveFileSync('./out/retPatVisit.json', JSON.stringify(retPatVisit, null, 2))
 
-        return ret_PAT_VISIT
+        return retPatVisit
             // 排序
             .sort((a, b) => a['患者住址#YXA_O_003'] > b['患者住址#YXA_O_003'] ? 1 : -1)
             // 脱敏
             .map(item => {
 
+                item['姓名'] = desensitization(item['姓名'], 1, 3)
                 item['患者住址#YXA_O_003'] = desensitization(item['患者住址#YXA_O_003'], 3, 25)
-                item['主刀医师#YXA_O_005'] = item['主刀医师#YXA_O_005'] && desensitization(item['主刀医师#YXA_O_005'], 1, 3).substr(0, 2)
+                // item['主刀医师#YXA_O_005'] = item['主刀医师#YXA_O_005'] && desensitization(item['主刀医师#YXA_O_005'], 1, 3).substr(0, 2)
 
                 return item
             })
@@ -97,13 +173,35 @@ const query_PAT_VISIT = async (patient_no) => {
     console.timeEnd('处理患者基本信息表')
 }
 
+/**
+ * 处理多选的情况
+ * @param  {Array} multipleValue  多选值(拆分后的数组)
+ * @param  {String} cv_code       多选数据的类型
+ * @return {String}               处理手
+ */
+async function handleMultipleValue(multipleValue, len, cv_code){
+
+       const list_cv_dict = await sql.query(`SELECT * FROM [dbo].[SD_ITEM_CV_DICT] WHERE SD_CODE='YXA_O' AND CV_CODE='${cv_code}'`),
+           ret_cv_dict = list_cv_dict.recordset
+
+       let str = ""
+
+       multipleValue.forEach((v,i) => {
+         ret_cv_dict.forEach(item =>{
+                if(item.CV_VALUE == v) {
+                    str += (len - 1 ) === i ? item.CV_VALUE_TEXT : item.CV_VALUE_TEXT + '+'
+                }
+            })
+        })
+        return str
+}
+
 // 下载引流管信息表
-const query_PAT_DRAINAGE_TUBE = async (patient_no) => {
+async function query_PAT_DRAINAGE_TUBE (patient_no){
     console.time('处理引流管表')
     try {
-        // await sql.connect(config.db_addr)
         // 查询引流管信息表
-        const list_PAT_DRAINAGE_TUBE = await sql.query `SELECT
+        const list_PAT_DRAINAGE_TUBE = await sql.query(`SELECT
                 PATIENT_NO,
                 TUBE_NAME AS '引流管部位',
                 RETENTION_DAYS AS '留置天数',
@@ -116,7 +214,7 @@ const query_PAT_DRAINAGE_TUBE = async (patient_no) => {
                 AMY_POD_DRAW AS '拔管前'
             FROM
                 [dbo].[PAT_DRAINAGE_TUBE]
-            WHERE PATIENT_NO IN (${patient_no})`,
+            WHERE PATIENT_NO IN (${patient_no})`),
             ret_PAT_DRAINAGE_TUBE = list_PAT_DRAINAGE_TUBE.recordset
 
         return ret_PAT_DRAINAGE_TUBE
@@ -129,12 +227,11 @@ const query_PAT_DRAINAGE_TUBE = async (patient_no) => {
 }
 
 // 下载随访信息
-const query_PAT_FOLLOW_UP_RESULT = async (patient_no) => {
+async function query_PAT_FOLLOW_UP_RESULT (patient_no){
     console.time('处理随访表')
     try {
-        const pool1 = await new sql.ConnectionPool(config.db_addr).connect();
         // 查询随访时间和时长
-        const list_PAT_FOLLOW_UP = await pool1.query `SELECT
+        const list_PAT_FOLLOW_UP = await sql.query(`SELECT
                     PATIENT_NO,
                     FU_TIMES,
                     FOLLOW_UP_DATE AS '随访时间',
@@ -143,7 +240,7 @@ const query_PAT_FOLLOW_UP_RESULT = async (patient_no) => {
                     [dbo].[PAT_FOLLOW_UP]
                 WHERE
                     PATIENT_NO IN (${patient_no})
-                    AND FOLLOW_UP_DATE!='1900-01-01 00:00:00.000'`,
+                    AND FOLLOW_UP_DATE!='1900-01-01 00:00:00.000'`),
             ret_PAT_FOLLOW_UP = list_PAT_FOLLOW_UP.recordset
 
 
@@ -151,13 +248,14 @@ const query_PAT_FOLLOW_UP_RESULT = async (patient_no) => {
 
         for (let i = 0; i < ret_PAT_FOLLOW_UP.length; i++) {
             // 查询随访结果
-            const list_PAT_FOLLOW_UP_RESULT = await pool1.query `SELECT
+            const list_PAT_FOLLOW_UP_RESULT = await sql.query(`SELECT
                 dist.PATIENT_NO,
                 dist.FU_TIMES,
                 dist.SD_ITEM_CODE,
                 code.ITEM_NAME,
-                dist.SD_ITEM_VALUE,
-                cv.CV_VALUE_TEXT
+                -- dist.SD_ITEM_VALUE,
+                -- cv.CV_VALUE_TEXT,
+                ISNULL(cv.CV_VALUE_TEXT, dist.SD_ITEM_VALUE) AS ret
             FROM
                 [dbo].[PAT_FOLLOW_UP_RESULT] AS dist
                 LEFT JOIN [dbo].[FU_SD_ITEM_DICT] AS code ON dist.SD_ITEM_CODE= code.ITEM_CODE
@@ -165,39 +263,34 @@ const query_PAT_FOLLOW_UP_RESULT = async (patient_no) => {
                 AND code.ITEM_CV_CODE= cv.CV_CODE
                 AND dist.SD_ITEM_VALUE= cv.CV_VALUE
             WHERE
-                dist.PATIENT_NO=${ret_PAT_FOLLOW_UP[i].PATIENT_NO}`,
+                dist.PATIENT_NO='${ret_PAT_FOLLOW_UP[i].PATIENT_NO}'
+                AND dist.SD_ITEM_CODE IN ('YXA_O_252','YXA_O_255','YXA_O_256','YXA_O_257')`),
                 ret_PAT_FOLLOW_UP_RESULT = list_PAT_FOLLOW_UP_RESULT.recordset
 
 
             for (let k = 0; k < ret_PAT_FOLLOW_UP_RESULT.length; k++) {
                 if (retPatFollowUP[i].FU_TIMES === ret_PAT_FOLLOW_UP_RESULT[k].FU_TIMES) {
 
-                    let cur_ret = ret_PAT_FOLLOW_UP_RESULT[k],
-                        _key = cur_ret.ITEM_NAME,
+                    let cur = ret_PAT_FOLLOW_UP_RESULT[k],
+                        _key = cur.ITEM_NAME,
                         _FOLLOW_UP_MONTHS_new = null
 
-                    retPatFollowUP[i][_key] = cur_ret.CV_VALUE_TEXT ?
-                        cur_ret.CV_VALUE_TEXT :
-                        cur_ret.SD_ITEM_VALUE
+                    // if (cur.SD_ITEM_CODE === 'YXA_O_257') { // YXA_O_257 死亡时间
+                    //     if (cur.ret) {
+                    //         let death_PATIENT_NO = cur.PATIENT_NO, // 有死亡时间的患者
+                    //             // 查询死亡患者的手术时间
+                    //             list_death = await sql.query(`SELECT SD_ITEM_VALUE FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_161' AND PATIENT_NO='${death_PATIENT_NO}'`),
+                    //             ret_death = list_death.recordset[0]
 
-                    if (cur_ret.SD_ITEM_CODE === 'YXA_O_257') { // YXA_O_257 死亡时间
-                        if (cur_ret.SD_ITEM_VALUE) {
-                            let death_PATIENT_NO = cur_ret.PATIENT_NO, // 有死亡时间的患者
-                                // 查询死亡患者的手术时间
-                                list_death = await pool1.query `SELECT
-                                SD_ITEM_VALUE FROM [dbo].[PAT_SD_ITEM_RESULT]
-                                WHERE SD_ITEM_CODE='YXA_O_161'
-                                AND PATIENT_NO=${death_PATIENT_NO}`,
-                                ret_death = list_death.recordset[0]
+                    //         // 死亡时间 - 手术时间 = 随访时长
+                    //         //****// _FOLLOW_UP_MONTHS_new = moment(cur.SD_ITEM_VALUE).diff(ret_death.SD_ITEM_VALUE, 'M')
+                    //         // console.log(cur.SD_ITEM_CODE, cur.SD_ITEM_VALUE, ret_death.SD_ITEM_VALUE, _FOLLOW_UP_MONTHS_new)
 
-                            // 死亡时间 - 手术时间 = 随访时长
-                            //****// _FOLLOW_UP_MONTHS_new = moment(cur_ret.SD_ITEM_VALUE).diff(ret_death.SD_ITEM_VALUE, 'M')
-                            // console.log(cur_ret.SD_ITEM_CODE, cur_ret.SD_ITEM_VALUE, ret_death.SD_ITEM_VALUE, _FOLLOW_UP_MONTHS_new)
-
-                            // retPatFollowUP[i]['=手术时间='] = ret_death.SD_ITEM_VALUE
-                            //****// retPatFollowUP[i]['随访时长'] = _FOLLOW_UP_MONTHS_new
-                        }
-                    }
+                    //         // retPatFollowUP[i]['=手术时间='] = ret_death.SD_ITEM_VALUE
+                    //         //****// retPatFollowUP[i]['随访时长'] = _FOLLOW_UP_MONTHS_new
+                    //     }
+                    // }
+                    retPatFollowUP[i][_key] = cur.ret
                 }
             }
         }
@@ -214,31 +307,31 @@ const query_PAT_FOLLOW_UP_RESULT = async (patient_no) => {
 }
 
 // 下载随访化疗信息
-const query_PAT_FOLLOW_UP_TREAT = async (patient_no) => {
+async function query_PAT_FOLLOW_UP_TREAT (patient_no){
     console.time('处理化疗信息表')
     try {
-        // await sql.connect(config.db_addr)
         // 查询引流管信息表
-        const list_PAT_FOLLOW_UP_TREAT = await sql.query `SELECT
+        const list_PAT_FOLLOW_UP_TREAT = await sql.query(`SELECT
                 PATIENT_NO,
                 FU_TIMES,
-                TREAT_NAME AS '治疗方法',
-                DRUG_NAME AS '药品名称',
-                DRUG_DOSE AS '剂量',
-                TREAT_METHOD AS '化疗方法',
-                TREAT_EFFECT AS '是否好转',
-                TREAT_COST AS '化疗费用',
-                CA199_FRONT AS '治疗前CA199',
-                CEA_FRONT AS '治疗前CEA',
-                CA125_FRONT AS '治疗前CA125',
+                -- TREAT_NAME AS '治疗方法',
+                -- DRUG_NAME AS '药品名称(通用名)',
+                -- DRUG_NAME_TRADE AS '药品名称(商品名)',
+                -- DRUG_DOSE AS '剂量',
+                -- TREAT_METHOD AS '化疗方法',
+                -- TREAT_EFFECT AS '是否好转',
+                -- TREAT_COST AS '化疗费用',
+                -- CA199_FRONT AS '治疗前CA199',
+                -- CEA_FRONT AS '治疗前CEA',
+                -- CA125_FRONT AS '治疗前CA125',
                 TREAT_EVALUTE_FRONT AS '术前CT评价',
-                CA199_AFTER AS '治疗后CA199',
-                CEA_AFTER AS '治疗后CEA',
-                CA125_AFTER AS '治疗后CA125',
+                -- CA199_AFTER AS '治疗后CA199',
+                -- CEA_AFTER AS '治疗后CEA',
+                -- CA125_AFTER AS '治疗后CA125',
                 TREAT_EVALUTE_AFTER AS '术后CT评价'
             FROM
                 [dbo].[PAT_FOLLOW_UP_TREAT]
-            WHERE PATIENT_NO IN (${patient_no})`,
+            WHERE PATIENT_NO IN (${patient_no})`),
             ret_PAT_FOLLOW_UP_TREAT = list_PAT_FOLLOW_UP_TREAT.recordset
 
         return ret_PAT_FOLLOW_UP_TREAT
@@ -261,16 +354,16 @@ async function saveXlsx(fileName, numberArr) {
         // await sql.connect(config.db_addr)
         const
             PAT_VISIT = await query_PAT_VISIT(numberArr),
-            PAT_DRAINAGE_TUBE = await query_PAT_DRAINAGE_TUBE(numberArr),
+            // PAT_DRAINAGE_TUBE = await query_PAT_DRAINAGE_TUBE(numberArr),
             PAT_FOLLOW_UP_RESULT = await query_PAT_FOLLOW_UP_RESULT(numberArr),
             PAT_FOLLOW_UP_TREAT = await query_PAT_FOLLOW_UP_TREAT(numberArr)
 
         // 构建 workbook 对象
         let wb = {
-            SheetNames: ['基本信息', '引流管', '随访', '化疗'],
+            SheetNames: ['基本信息', /*'引流管',*/ '随访', '化疗'],
             Sheets: {
                 '基本信息': XLSX.utils.json_to_sheet(PAT_VISIT),
-                '引流管': XLSX.utils.json_to_sheet(PAT_DRAINAGE_TUBE),
+                // '引流管': XLSX.utils.json_to_sheet(PAT_DRAINAGE_TUBE),
                 '随访': XLSX.utils.json_to_sheet(PAT_FOLLOW_UP_RESULT),
                 '化疗': XLSX.utils.json_to_sheet(PAT_FOLLOW_UP_TREAT),
             }
@@ -286,136 +379,17 @@ async function saveXlsx(fileName, numberArr) {
 
 }
 
-
-/**
- * 查询某地某年的患者
- * @param {String} fileName 文件名
- * @param {String} address 查询地址
- * @param {Sting,Date} startDate 开始时间
- * @param {String,Date} endDate 结束时间
- */
-async function select_addr_year(fileName, address, startDate, endDate) {
+async function select(fileName){
     try {
-        // await sql.connect(config.db_addr)
-        // 查询某地某年的患者
-        const list_select_year = await sql.query `SELECT
-                a.PATIENT_NO
-                -- a.NAME,
-                -- a.DISCHARGE_DATE,
-                -- b.SD_ITEM_VALUE
-            FROM
-                [dbo].[PAT_VISIT] AS a
-                LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS b ON a.PATIENT_NO= b.PATIENT_NO
-            WHERE
-                a.SD_CODE= 'YXA_O'
-                AND b.SD_ITEM_CODE= 'YXA_O_003'
-                AND b.SD_ITEM_VALUE LIKE ${address}
-                AND a.DISCHARGE_DATE>${startDate}
-                AND a.DISCHARGE_DATE<${endDate}`,
-            ret_select_year = list_select_year.recordset
-
-
-        await saveXlsx(fileName, ret_select_year.map(item => item.PATIENT_NO))
-
-    } catch (err) {
-        console.error(err)
-    }
-}
-/**
- * 查询某年有放化疗的患者
- * @param {String} fileName 文件名
- * @param {Sting,Date} startDate 开始时间
- * @param {String,Date} endDate 结束时间
- */
-async function select_fhl(fileName, startDate, endDate) {
-    try {
-        // await sql.connect(config.db_addr)
-        // 查询某地某年的患者
-        const list_select_fhl = await sql.query `SELECT
-                a.PATIENT_NO
-                -- a.NAME,
-                -- b.SD_ITEM_CODE,
-                -- b.SD_ITEM_VALUE
-            FROM
-                [dbo].[PAT_VISIT] AS a
-                LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS b ON a.PATIENT_NO= b.PATIENT_NO
-            WHERE
-                a.SD_CODE='YXA_O'
-                AND a.DISCHARGE_DATE> ${startDate}
-                AND a.DISCHARGE_DATE< ${endDate}
-                AND b.SD_ITEM_CODE='YXA_O_117' -- 是否放化疗
-                AND b.SD_ITEM_VALUE='1' -- 是`,
-            ret_select_fhl = list_select_fhl.recordset
-
-
-        await saveXlsx(fileName, ret_select_fhl.map(item => item.PATIENT_NO))
-
-    } catch (err) {
-        console.error(err)
-    }
-}
-/**
- * 胰腺癌晚期 进行术前放化疗患者
- * @return {[type]} [description]
- */
-async function select_late_pancreatic_cancer1(fileName){
-    try {
-        // await sql.connect(config.db_addr)
-        // 胰腺癌晚期 进行术前放化疗患者
-        const list_select_late_pancreatic_cancer1 = await sql.query `SELECT
-                a.PATIENT_NO
-            FROM
-                [dbo].[PAT_SD_ITEM_RESULT] AS a
-            WHERE
-                (a.SD_ITEM_CODE = 'YXA_O_224'
-                OR a.SD_ITEM_CODE = 'YXA_O_117')
-                AND a.SD_ITEM_CODE = 'YXA_O_117'
-                AND a.SD_ITEM_VALUE = '1'
-                AND a.SD_CODE = 'YXA_O'
-                `,
-            ret_select_late_pancreatic_cancer1 = list_select_late_pancreatic_cancer1.recordset
-
-
-        await saveXlsx(fileName, ret_select_late_pancreatic_cancer1.map(item => item.PATIENT_NO))
-
-    } catch (err) {
-        console.error(err)
-    }
-}
-/**
- * 胰腺癌晚期 后续化疗
- * @return {[type]} [description]
- */
-async function select_late_pancreatic_cancer2(fileName){
-    try {
-        // await sql.connect(config.db_addr)
-        // 胰腺癌晚期 后续化疗
-        const list_select_late_pancreatic_cancer2 = await sql.query `SELECT
-                a.PATIENT_NO
-            FROM
-                [dbo].[PAT_SD_ITEM_RESULT] AS a
-                LEFT JOIN [dbo].[PAT_FOLLOW_UP_TREAT] AS b ON a.PATIENT_NO= b.PATIENT_NO
-            WHERE
-                a.SD_ITEM_CODE= 'YXA_O_224'
-                AND a.SD_ITEM_VALUE = '1'
-                AND b.TREAT_NAME= '化疗'`,
-            ret_select_late_pancreatic_cancer2 = list_select_late_pancreatic_cancer2.recordset
-
-
-        await saveXlsx(fileName, ret_select_late_pancreatic_cancer2.map(item => item.PATIENT_NO))
-
-    } catch (err) {
-        console.error(err)
-    }
-}
-
-/**
- * 有死亡时间的患者
- * @return {[type]} [description]
- */
-async function select_in_die(fileName){
-    try {
-        const list_select_in_die = await sql.query `SELECT DISTINCT TOP 2080
+        const startDate16 = '2016-01-01 00:00:00.000',
+            endDate16 = '2016-12-31 00:00:00.000',
+            startDate17 = '2017-01-01 00:00:00.000',
+            endDate17 = '2017-12-31 00:00:00.000',
+            startDate18 = '2018-01-01 00:00:00.000',
+            endDate18 = '2018-12-31 00:00:00.000',
+            address = '上海%',
+        // 查询有死亡时间的患者
+            in_die = `SELECT DISTINCT TOP 2080
                 PATIENT_NO
             FROM
                 [dbo].[PAT_FOLLOW_UP_RESULT]
@@ -429,39 +403,80 @@ async function select_in_die(fileName){
                     [dbo].[PAT_VISIT]
                 WHERE
                     SD_GROUP = '1'
-                    AND SD_CODE = 'YXA_O' )`,
-            ret_select_in_die = list_select_in_die.recordset
+                    AND SD_CODE = 'YXA_O')`,
+        // 胰腺癌晚期 后续化疗
+            late_pancreatic_cancer2 = `SELECT
+                a.PATIENT_NO
+            FROM
+                [dbo].[PAT_SD_ITEM_RESULT] AS a
+                LEFT JOIN [dbo].[PAT_FOLLOW_UP_TREAT] AS b ON a.PATIENT_NO= b.PATIENT_NO
+            WHERE
+                a.SD_ITEM_CODE= 'YXA_O_224'
+                AND a.SD_ITEM_VALUE = '1'
+                AND b.TREAT_NAME= '化疗'`,
+        // 胰腺癌晚期 进行术前放化疗患者
+            late_pancreatic_cancer1 = `SELECT
+                a.PATIENT_NO
+            FROM
+                [dbo].[PAT_SD_ITEM_RESULT] AS a
+            WHERE
+                (a.SD_ITEM_CODE = 'YXA_O_224'
+                OR a.SD_ITEM_CODE = 'YXA_O_117')
+                AND a.SD_ITEM_CODE = 'YXA_O_117'
+                AND a.SD_ITEM_VALUE = '1'
+                AND a.SD_CODE = 'YXA_O'`,
+        // 查询某年有放化疗的患者
+            list_select_fhl = `SELECT
+                a.PATIENT_NO
+                -- a.NAME,
+                -- b.SD_ITEM_CODE,
+                -- b.SD_ITEM_VALUE
+            FROM
+                [dbo].[PAT_VISIT] AS a
+                LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS b ON a.PATIENT_NO= b.PATIENT_NO
+            WHERE
+                a.SD_CODE='YXA_O'
+                AND a.DISCHARGE_DATE> ${startDate16}
+                AND a.DISCHARGE_DATE< ${endDate18}
+                AND b.SD_ITEM_CODE='YXA_O_117' -- 是否放化疗
+                AND b.SD_ITEM_VALUE='1' -- 是`,
+        // 查询某地某年的患者
+            list_select_year = `SELECT
+                    a.PATIENT_NO
+                    -- a.NAME,
+                    -- a.DISCHARGE_DATE,
+                    -- b.SD_ITEM_VALUE
+                FROM
+                    [dbo].[PAT_VISIT] AS a
+                    LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS b ON a.PATIENT_NO= b.PATIENT_NO
+                WHERE
+                    a.SD_CODE= 'YXA_O'
+                    AND b.SD_ITEM_CODE= 'YXA_O_003'
+                    AND b.SD_ITEM_VALUE LIKE ${address}
+                    AND a.DISCHARGE_DATE>${startDate16}
+                    AND a.DISCHARGE_DATE<${endDate18}`,
+        // 查询麻醉方式是多选的患者
+            mz_m = `SELECT TOP 1 * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_172' AND LEN(SD_ITEM_VALUE)>1`,
+        // 查询胰腺导管腺癌三年的数据
+            get_3year_in_group = `SELECT TOP 200 PATIENT_NO FROM [dbo].[PAT_VISIT]
+                WHERE SD_GROUP = '1'
+                AND SD_CODE = 'YXA_O'
+                AND DISCHARGE_DATE>='${startDate16}' AND DISCHARGE_DATE<='${endDate18}'`
 
-        await saveXlsx(fileName, ret_select_in_die.map(item => item.PATIENT_NO))
 
+        const listBySelect = await sql.query(get_3year_in_group),
+              retBySelect = listBySelect.recordset
+
+        await saveXlsx(fileName, retBySelect.map(item => `'${item.PATIENT_NO}'` ))
+// return retBySelect.map(item => `'${item.PATIENT_NO}'` )
     } catch (err) {
         console.error(err)
     }
 }
 
 async function main() {
-    const startDate16 = '2016-01-01 00:00:00.000',
-        endDate16 = '2016-12-31 00:00:00.000',
-        startDate17 = '2017-01-01 00:00:00.000',
-        endDate17 = '2017-12-31 00:00:00.000',
-        startDate18 = '2018-01-01 00:00:00.000',
-        endDate18 = '2018-12-31 00:00:00.000',
-        address_shanghai = '上海%'
 
-
-    await sql.connect(config.db_addr)
-
-    await select_in_die('三年胰腺导管腺癌有死亡时间的患者')
-    // await select_late_pancreatic_cancer1('胰腺癌晚期_进行术前放化疗患者')
-    // await select_late_pancreatic_cancer2('胰腺癌晚期_后续化疗')
-
-    // await select_addr_year('上海-16年', address_shanghai, startDate16, endDate16)
-    // await select_addr_year('上海-17年', address_shanghai, startDate17, endDate17)
-    // await select_addr_year('上海-18年', address_shanghai, startDate18, endDate18)
-
-    // await select_fhl('是放化疗-16年', startDate16, endDate16)
-    // await select_fhl('是放化疗-17年', startDate17, endDate17)
-    // await select_fhl('是放化疗-18年', startDate18, endDate18)
+    await select('百济-200')
 
     // const config = require('./config.json')
     // config.forEach(item => {
