@@ -179,12 +179,12 @@ async function wash_QTHXZLFA() {
     }
 }
 
-// 清洗 术前化疗药物剂量#YXA_O_119 和 其他后续计划治疗药物剂量#YXA_O_303
+// 清洗 术前化疗药物剂量#YXA_O_119 && 其他后续计划治疗药物剂量#YXA_O_303 && 是否更改治疗方案药物剂量 #YXA_O_136
 async function wash_DRUG_DOSE() {
-    console.info('清洗 术前化疗药物剂量#YXA_O_119 和 其他后续计划治疗药物剂量#YXA_O_303')
+    console.info('清洗 术前化疗药物剂量#YXA_O_119 && 其他后续计划治疗药物剂量#YXA_O_303 && 是否更改治疗方案药物剂量 #YXA_O_136')
     try {
 
-        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_303' OR SD_ITEM_CODE='YXA_O_119'`),
+        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE IN ('YXA_O_119','YXA_O_303','YXA_O_136')`),
             rets = lists.recordset
 
         for (let i = rets.length - 1; i >= 0; i--) {
@@ -216,7 +216,7 @@ async function wash_DRUG_DOSE() {
         }
 
     } catch (err) {
-        console.error('清洗 术前化疗药物剂量#YXA_O_119 和 其他后续计划治疗药物剂量#YXA_O_303 ERR ', err)
+        console.error('清洗 术前化疗药物剂量#YXA_O_119 && 其他后续计划治疗药物剂量#YXA_O_303 && 是否更改治疗方案药物剂量 #YXA_O_136 ERR ', err)
     }
 }
 
@@ -371,12 +371,12 @@ async function washFuByDrug() {
 	药物名称（商品名）# YXA_O_302
  */
 
-// 清洗 术前化疗 化疗药物名称(通用名) # YXA_O_118 和 后续计划治疗方案（化疗） 药物名称（通用名）# YXA_O_301
+// 清洗 术前化疗 化疗药物名称(通用名) # YXA_O_118 && 后续计划治疗方案（化疗） 药物名称（通用名）# YXA_O_301 && 是否更改治疗方案 药物名称（通用名）#YXA_O_135
 async function wash_drug_general() {
     console.info('清洗 术前术后化疗药物（通用名）')
     try {
 
-        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE IN ('YXA_O_118','YXA_O_301') AND SD_ITEM_VALUE!=''`),
+        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE IN ('YXA_O_118','YXA_O_301','YXA_O_135') AND SD_ITEM_VALUE!=''`),
             rets = lists.recordset
 
         for (let i = rets.length - 1; i >= 0; i--) {
@@ -387,7 +387,7 @@ async function wash_drug_general() {
             // console.log(delHashtag(ret),'-->',_value)
 
             // console.log(element.PATIENT_NO)
-            await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT]  SET SD_ITEM_VALUE='${delHashtag(ret,1)}' WHERE PATIENT_NO='${element.PATIENT_NO}' AND SD_ITEM_CODE='${element.SD_ITEM_CODE}'`)
+            await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT]  SET SD_ITEM_VALUE='${delHashtag(ret)}' WHERE PATIENT_NO='${element.PATIENT_NO}' AND SD_ITEM_CODE='${element.SD_ITEM_CODE}'`)
 
         }
 
@@ -395,12 +395,12 @@ async function wash_drug_general() {
         console.error('清洗 术前术后化疗药物（通用名） ERR ', err)
     }
 }
-// 清洗 化疗药物名称(商品名) # YXA_O_905 和 后续计划治疗方案（化疗） 药物名称（商品）# YXA_O_302
+// 清洗 化疗药物名称(商品名) # YXA_O_905 && 后续计划治疗方案（化疗） 药物名称（商品）# YXA_O_302 && 是否更改治疗方案 药物名称（商品）#YXA_O_906
 async function wash_drug_trade() {
     console.info('清洗 术前术后化疗药物（商品名）')
     try {
 
-        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE IN ('YXA_O_905','YXA_O_302') AND SD_ITEM_VALUE!=''`),
+        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE IN ('YXA_O_905','YXA_O_302','YXA_O_906') AND SD_ITEM_VALUE!=''`),
             rets = lists.recordset
 
         for (let i = rets.length - 1; i >= 0; i--) {
@@ -410,7 +410,7 @@ async function wash_drug_trade() {
             let ret = await common_drug_trade(_value)
             // console.log(delHashtag(ret),'-->',_value)
 
-            await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT]  SET SD_ITEM_VALUE='${delHashtag(ret,1)}' WHERE PATIENT_NO='${element.PATIENT_NO}' AND SD_ITEM_CODE='${element.SD_ITEM_CODE}'`)
+            await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT]  SET SD_ITEM_VALUE='${delHashtag(ret)}' WHERE PATIENT_NO='${element.PATIENT_NO}' AND SD_ITEM_CODE='${element.SD_ITEM_CODE}'`)
 
         }
 
@@ -420,7 +420,7 @@ async function wash_drug_trade() {
 }
 
 // 添加术前化疗方案
-async function add_FOLFOX_FRONT() {
+async function addFolfoxFront() {
     console.info('添加术前化疗方案#YXA_O_918')
     try {
 
@@ -443,7 +443,7 @@ async function add_FOLFOX_FRONT() {
 }
 
 // 添加后续计划化疗方案
-async function add_FOLFOX() {
+async function addFolfoxAfter() {
     console.info('添加后续计划化疗方案#YXA_O_919')
     try {
 
@@ -463,7 +463,29 @@ async function add_FOLFOX() {
     } catch (err) {
         console.error('添加后续计划化疗方案#YXA_O_918 ERR ', err)
     }
+}
 
+// 添加 更改治疗方案
+async function addFolfoxChange() {
+    console.info('添加更改治疗方案#YXA_O_920')
+    try {
+
+        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_135' AND SD_ITEM_VALUE!=''`),
+            rets = lists.recordset
+
+        for (let i = rets.length - 1; i >= 0; i--) {
+            const element = rets[i],
+                _folfox = element.SD_ITEM_VALUE
+
+            let ret = await common_diff_FOLFOX(_folfox)
+            // console.log(delHashtag(ret),'-->',_folfox)
+            await sql.query(`INSERT INTO [dbo].[PAT_SD_ITEM_RESULT] VALUES ('${element.PATIENT_NO}', 'YXA_O','YXA_O_920', '${ret}')`)
+
+        }
+
+    } catch (err) {
+        console.error('添加更改治疗方案#YXA_O_920 ERR ', err)
+    }
 }
 
 /**
@@ -473,7 +495,7 @@ async function add_FOLFOX() {
 async function common_drug_general(_value) {
     let ret = ''
     if (/5-FU|5氟尿嘧啶|氟尿嘧啶/i.test(_value)) ret += '1#'
-    if (/奥沙利铂|奥沙力柏|奥铂|艾恒|乐沙定/.test(_value)) ret += '2#'
+    if (/奥沙|奥铂|艾恒|乐沙定/.test(_value)) ret += '2#'
     if (/亚叶酸钙|同奥/.test(_value)) ret += '3#'
     if (/伊立替康|艾力|开普拓/.test(_value)) ret += '4#'
    	if (/蛋白紫杉醇|蛋白结合型|ABX|艾越|哀越|克艾力|凯素|abraxane/i.test(_value)){
@@ -668,13 +690,12 @@ async function common_diff_FOLFOX(folfox) {
  */
 
 /**
- * 删除字符串的井号
+ * 删除字符串前后的井号
  * @param  {[type]} str 需要处理的字符串
- * @param  {[type]} dir  1 删除前边的井号，-1 删除后边的井号
  * @return {[type]}     [description]
  */
-function delHashtag(str,dir) {
-    return dir ? str.replace(/^#/, '') : str.replace(/#$/, '')
+function delHashtag(str) {
+    return str.replace(/^#|#$/g, '')
 }
 
 
@@ -704,8 +725,9 @@ async function run() {
 	// 清洗 商品名
 	// await wash_drug_trade()
     // 添加术前化疗方案
-    await add_FOLFOX_FRONT()
-    await add_FOLFOX()
+    // await addFolfoxFront()
+    // await addFolfoxAfter()
+    // await addFolfoxChange()
 
     console.timeEnd('共用时')
 
