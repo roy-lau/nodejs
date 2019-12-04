@@ -9,6 +9,6 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "emailjs": "^1.0.8"
+    "emailjs": "^2.2.0"
   }
 }

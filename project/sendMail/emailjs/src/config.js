@@ -15,7 +15,7 @@ module.exports = {
         text: "此邮件使用emailjs发送，格式为txt。", // 邮件内容
         from: "you <qiangliu@cncaas.cn>", // 发件人
         to: "someone <qiangliu@cncaas.cn>, another <897379293@qq.com>", // 收件人(逗号隔开可以发送多个收件人)
-        cc: "else <qiangliu@cncaas.cn", // 抄送
+        cc: "else <qiangliu@cncaas.cn>", // 抄送
         subject: "测试-gy-emalijs-标题-txt" // 邮件标题
     },
     /*
