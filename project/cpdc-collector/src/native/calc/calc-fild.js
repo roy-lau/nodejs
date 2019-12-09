@@ -3,9 +3,8 @@
  */
 
 'use strict';
-const sql = require('mssql'),
+const sql = require('../dbs/sqlServer.js'),
     XLSX = require("xlsx"),
-    config = require("../config.js"),
     _ = require("lodash"),
     OBJ_CALC = Object.create(null)
 
@@ -41,12 +40,11 @@ async function saveCalcResult(fileName) {
 async function handlePatFollowUpResult() {
     console.info('计算 随访结果表')
     try {
-        const followDist = await initFollowDist(),
-            pool = await new sql.ConnectionPool(config.db_addr).connect();
+        const followDist = await initFollowDist()
 
         for (let index = 0; index < OBJ_CALC._ids.length; index++) {
             const key = OBJ_CALC._ids[index]
-            const listPatFollowUpResult = await pool.query `SELECT
+            const listPatFollowUpResult = await sql.query(`SELECT
 					dist.ITEM_CODE,
 					dist.ITEM_NAME,
 					result.SD_ITEM_VALUE
@@ -54,8 +52,8 @@ async function handlePatFollowUpResult() {
 					[dbo].[FU_SD_ITEM_DICT] AS dist
 					LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS result
 					ON dist.ITEM_CODE=result.SD_ITEM_CODE
-					AND result.PATIENT_NO=${key}
-					ORDER BY dist.DISPLAY_ORDER`,
+					AND result.PATIENT_NO='${key}'
+					ORDER BY dist.DISPLAY_ORDER`),
                 retPatFollowUpResult = listPatFollowUpResult.recordset
             // console.log(retPatFollowUpResult)
             for (let i = 0; i < retPatFollowUpResult.length; i++) {
@@ -78,13 +76,13 @@ async function handlePatFollowUpResult() {
 async function initFollowDist() {
     console.info('初始化 随访结果表')
     try {
-        const pool = await new sql.ConnectionPool(config.db_addr).connect();
-        const listPatFollowDist = await pool.query `SELECT
+
+        const listPatFollowDist = await sql.query(`SELECT
 						dist.ITEM_CODE,
 						dist.ITEM_NAME
 					FROM
 						[dbo].[FU_SD_ITEM_DICT] AS dist
-						ORDER BY dist.DISPLAY_ORDER`,
+						ORDER BY dist.DISPLAY_ORDER`),
             retPatFollowDist = listPatFollowDist.recordset
         // console.log(retPatFollowDist)
         let followDist = {}
@@ -104,12 +102,11 @@ async function initFollowDist() {
 async function handlePatFollowUpTreat() {
     console.info('计算 随访治疗信息')
     try {
-        const pool = await new sql.ConnectionPool(config.db_addr).connect();
         let initFollowTreat = {}
 
         for (let index = 0; index < OBJ_CALC._ids.length; index++) {
             const key = OBJ_CALC._ids[index]
-        const listPatFollowUpTreat = await pool.query `SELECT
+        const listPatFollowUpTreat = await sql.query(`SELECT
 			TREAT_NAME AS '治疗方式',
 			DRUG_NAME AS '药品名称(通用名)',
 			DRUG_NAME_TRADE AS '药品名称(商品名)',
@@ -129,7 +126,7 @@ async function handlePatFollowUpTreat() {
 		FROM
 			[dbo].[PAT_FOLLOW_UP_TREAT]
 		WHERE
-			PATIENT_NO= ${key}`,
+			PATIENT_NO= '${key}'`),
             retPatFollowUpTreat = listPatFollowUpTreat.recordset,
             _followUpTreatTotal = retPatFollowUpTreat.length
 		// console.log(key,index,_followUpTreatTotal)
@@ -168,17 +165,16 @@ async function handlePatFollowUp() {
             followDate_num = 0,
             followMonths_num = 0
 
-        const pool = await new sql.ConnectionPool(config.db_addr).connect();
         for (let index = 0; index < OBJ_CALC._ids.length; index++) {
             const key = OBJ_CALC._ids[index]
-            const listPatFollowUp = await pool.query `SELECT
+            const listPatFollowUp = await sql.query(`SELECT
 				PATIENT_NO,
 				FOLLOW_UP_DATE,
 				FOLLOW_UP_MONTHS
 			FROM
 				[dbo].[PAT_FOLLOW_UP]
 			WHERE
-				PATIENT_NO= ${key}`,
+				PATIENT_NO= '${key}'`),
                 retPatFollowUp = listPatFollowUp.recordset,
                 _followTotal = retPatFollowUp.length
 
@@ -201,13 +197,65 @@ async function handlePatFollowUp() {
         console.error('handlePatFollowUp ERR ', err)
     }
 }
+
+// 计算 患者基本信息
+async function handlePatVist(){
+     console.info('计算 患者基本信息')
+    try {
+        let initPatVist = {}
+
+        for (let index = 0; index < OBJ_CALC._ids.length; index++) {
+            const key = OBJ_CALC._ids[index]
+            const listPatVist = await sql.query(`SELECT
+                        PATIENT_NO,
+                        PATIENT_ID AS '住院ID',
+                        INP_NO AS '住院流水号',
+                        NAME AS '患者姓名',
+                      SEX AS '性别',
+                        AGE AS '患者年龄',
+                        ADMISSION_DATE AS '入院日期',
+                        DISCHARGE_DATE AS '出院日期',
+                        OUT_STATUS AS '离院方式'
+                    FROM
+                        [dbo].[PAT_VISIT]
+                    WHERE
+                        PATIENT_NO= '${key}'`),
+                retPatVist = listPatVist.recordset,
+                _firstvistData = retPatVist[0]
+                // console.log(key,index,_firstvistData)
+                //
+                if (index == 0) { // 第一次，初始化（如果第一个为空，将会报错 query2）
+                    const _keys = Object.keys(_firstvistData)
+                    for (let k = 0; k < _keys.length; k++) {
+
+                        initPatVist[_keys[k] + '_total'] = 0
+                        initPatVist[_keys[k] + '_num'] = 0
+                        OBJ_CALC[_keys[k]] = 0
+                    }
+                }
+
+                 _.forEach(_firstvistData, (value, key) => {
+                    // console.log(key,value);
+                    initPatVist[key + '_total'] += 1
+                    if (value) {
+                        initPatVist[key + '_num'] += 1
+                    }
+                    OBJ_CALC[key] = (initPatVist[key + '_num'] / initPatVist[key + '_total'] * 100).toFixed(2) + '%'
+                });
+            }
+        console.log(OBJ_CALC)
+    } catch (err) {
+        console.error('handlePatFollowUpTreat ERR ', err)
+    }
+}
+
 // 查询条件函数
 async function query() {
     console.info('获取查询查询患者pNO')
     try {
-        const pool = await new sql.ConnectionPool(config.db_addr).connect();
-        const listPatientNo = await pool.query `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE PATIENT_NO IN ('ff81dd0731f38630','ffbc4406e37a7c57')
-`,
+
+        const listPatientNo = await sql.query(`SELECT PATIENT_NO FROM [dbo].[PAT_VISIT]
+                WHERE PATIENT_NO IN ('ff81dd0731f38630','ffbc4406e37a7c57')`),
             retPatientNo = listPatientNo.recordset,
             len = retPatientNo.length
 
@@ -228,8 +276,7 @@ async function query() {
 async function query2() {
     console.info('获取查询查询患者pNO')
     try {
-        const pool = await new sql.ConnectionPool(config.db_addr).connect();
-        const listPatientNo = await pool.query `SELECT
+        const listPatientNo = await sql.query(`SELECT
 					DISTINCT PATIENT_NO
 				FROM
 					[dbo].[PAT_FOLLOW_UP_RESULT]
@@ -247,7 +294,7 @@ async function query2() {
 					FOLLOW_UP_DATE != '1900-01-01 00:00:00.000'
 					AND FOLLOW_UP_MONTHS!=''
 					AND FOLLOW_UP_MONTHS > 12
-					AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )`,
+					AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )`),
             retPatientNo = listPatientNo.recordset,
             len = retPatientNo.length
 
@@ -268,16 +315,14 @@ async function query2() {
 async function query1() {
     console.info('获取查询查询患者pNO')
     try {
-        const pool = await new sql.ConnectionPool(config.db_addr).connect();
-        const listPatientNo = await pool.query `SELECT
+        const listPatientNo = await sql.query(`SELECT
 					DISTINCT PATIENT_NO
 				FROM
 					[dbo].[PAT_FOLLOW_UP]
 				WHERE
 					FOLLOW_UP_DATE != '1900-01-01 00:00:00.000'
 					AND FOLLOW_UP_MONTHS!=''
-					AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )`,
-            // const listPatientNo = await pool.query `SELECT * FROM [dbo].[PAT_VISIT] WHERE PATIENT_NO IN ('179aa12a972196d9','998e2ba8c606c4f')`,
+					AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )`),
             retPatientNo = listPatientNo.recordset,
             len = retPatientNo.length
 
@@ -295,13 +340,17 @@ async function query1() {
         console.error('handle ERR ', err)
     }
 }
+
 async function main() {
 
 
-    await query1()
-    await handlePatFollowUp()
-    await handlePatFollowUpTreat()
-    await handlePatFollowUpResult()
+    await query()
+    await handlePatVist()
+
+
+    // await handlePatFollowUp()
+    // await handlePatFollowUpTreat()
+    // await handlePatFollowUpResult()
 
     await saveCalcResult('test')
     process.exit()

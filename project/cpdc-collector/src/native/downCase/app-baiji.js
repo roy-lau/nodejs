@@ -1,5 +1,6 @@
 /**
  * 下载病例 -- 百济
+ * 修改最大堆栈 node --max-old-space-size=4096 app-baiji.js
  */
 'use strict';
 const sql = require('../dbs/sqlServer.js'),
@@ -18,15 +19,8 @@ const query_PAT_VISIT = async (patient_no) => {
         // 查询患者基本信息
         const list_PAT_VISIT = await sql.query(`SELECT
                 a.PATIENT_NO,
-                -- a.PATIENT_ID AS '住院ID',
-                -- a.INP_NO AS '住院流水号',
                 a.NAME AS '姓名',
-                '患者性别' = ( CASE SEX WHEN '0' THEN '女' WHEN '1' THEN '男' END ),
-                -- a.AGE AS '患者年龄',
-                a.ADMISSION_DATE AS '入院日期'
-                -- a.DISCHARGE_DATE AS '出院日期',
-                -- a.OUT_STATUS AS '离院方式',
-                -- b.HOSPITAL_NAME AS '医院'
+                a.AGE AS '年龄'
             FROM
                 [dbo].[PAT_VISIT] AS a
                 LEFT JOIN [dbo].[HOSPITAL_DICT] as b ON a.HOSPITAL_ID=b.HOSPITAL_ID
@@ -58,111 +52,12 @@ const query_PAT_VISIT = async (patient_no) => {
                     result.PATIENT_NO= '${ret_PAT_VISIT[i].PATIENT_NO}'
                     AND result.SD_CODE= 'YXA_O'
                     AND b.ITEM_CODE IN (
-                        'YXA_O_003',
-                        'YXA_O_006',
-                        'YXA_O_009',
-                        'YXA_O_010',
-                        'YXA_O_011',
-                        'YXA_O_012',
-                        'YXA_O_013',
-                        'YXA_O_014',
-                        'YXA_O_015',
-                        'YXA_O_016',
-                        'YXA_O_017',
-                        'YXA_O_018',
-                        'YXA_O_019',
-                        'YXA_O_020',
-                        'YXA_O_021',
-                        'YXA_O_022',
-                        'YXA_O_023',
-                        'YXA_O_024',
-                        'YXA_O_025',
-                        'YXA_O_026',
-                        'YXA_O_027',
-                        'YXA_O_028',
-                        'YXA_O_029',
-                        'YXA_O_030',
-                        'YXA_O_031',
-                        'YXA_O_032',
-                        'YXA_O_033',
-                        'YXA_O_096',
-                        'YXA_O_117',
-                        'YXA_O_118',
-                        'YXA_O_905',
-                        'YXA_O_119',
-                        'YXA_O_120',
-                        'YXA_O_121',
-                        'YXA_O_123',
-                        'YXA_O_128',
-                        'YXA_O_131',
-                        'YXA_O_134',
-                        'YXA_O_920',
-                        'YXA_O_906',
-                        'YXA_O_135',
-                        'YXA_O_161',
-                        'YXA_O_210',
-                        'YXA_O_211',
-                        'YXA_O_215',
-                        'YXA_O_220',
-                        'YXA_O_221',
-                        'YXA_O_222',
-                        'YXA_O_223',
-                        'YXA_O_224',
-                        'YXA_O_300',
-                        'YXA_O_919',
-                        'YXA_O_301',
-                        'YXA_O_302',
-                        'YXA_O_303',
-                        'YXA_O_304',
-                        'YXA_O_314',
-                        'YXA_O_918',
-                        'YXA_O_920',
-                        'YXA_O_921',
-                        'YXA_O_922',
-                        'YXA_O_195',
-                        'YXA_O_159',
-                        'YXA_O_136',
-                        'YXA_O_305'
-                    )
+-- 手术日期
+'YXA_O_161',
 
-                UNION ALL
-
-                SELECT
-                    dist.PATIENT_NO,
-                    code.ITEM_NAME,
-                    dist.SD_ITEM_CODE AS 'ITEM_CODE',
-                    MIN(ISNULL( cv.CV_VALUE_TEXT, dist.SD_ITEM_VALUE )) AS ret_value,
-                    code.ITEM_FORMAT,
-                    code.ITEM_CV_CODE,
-                    code.ITEM_UNIT
-                FROM
-                    [dbo].[PAT_FOLLOW_UP_RESULT] AS dist
-                    LEFT JOIN [dbo].[FU_SD_ITEM_DICT] AS code ON dist.SD_ITEM_CODE= code.ITEM_CODE
-                    LEFT JOIN [dbo].[SD_ITEM_CV_DICT] AS cv ON cv.SD_CODE!= 'YXA'
-                    AND code.ITEM_CV_CODE= cv.CV_CODE
-                    AND dist.SD_ITEM_VALUE= cv.CV_VALUE
-                WHERE
-                    dist.PATIENT_NO= '${ret_PAT_VISIT[i].PATIENT_NO}'
-                    AND dist.SD_ITEM_CODE IN ( 'YXA_O_250', 'YXA_O_252', 'YXA_O_253', 'YXA_O_255', 'YXA_O_256', 'YXA_O_257' )
-                GROUP BY
-                    dist.PATIENT_NO,
-                    code.ITEM_NAME,
-                    dist.SD_ITEM_CODE,
-                    code.ITEM_FORMAT,
-                    code.ITEM_CV_CODE,
-                    code.ITEM_UNIT`),
+'YXA_O_003',
+'YXA_O_036')`),
                 ret_PAT_SD_ITEM_RESULT = list_PAT_SD_ITEM_RESULT.recordset
-
-             // 查询引流管信息表
-            const list_PAT_FOLLOW_UP_TREAT = await sql.query(`SELECT
-                    PATIENT_NO,
-                    FU_TIMES,
-                    TREAT_EVALUTE_FRONT AS '治疗前CT评价',
-                    TREAT_EVALUTE_AFTER AS '治疗后CT评价'
-                FROM
-                    [dbo].[PAT_FOLLOW_UP_TREAT]
-                WHERE PATIENT_NO= '${ret_PAT_VISIT[i].PATIENT_NO}'`),
-                ret_PAT_FOLLOW_UP_TREAT = list_PAT_FOLLOW_UP_TREAT.recordset
 
             for (let k = 0; k < ret_PAT_SD_ITEM_RESULT.length; k++) {
 
@@ -186,23 +81,12 @@ const query_PAT_VISIT = async (patient_no) => {
                         const valueArr = result.ret_value.split('#'),
                             _valLen = valueArr.length
                         // 拆分后的数组长度大于 0
-                        if (_valLen >0) {
+                        if (_valLen > 0) {
                             result.ret_value = await handleMultipleValue(valueArr, _valLen, result.ITEM_CV_CODE)
-                        }else{
-                            console.log(valueArr, _valLen, result.ITEM_CV_CODE)
-
                         }
                     }
 
                     retPatVisit[i][_key] = result.ret_value
-                }
-            }
-            // 处理化疗相关的数据
-            for (let k = 0; k < ret_PAT_FOLLOW_UP_TREAT.length; k++) {
-                const result = ret_PAT_FOLLOW_UP_TREAT[k]
-                if (retPatVisit[i].PATIENT_NO === result.PATIENT_NO) {
-                    retPatVisit[i]['治疗前CT评价'+(k+1)] =result['治疗前CT评价']
-                    retPatVisit[i]['治疗后CT评价'+(k+1)] =result['治疗后CT评价']
                 }
             }
         }
@@ -210,17 +94,7 @@ const query_PAT_VISIT = async (patient_no) => {
         // await saveFileSync('./out/retPatVisit.json', JSON.stringify(retPatVisit, null, 2))
 
         return retPatVisit
-            // 排序
-            .sort((a, b) => a['患者住址#YXA_O_003'] > b['患者住址#YXA_O_003'] ? 1 : -1)
-            // 脱敏
-            .map(item => {
 
-                item['姓名'] = desensitization(item['姓名'], 1, 3)
-                item['患者住址#YXA_O_003'] = desensitization(item['患者住址#YXA_O_003'], 3, 25)
-                // item['主刀医师#YXA_O_005'] = item['主刀医师#YXA_O_005'] && desensitization(item['主刀医师#YXA_O_005'], 1, 3).substr(0, 2)
-
-                return item
-            })
 
     } catch (err) {
         console.error(err)
@@ -313,7 +187,7 @@ async function select(fileName) {
 async function main() {
     console.time("共用时")
     // await select('百济-one')
-    await select('百济-get_3year_in_group')
+    await select('百济-new-bmi')
     console.timeEnd("共用时")
 
     // const config = require('./config.json')
