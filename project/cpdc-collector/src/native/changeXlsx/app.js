@@ -7,7 +7,7 @@ const GenerateSheet = require('./libs/generateSheet.js')
 // const filterFile = path.join(__dirname, './input/demo.xlsx') // 过滤的文件名
 // const filterFile = path.join(__dirname,'./input/瑞金_补录_含随访_2016——整理.xlsx') // 过滤的文件名
 // const filterFile = path.join(__dirname, './input/瑞金_补录_含随访_2017-2018.6——整理.xlsx') // 过滤的文件名
-const filterFile = path.join(__dirname, './input/瑞金_补录_含随访_2018.1-2019.4——整理.xlsx') // 过滤的文件名
+const filterFile = path.join(__dirname, './input/胰腺癌单病种数据元2019.5-10——整理.xlsx') // 过滤的文件名
 // const filterFile = path.join(__dirname, './input/胰腺癌单病种数据元2019.5-7——整理.xlsx') // 过滤的文件名
 const generateSheet = new GenerateSheet()
 

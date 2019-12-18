@@ -59,7 +59,7 @@ function pattern_sheet_PAT_VISIT(value) {
         OUT_STATUS: '医嘱离院', // 离院方式，默认 医嘱离院
         SD_CODE: 'YXA_O', // 默认：YXA_O
         VERSION_NUM: '1.0', // 版本号，默认 1.0
-        IS_ICF: null, //
+        IS_ICF: '1', // 患者知情同意书
     }
 }
 

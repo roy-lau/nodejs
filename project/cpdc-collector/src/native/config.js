@@ -2,7 +2,8 @@ module.exports = {
     db_addr: {
         user: 'sa',
         password: 'sa@123',
-        server: '192.168.1.253',
+        server: 'localhost',
+        // server: '192.168.1.253',
         database: 'RYCPDC_C20191111new',
         // database: 'RYCPDC_C20191111',
         // database1: 'RYCPDC_C20190902',

@@ -21,7 +21,7 @@ async function query_PAT_VISIT (patient_no) => {
                 a.PATIENT_ID AS '住院ID',
                 a.INP_NO AS '住院流水号',
                 a.NAME AS '姓名',
-                '患者性别' = ( CASE SEX WHEN '0' THEN '女' WHEN '1' THEN '男' END )
+                '患者性别' = ( CASE SEX WHEN '0' THEN '男' WHEN '1' THEN '女' END )
                 a.AGE AS '患者年龄',
                 a.ADMISSION_DATE AS '入院日期',
                 a.DISCHARGE_DATE AS '出院日期',

@@ -1,5 +1,6 @@
 /*
 	计算随访字段的完整度
+    修改最大堆栈 node --max-old-space-size=4096 calc-fild.js
  */
 
 'use strict';
@@ -244,7 +245,7 @@ async function handlePatItemResult(){
             }
         // console.log(OBJ_CALC)
     } catch (err) {
-        console.error('handlePatItemResult ERR ', err)
+        console.error('数据项结果 ERR ', err)
     }
 }
 /**
@@ -538,7 +539,7 @@ async function query1() {
 async function main() {
 console.time("共用时")
 
-    await query3()
+    await queryTotal()
     await handlePatVist()
     await handlePatItemResult()
 
@@ -547,7 +548,7 @@ console.time("共用时")
     await handlePatFollowUpTreat()
     await handlePatFollowUpResult()
 
-    await saveCalcResult('杨尹默-课题2')
+    await saveCalcResult('百济-三年入组')
     console.timeEnd("共用时")
     process.exit()
 }

@@ -85,7 +85,7 @@ module.exports = class GenerateSheet {
     saveXlsx(json) {
         // 构建 workbook 对象
         let wb = {
-            SheetNames: ['PAT_VISIT', 'PAT_SD_ITEM_RESULT', 'HOSPITAL_INFO', 'PAT_DRAINAGE_TUBE', 'PAT_FOLLOW_UP', 'PAT_FOLLOW_UP_RESULT', 'PAT_FOLLOW_UP_TREAT'],
+            SheetNames: ['PAT_VISIT', 'PAT_SD_ITEM_RESULT', 'HOSPITAL_INFO', 'PAT_DRAINAGE_TUBE', 'PAT_FOLLOW_UP',],
             Sheets: {
                 'PAT_VISIT': XLSX.utils.json_to_sheet(json.sheet_PAT_VISIT),
                 'PAT_SD_ITEM_RESULT': XLSX.utils.json_to_sheet(json.sheet_PAT_SD_ITEM_RESULT),
@@ -94,37 +94,7 @@ module.exports = class GenerateSheet {
                     'HOSPITAL_NAME': null
                 }]),
                 'PAT_DRAINAGE_TUBE': XLSX.utils.json_to_sheet(json.sheet_PAT_DRAINAGE_TUBE),
-                'PAT_FOLLOW_UP': XLSX.utils.json_to_sheet(json.sheet_PAT_FOLLOW_UP),
-                "PAT_FOLLOW_UP_RESULT": XLSX.utils.json_to_sheet([{
-                    "SD_CODE": null,
-                    "PATIENT_NO": null,
-                    "FU_TIMES": null,
-                    "SD_ITEM_CODE": null,
-                    "SD_ITEM_VALUE": null,
-                    "SD_ITEM_U_VALUE": null
-                }]),
-                "PAT_FOLLOW_UP_TREAT": XLSX.utils.json_to_sheet([{
-                    "SD_CODE": null,
-                    "PATIENT_NO": null,
-                    "FU_TIMES": null,
-                    "TREAT_NAME": null,
-                    "DRUG_NAME": null,
-                    "DRUG_DOSE": null,
-                    "TREAT_METHOD": null,
-                    "TREAT_EFFECT": null,
-                    "TREAT_COST": null,
-                    "CA199_FRONT": null,
-                    "CEA_FRONT": null,
-                    "CA125_FRONT": null,
-                    "TREAT_EVALUTE_FRONT": null,
-                    "CA199_AFTER": null,
-                    "CEA_AFTER": null,
-                    "CA125_AFTER": null,
-                    "TREAT_EVALUTE_AFTER": null,
-                    "CREATE_DATE_TIME": null,
-                    "TREAT_CYCLE": null,
-                    "DRUG_NAME_TRADE": null
-                }])
+                'PAT_FOLLOW_UP': XLSX.utils.json_to_sheet(json.sheet_PAT_FOLLOW_UP)
 
             }
             // Styles:workbook['Styles']

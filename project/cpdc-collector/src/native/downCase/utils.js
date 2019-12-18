@@ -15,7 +15,7 @@ const fs = require('fs')
  *
  */
 
-exports.desensitization = function(str, beginStr, endStr) {
+exports.desensitization = function(str, beginStr, endStr,showEnd) {
     if (!str) return
     try {
 
@@ -27,7 +27,7 @@ exports.desensitization = function(str, beginStr, endStr) {
         for (let i = 0; i < endStr - beginStr; i++) {
             _str = _str + '*';
         }
-        _str = leftStr + _str + rightStr;
+        _str = leftStr + _str + (showEnd?rightStr:'');
         return _str;
 
     } catch (error) {
