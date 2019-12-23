@@ -384,10 +384,10 @@ async function wash_drug_general() {
                 _value = element.SD_ITEM_VALUE
 
             let ret = await common_drug_general(_value)
-            // console.log(delHashtag(ret),'-->',_value)
+            console.log(delHashtag(ret),'-->',_value)
 
             // console.log(element.PATIENT_NO)
-            await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT]  SET SD_ITEM_VALUE='${delHashtag(ret)}' WHERE PATIENT_NO='${element.PATIENT_NO}' AND SD_ITEM_CODE='${element.SD_ITEM_CODE}'`)
+            // await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT]  SET SD_ITEM_VALUE='${delHashtag(ret)}' WHERE PATIENT_NO='${element.PATIENT_NO}' AND SD_ITEM_CODE='${element.SD_ITEM_CODE}'`)
 
         }
 
@@ -726,7 +726,7 @@ async function run() {
 	// await wash_drug_trade()
     // 添加术前化疗方案
     // await addFolfoxFront()
-    // await addFolfoxAfter()
+    await addFolfoxAfter()
     // await addFolfoxChange()
 
     console.timeEnd('共用时')
