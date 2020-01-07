@@ -363,64 +363,43 @@ async function queryTest() {
         console.error('handle ERR ', err)
     }
 }
-async function query3() {
+async function queryDie() {
     console.info('获取查询患者pNO')
     try {
 
-        const listPatientNo = await sql.query(`
-                    -- 院内死亡
-                    SELECT DISTINCT
-                        a.PATIENT_NO
-                    FROM
-                        [dbo].[PAT_SD_ITEM_RESULT] AS a
-                    WHERE
-                        a.SD_ITEM_CODE = 'YXA_O_209'
-                        AND a.SD_ITEM_VALUE= '1'
-                        AND a.PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )
+        const listPatientNo = await sql.query(`SELECT
+                            DISTINCT a.PATIENT_NO
+                        FROM
+                            [dbo].[PAT_SD_ITEM_RESULT] AS a
+                            LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS b ON b.SD_ITEM_CODE = 'YXA_O_257' -- 随访死亡日期
 
-                        UNION
+                            AND b.SD_ITEM_VALUE != ''
+                        WHERE
+                            a.SD_ITEM_CODE= 'YXA_O_161' -- 手术日期
 
-                    -- 随访死亡
-                    SELECT DISTINCT
-                        a.PATIENT_NO
-                    FROM
-                        [dbo].[PAT_FOLLOW_UP_RESULT] a
-                    WHERE
-                        a.SD_ITEM_CODE= 'YXA_O_257' -- 随访死亡日期
-                        AND a.SD_ITEM_CODE!= ''
-                        AND a.PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )
-
-                        UNION
-
-                    -- 有 TNM 分期的患者
-                    SELECT
-                        ret.PATIENT_NO
-                    FROM (
-
-                        SELECT
-                            a.PATIENT_NO,
-                                ( SELECT SD_ITEM_VALUE FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE PATIENT_NO = a.PATIENT_NO AND SD_ITEM_CODE = 'YXA_O_220' AND SD_ITEM_VALUE != '' ) AS 'T',
-
-                                (SELECT (CASE
-                                                        WHEN SD_ITEM_VALUE <= 0 THEN '0'
-                                                        WHEN SD_ITEM_VALUE <= 3 THEN '1'
-                                                        WHEN SD_ITEM_VALUE >= 4 THEN '2'
-                                                        ELSE '2'
-                                                    END)
-                                 FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE PATIENT_NO = a.PATIENT_NO AND SD_ITEM_CODE = 'YXA_O_222' AND SD_ITEM_VALUE != '') AS 'N',
-
-                                ( SELECT (CASE SD_ITEM_VALUE
-                                                        WHEN '1' THEN '1'
-                                                        WHEN '2' THEN '0'
-                                                        ELSE NULL
-                                                    END)
-                                    FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE PATIENT_NO = a.PATIENT_NO AND SD_ITEM_CODE = 'YXA_O_224' AND SD_ITEM_VALUE != '' ) AS 'M'
-
-                            FROM [dbo].[PAT_VISIT] AS a
-                            WHERE a.SD_CODE= 'YXA_O' AND a.SD_GROUP= '1'
-
-                    ) AS ret
-                    WHERE ret.T!='' AND ret.N!='' AND ret.M!=''`),
+                            AND a.SD_ITEM_CODE!= ''
+                            AND b.PATIENT_NO= a.PATIENT_NO
+                            AND a.PATIENT_NO IN (
+                            SELECT
+                                PATIENT_NO
+                            FROM
+                                [dbo].[PAT_SD_ITEM_RESULT]
+                            WHERE
+                                SD_ITEM_CODE = 'YXA_O_151'
+                                AND ( SD_ITEM_VALUE = '1' OR SD_ITEM_VALUE = '2' OR SD_ITEM_VALUE = '3' OR SD_ITEM_VALUE = '12' )
+                                AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )
+                            )
+                            AND DATEDIFF(
+                                mm,
+                                CONVERT ( VARCHAR ( 100 ), a.SD_ITEM_VALUE, 120 ),
+                                CONVERT ( VARCHAR ( 100 ), b.SD_ITEM_VALUE, 120 )
+                            ) <= '12'
+                            AND DATEDIFF(
+                                mm,
+                                CONVERT ( VARCHAR ( 100 ), a.SD_ITEM_VALUE, 120 ),
+                            CONVERT ( VARCHAR ( 100 ), b.SD_ITEM_VALUE, 120 )
+                            ) >= '0'
+                            ORDER BY a.PATIENT_NO`),
             retPatientNo = listPatientNo.recordset,
             len = retPatientNo.length
 
@@ -548,7 +527,7 @@ console.time("共用时")
     await handlePatFollowUpTreat()
     await handlePatFollowUpResult()
 
-    await saveCalcResult('百济-三年入组')
+    await saveCalcResult('三年入组')
     console.timeEnd("共用时")
     process.exit()
 }

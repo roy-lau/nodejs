@@ -90,8 +90,7 @@ const query_PAT_VISIT = async (patient_no) => {
 					'YXA_O_222',
 					'YXA_O_223',
 					'YXA_O_117',
-					'YXA_O_918'
-					)`),
+					'YXA_O_918')`),
                 ret_PAT_SD_ITEM_RESULT = list_PAT_SD_ITEM_RESULT.recordset
 
             for (let k = 0; k < ret_PAT_SD_ITEM_RESULT.length; k++) {
