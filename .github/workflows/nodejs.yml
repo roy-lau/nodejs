@@ -1,0 +1,26 @@
+name: electron-build
+
+on: 
+  push:
+    branches: 
+      - harsom
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x]
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@harsom
+        
+      - name: npm install, build
+        run: |
+          npm i
+          npm run electron:build --linux deb tar.xz
+        env:
+          CI: true
