@@ -31,7 +31,7 @@ jobs:
         run: |
           git config --global user.name "roy-lau"
           git config --global user.email "roylau_vip@163.com"
-          git clone $GH_REF .deploy_git
+          git clone https://$GH_REF .deploy_git
           cd .deploy_git
           git checkout harsom
           npm install && npm run electron:build --linux deb tar.xz
