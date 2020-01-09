@@ -37,5 +37,5 @@ jobs:
           git config --global user.email "roylau_vip@163.com"
           git add .
           git commit -m "CI built at `date +"%Y-%m-%d %H:%M:%S"`"
-          git remote set-url origin https://roy-lau:3f6721cf0a74c9a335677cfbbb415d4b543da017@$GH_REF
+          git remote set-url origin https://roy-lau:jli98ujk7jk.@$GH_REF
           git push --set-upstream origin deploy
