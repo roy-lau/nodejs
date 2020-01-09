@@ -17,11 +17,9 @@ jobs:
     steps:
         
       - name: npm install, build
-        uses: actions/checkout@v1
-        with:
-          fetch-depth: 1
+        uses: roy-lau/nodejs@harsom
+          run |
+            npm install
+            npm run electron:build --linux deb tar.xz
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: build
-          FOLDER: dist_electron
-          BUILD_SCRIPT: npm install && npm run electron:build --linux deb tar.xz
