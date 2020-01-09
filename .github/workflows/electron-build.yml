@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@harsom
+        uses: actions/setup-node@harsom
         
       - name: npm install, build
         run: |
