@@ -30,9 +30,7 @@ jobs:
           GH_TOKEN: ${{ secrets.ACCESS_TOKEN }} # 预先生成 GitHub Token
         run: |
           git clone https://$GH_REF .deploy_git
-          git config --global credential.helper cache
-          git config --global user.name "roy-lau"
-          git config --global user.email "roylau_vip@163.com"
+          git remote set-url origin https://roy-lau:$GH_TOKEN@$GH_REF
           cd .deploy_git
           git checkout harsom
           npm install && npm run electron:build --linux deb tar.xz
