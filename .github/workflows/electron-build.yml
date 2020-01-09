@@ -31,11 +31,11 @@ jobs:
         run: |
           git clone https://$GH_REF .deploy_git
           cd .deploy_git
-          git config --global user.name "roy-lau"
-          git config --global user.email "roylau_vip@163.com"
-          git remote set-url origin https://roy-lau:$GH_TOKEN@$GH_REF
           git checkout harsom
           npm install && npm run electron:build --linux deb tar.xz
           git add .
           git commit -m "CI built at `date +"%Y-%m-%d %H:%M:%S"`"
+          git config --global user.name "roy-lau"
+          git config --global user.email "roylau_vip@163.com"
+          git remote set-url origin https://roy-lau:$GH_TOKEN@$GH_REF
           git push
