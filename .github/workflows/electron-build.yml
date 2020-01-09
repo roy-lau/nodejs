@@ -1,19 +1,40 @@
-name: buildAndDeploy
+name: electron-build
+
 on: 
   push:
     branches: 
       - harsom
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest # 我们选择使用最新的ubuntu系统
-    steps:
-    - name: checkout
-      uses: actions/checkout@v1 # 将代码拷贝到虚机中
 
-    - name: buildAndDeploy
-      uses: JamesIves/github-pages-deploy-action@master
-      env:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }} # 使用刚新建的secret
-        BRANCH: gh-pages # 存放产物的分支名称
-        FOLDER: dist_electron # 存放build后产物的目录
-        BUILD_SCRIPT: npm install && npm run electron:build --linux deb tar.xz # 执行的命令
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: npm install, build
+        run: npm install && npm run electron:build --linux deb tar.xz
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Deploy # 发布
+        env:
+          GH_REF: github.com/nodejs/roy-lau.github.io.git # GitHub 仓库 SSH 地址
+          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }} # 预先生成 GitHub Token
+        run: |
+          git config --global user.name "roy-lau"
+          git config --global user.email "roylau_vip@163.com"
+          git clone https://${GH_REF} .deploy_git
+          cd .deploy_git
+          git checkout harsom
+          npm install && npm run electron:build --linux deb tar.xz
+          git add .
+          git commit -m "CI built at `date +"%Y-%m-%d %H:%M:%S"`"
+          git push --force --quiet "https://${GH_TOKEN}@${GH_REF}"
