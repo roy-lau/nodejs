@@ -1,0 +1,24 @@
+name: electron-build
+
+on: 
+  push:
+    branches: 
+      - harsom
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x, 12.x]
+
+    steps:
+        
+      - name: npm install, build
+        run: |
+          npm i
+          npm run electron:build --linux deb tar.xz
+        env:
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
