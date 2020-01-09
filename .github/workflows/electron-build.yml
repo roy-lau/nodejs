@@ -15,9 +15,11 @@ jobs:
         node-version: [10.x, 12.x]
 
     steps:
-        
+      - name: Checkout
+        uses: actions/checkout@build
+        with:
+          fetch-depth: 1
       - name: npm install, build
-        uses: roy-lau/nodejs@harsom
           run |
             npm install
             npm run electron:build --linux deb tar.xz
