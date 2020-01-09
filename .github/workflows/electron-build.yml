@@ -3,7 +3,7 @@ name: electron-build
 on: 
   push:
     branches: 
-      - master
+      - harsom
 
 jobs:
   build:
