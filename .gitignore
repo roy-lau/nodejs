@@ -1,6 +1,12 @@
 <span style="font-size: small;">
-node_modules    
-./node_modules    
+node_modules
+./node_modules
 */node_modules
+dist
+./dist
+*/dist
+dist_electron
+./dist_electron
+*/dist_electron
 
 </span>

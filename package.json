@@ -24,9 +24,13 @@
     "@vue/cli-plugin-router": "^4.1.0",
     "@vue/cli-plugin-vuex": "^4.1.0",
     "@vue/cli-service": "^4.1.0",
+    "adm-zip": "^0.4.13",
     "electron": "^6.0.0",
+    "emailjs": "^2.2.0",
+    "fstream": "^1.0.12",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",
+    "tar": "^5.0.5",
     "vue-cli-plugin-electron-builder": "^1.4.4",
     "vue-template-compiler": "^2.6.10"
   },
