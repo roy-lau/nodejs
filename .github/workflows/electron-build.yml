@@ -20,8 +20,6 @@ jobs:
         with:
           fetch-depth: 1
       - name: npm install, build
-          run |
-            npm install
-            npm run electron:build --linux deb tar.xz
+        run: npm install && npm run electron:build --linux deb tar.xz
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
