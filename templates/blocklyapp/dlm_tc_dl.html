@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="{% static 'blockly-master/blockly_compressed.js'%}"></script>
+    <script src="{% static 'blockly-master/python_compressed.js'%}"></script>
+    <script src="{% static 'blockly-master/blocks_compressed.js'%}"></script>
+    <script src="{% static 'blockly-master/msg/js/zh-hans.js'%}"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'css/index.css'%}">
+    <title>用户</title>
+    <link rel="icon" href="{% static 'img/favicon.ico'%}" sizes="32x32">
+</head>
+<body>
+    <div id="dlm_body">
+      <div id="dlm_head">
+        <img id = "dlm_menu_icon_0" onclick="window.open(' /')"" style="width: 100px; height: 50px; padding-left: 55px; padding-top: 15px;float: left;" src="{% static 'img/dlm_icon.png'%}" alt="">
+        <div id="dlm_menu">
+          <div class="dlm_menu_icon" id="dlm_menu_icon_1" onclick="dlm_menu_btn(this)"></div>
+          <div class="dlm_menu_icon" id="dlm_menu_icon_2" onclick="dlm_menu_btn(this)" ></div>
+          <div class="dlm_menu_icon" id="dlm_menu_icon_3" onclick="dlm_menu_btn(this)" ></div>
+          <div class="dlm_menu_icon" id="dlm_menu_icon_4" onclick="dlm_menu_btn(this)" ></div>
+          <div class="dlm_menu_icon" id="dlm_menu_icon_9" onclick="dlm_menu_btn(this)" ></div>
+          <div class="dlm_menu_icon" id="dlm_menu_icon_8" onclick="dlm_menu_btn(this)" ></div>
+          <div class="dlm_menu_icon" id="dlm_menu_icon_7" onclick="window.open(' /dlm_sj_zy')" ></div>
+          <div class="dlm_menu_icon" id="dlm_menu_icon_6" onclick="window.open(' /dlm_Sample')" ></div>
+          <div class="dlm_menu_icon" id="dlm_menu_icon_5" onclick="dlm_menu_btn(this)" ></div>
+        </div>
+      </div>
+      <div id="dlm_yh" style="display: block;">
+        <div style="width: 100%;background-color: #ddd;">
+          <div style="width: 1200px;margin: 0 auto;">
+            <div style="width: 200px; margin-top: 20px;float: left;background-color: #fff;">
+              <div style="border-bottom: 1px solid rgba(241,241,241,1);"><div class="dlm_yh_box" onclick="window.open(' /dlm_yh_zp')">我的作品</div></div>   
+              <div style="border-bottom: 1px solid rgba(241,241,241,1);"><div class="dlm_yh_box"onclick="window.open(' /dlm_yh_bj')">我的班级</div></div> 
+              <div style="border-bottom: 1px solid rgba(241,241,241,1);"><div class="dlm_yh_box"onclick="window.open(' /dlm_yh_tz')">我的贴子</div></div> 
+              <div style="border-bottom: 1px solid rgba(241,241,241,1);"><div class="dlm_yh_box"onclick="window.open(' /dlm_yh_gz')">我的关注</div></div> 
+              <div style="border-bottom: 1px solid rgba(241,241,241,1);"><div class="dlm_yh_box"onclick="window.open(' /dlm_yh_sc')">我的收藏</div></div> 
+              <div style="border-bottom: 1px solid rgba(241,241,241,1);"><div class="dlm_yh_box"onclick="window.open(' /dlm_yh_xx')">我的消息</div></div> 
+              <div style="border-bottom: 1px solid rgba(241,241,241,1);"><div class="dlm_yh_box">退出登录</div></div>
+            </div>
+            <div  class="dml_yh_block" id="dml_yh_zp">
+              <div style="height: 50px;border-bottom: 1px solid rgba(241,241,241,1);background-color: #fff;margin-top: 20px;">
+                <div class="dlm_asmple_menu" id="dlm_asmple_menu_1" onclick="dlm_asmple_menu_click(this)" >我的空间站</div>
+                <div class="dlm_asmple_menu" id="dlm_asmple_menu_2" onclick="dlm_asmple_menu_click(this)" >校内作品</div>
+                <div class="dlm_asmple_menu" id="dlm_asmple_menu_3" onclick="dlm_asmple_menu_click(this)" >已发布作品</div>
+              </div>
+              <div id="dlm_asmple_menu_1_block" style="background-color: #fff;clear: both;display: block;">
+                <div style="margin: 0 auto;">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                </div>
+                <div style="margin: 0 auto;">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                </div>
+                <div style="margin: 0 auto;">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                </div>
+              </div>
+              <div id="dlm_asmple_menu_2_block" style="background-color: #fff;clear: both;display: none;">
+                <div style="margin: 0 auto;">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                </div>
+                <div style="margin: 0 auto;">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                </div>
+              </div>
+              <div id="dlm_asmple_menu_3_block" style="background-color: #fff;clear: both;display: none;">
+                <div style="margin: 0 auto;">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                  <img class="dlm_zp_k1" src="{%static 'img/dlm_zp_01.png'%}" style="margin: 14px 9px 14px 9px;" alt="">
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+    </div>
+      <div id="dlm_wj_menu" style="position: absolute; top: 80px;left: 200px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;" >
+        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)" >创建</ul>
+        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)" >打开云端项目</ul>
+        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">打开本地项目</ul>
+        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">保存到云端</ul>
+        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">保存到本地</ul>
+      </div>
+      <div id="dlm_zy_menu" style="position: absolute; top: 80px;left: 494px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;" >
+        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">图片库</ul>
+        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">音频库</ul>
+        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">文件库</ul>
+      </div>
+      <div id="dlm_yh_menu" style="position: absolute; top: 80px;right: 0px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;" >
+        <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_zp')">我的作品</ul>
+        <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_bj')">我的班级</ul>
+        <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_tz')">我的贴子</ul>
+        <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_sc')">我的收藏</ul>
+        <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_gz')">我的关注</ul>
+        <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_xx')">我的消息</ul>
+        <ul class="dlm_wj_menu_box" >退出登录</ul>
+      </div>
+      <div id="dl_dl" style="position: fixed;top: 0px;left: 0px;width: 100%;height: 100%;text-align: center;">
+        <div style="width: 100%;height: 100%; background-color: #000;opacity:0.6;float: left;text-align: center;"></div>
+        <div style="width: 600px;height: 438px; position: absolute;top:20%;left:50%;margin-left:-300px; margin-top:-50px;background-color: #fff;">
+            <img src="/static/img/dlm_dl_03.png" style="width: 600px;height: 80px; " alt="">
+            <div  class="dlm_dl_dl_sr" contenteditable=true onfocus="if(this.innerText=='用户名')this.innerText=''" onblur="if(this.innerText=='')this.innerText='用户名'">用户名</div>
+            <div class="dlm_dl_dl_sr" style="margin-top: 19px;" contenteditable=true onfocus="if(this.innerText=='密码')this.innerText=''" onblur="if(this.innerText=='')this.innerText='密码'">密码</div>
+            <div style="margin: 0 auto;margin-top: 26px; width:340px;height:42px;background:linear-gradient(94deg,rgba(116,164,243,1) 0%,rgba(90,114,222,1) 100%);border-radius:2px;color: #fff;line-height: 42px;" onclick=''>登录</div>
+            <div style="margin: 0 auto;margin-top: 42px; width:338px;height:40px; border: 1px solid #5A72DE; line-height: 42px;color:#5A72DE;" onclick=''>注册</div>
+        </div>
+
+    </div>
+    </div>
+    
+    <script src="{% static 'js/dlm_blockly.js'%}"></script>
+</body>
+</html>
