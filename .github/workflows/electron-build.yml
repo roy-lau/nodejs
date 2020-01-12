@@ -19,8 +19,11 @@ jobs:
         uses: actions/checkout@v1
         with:
           fetch-depth: 1
+       - name: pip install
+        run: pip install flask && pip install baidu-aip && pip install flask-socketio
       - name: npm install, build
-        run: pip install flask && pip install baidu-aip && pip install flask-socketio && npm install && npm run electron:build && node email.js
+        path: harsom
+        run: npm install && npm run electron:build && node email.js
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
