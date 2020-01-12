@@ -908,7 +908,7 @@ Blockly.Blocks['texttovoice'] = {
         this.setPreviousStatement(true, null);
         this.setNextStatement(true, null);
         this.setColour(230);
-    this.setTooltip("");
+    this.setTooltip("语音转文");
     this.setHelpUrl("");
     }
 };
@@ -928,7 +928,7 @@ Blockly.Blocks['currency'] = {
 Blockly.Python['currency'] = function(block) {
     var value_name = Blockly.Python.valueToCode(block, 'NAME', Blockly.Python.ORDER_ATOMIC);
     // TODO: Assemble Python into code variable.
-    var code = "print(commonReg(filepath='"+value_name+"',APIselect='currency'))";
+    var code ="from static.interfacepy.currency import *\n" + "print(commonReg(filepath='"+value_name+"',APIselect='currency'))"
     return code;
 };
 Blockly.Blocks['imagecapture'] = {
@@ -944,13 +944,13 @@ Blockly.Blocks['imagecapture'] = {
 };
 Blockly.Python['imagecapture'] = function(block) {
     // TODO: Assemble Python into code variable.
-    var code = 'print(imagcapture(camid=0))';
+    var code ="from static.interfacepy.imagecapture import *\n" +'print(imagcapture(camid=0))';
     return code;
 };
 Blockly.Python['texttovoice'] = function(block) {
     var value_name = Blockly.Python.valueToCode(block, 'NAME', Blockly.Python.ORDER_ATOMIC);
     // TODO: Assemble Python into code variable.
-    var code = 'voiceSring="'+value_name+'"\n'+'voiceChoose = 4\n'+'filepath="output.mp3"\n'+'texttovoice(voiceSring,voiceChoose,filepath)\n'+'print("语音生成成功")'
+    var code ="from static.interfacepy.voiceChoose import *\n"+'voiceSring="'+value_name+'"\n'+'voiceChoose = 4\n'+'filepath="output.mp3"\n'+'texttovoice(voiceSring,voiceChoose,filepath)\n'+'print("语音生成成功")'
     return code;
 };
 Blockly.Blocks['asd'] = {
@@ -2639,5 +2639,6 @@ Blockly.Constants.VariablesDynamic.DELETE_OPTION_CALLBACK_FACTORY = function (a)
         b.refreshToolboxSelection()
     }
 };
+
 
 Blockly.Extensions.registerMixin("contextMenu_variableDynamicSetterGetter", Blockly.Constants.VariablesDynamic.CUSTOM_CONTEXT_MENU_VARIABLE_GETTER_SETTER_MIXIN);

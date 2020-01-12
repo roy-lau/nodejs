@@ -7,6 +7,7 @@ let win
 function createWindow() {
 
     // call python
+    let subpy = require('child_process').spawn('python', ['./flaskserver.py']);
     // let subpy = require('child_process').spawn('python', ['./flaskserver.py']);
     let mainAddr = 'http://127.0.0.1:5000';
 
@@ -21,7 +22,7 @@ function createWindow() {
             }
         })
 
-        win.loadURL('http://127.0.0.1:5000');
+        win.loadURL(mainAddr);
         // 加载index.html文件
         // win.loadFile('index.html')
 
@@ -35,7 +36,7 @@ function createWindow() {
             // 与此同时，你应该删除相应的元素。
             win = null
             // 关闭 Python
-            // subpy.kill('SIGINT');
+            subpy.kill('SIGINT');
         })
     };
 
