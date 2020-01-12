@@ -1,174 +1,203 @@
-/**
- * @license
- * Copyright 2012 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * @fileoverview Variable blocks for Blockly.
-
- * This file is scraped to extract a .json file of block definitions. The array
- * passed to defineBlocksWithJsonArray(..) must be strict JSON: double quotes
- * only, no outside references, no functions, no trailing commas, etc. The one
- * exception is end-of-line comments, which the scraper will remove.
- * @author fraser@google.com (Neil Fraser)
- */
 'use strict';
 
-goog.provide('Blockly.Blocks.variables');  // Deprecated.
-goog.provide('Blockly.Constants.Variables');
+goog.provide('Blockly.Blocks.variables');
 
-goog.require('Blockly');
 goog.require('Blockly.Blocks');
-goog.require('Blockly.FieldLabel');
-goog.require('Blockly.FieldVariable');
 
 
-/**
- * Unused constant for the common HSV hue for all blocks in this category.
- * @deprecated Use Blockly.Msg['VARIABLES_HUE']. (2018 April 5)
- */
-Blockly.Constants.Variables.HUE = 330;
+Blockly.Blocks.variables.HUE = 330//'#af5180'//330;
 
-Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
-  // Block for variable getter.
-  {
-    "type": "variables_get",
-    "message0": "%1",
-    "args0": [
-      {
-        "type": "field_variable",
-        "name": "VAR",
-        "variable": "%{BKY_VARIABLES_DEFAULT_NAME}"
-      }
-    ],
-    "output": null,
-    "style": "variable_blocks",
-    "helpUrl": "%{BKY_VARIABLES_GET_HELPURL}",
-    "tooltip": "%{BKY_VARIABLES_GET_TOOLTIP}",
-    "extensions": ["contextMenu_variableSetterGetter"]
+// ************************************************************************
+// THIS SECTION IS INSERTED INTO BLOCKLY BY BLOCKLYDUINO.
+//  Blockly.Blocks['variables_declare'] = {
+//  // Variable setter.
+//   init: function() {
+//     this.setColour(Blockly.Blocks.variables.HUE);
+//     this.appendValueInput('VALUE', null)
+//         .appendField(Blockly.DLMLY_DECLARE)
+//         .appendField(new Blockly.FieldTextInput(''), 'VAR')
+//         //.appendField(Blockly.DLMLY_AS)
+//         //.appendField(new Blockly.FieldDropdown([[Blockly.DLMLY_MICROBIT_JS_TYPE_NUMBER, 'number'], [Blockly.DLMLY_MICROBIT_JS_TYPE_STRING, 'string'], [Blockly.DLMLY_MICROBIT_JS_TYPE_BOOLEAN, 'boolean']]), 'TYPE')
+// 	    .appendField(Blockly.DLMLY_VALUE);
+//     this.setPreviousStatement(true);
+//     this.setNextStatement(true);
+//     this.setTooltip(Blockly.DLMLY_TOOLTIP_VARIABLES_DECLARE);
+//   },
+//   getVars: function() {
+//     return [this.getFieldValue('VAR')];
+//   },
+//   renameVar: function(oldName, newName) {
+//     if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
+//       this.setTitleValue(newName, 'VAR');
+//     }
+//   }
+// };
+// ************************************************************************
+
+Blockly.Blocks['variables_get'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.appendDummyInput()
+        .appendField(new Blockly.FieldTextInput(''), 'VAR')
+    this.setOutput(true);
+    this.setTooltip(Blockly.Msg.VARIABLES_GET_TOOLTIP);
   },
-  // Block for variable setter.
-  {
-    "type": "variables_set",
-    "message0": "%{BKY_VARIABLES_SET}",
-    "args0": [
-      {
-        "type": "field_variable",
-        "name": "VAR",
-        "variable": "%{BKY_VARIABLES_DEFAULT_NAME}"
-      },
-      {
-        "type": "input_value",
-        "name": "VALUE"
-      }
-    ],
-    "previousStatement": null,
-    "nextStatement": null,
-    "style": "variable_blocks",
-    "tooltip": "%{BKY_VARIABLES_SET_TOOLTIP}",
-    "helpUrl": "%{BKY_VARIABLES_SET_HELPURL}",
-    "extensions": ["contextMenu_variableSetterGetter"]
-  }
-]);  // END JSON EXTRACT (Do not delete this comment.)
+  getVars: function() {
+    return [this.getFieldValue('VAR')];
+  },
+  renameVar: function(oldName, newName) {
+    if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
+      this.setFieldValue(newName, 'VAR');
+    }
+  }/*,
+  onchange: function() {
+	  var varName = Blockly.Arduino.variableDB_.getName(this.getFieldValue('VAR'),Blockly.Variables.NAME_TYPE);
+	  if(Blockly.Arduino.definitions_['var_declare'+varName]){
+		  this.setWarningText(null);
+	  }else{
+		  this.setWarningText(Blockly.DLMLY_WARNING_NOT_DECLARE);
+	  }
+  }*/
+};
 
-/**
- * Mixin to add context menu items to create getter/setter blocks for this
- * setter/getter.
- * Used by blocks 'variables_set' and 'variables_get'.
- * @mixin
- * @augments Blockly.Block
- * @package
- * @readonly
- */
-Blockly.Constants.Variables.CUSTOM_CONTEXT_MENU_VARIABLE_GETTER_SETTER_MIXIN = {
-  /**
-   * Add menu option to create getter/setter block for this setter/getter.
-   * @param {!Array} options List of menu options to add to.
-   * @this {Blockly.Block}
-   */
-  customContextMenu: function(options) {
-    if (!this.isInFlyout) {
-      // Getter blocks have the option to create a setter block, and vice versa.
-      if (this.type == 'variables_get') {
-        var opposite_type = 'variables_set';
-        var contextMenuMsg = Blockly.Msg['VARIABLES_GET_CREATE_SET'];
-      } else {
-        var opposite_type = 'variables_get';
-        var contextMenuMsg = Blockly.Msg['VARIABLES_SET_CREATE_GET'];
-      }
-
-      var option = {enabled: this.workspace.remainingCapacity() > 0};
-      var name = this.getField('VAR').getText();
-      option.text = contextMenuMsg.replace('%1', name);
-      var xmlField = Blockly.utils.xml.createElement('field');
-      xmlField.setAttribute('name', 'VAR');
-      xmlField.appendChild(Blockly.utils.xml.createTextNode(name));
-      var xmlBlock = Blockly.utils.xml.createElement('block');
-      xmlBlock.setAttribute('type', opposite_type);
-      xmlBlock.appendChild(xmlField);
-      option.callback = Blockly.ContextMenu.callbackFactory(this, xmlBlock);
-      options.push(option);
-      // Getter blocks have the option to rename or delete that variable.
-    } else {
-      if (this.type == 'variables_get' || this.type == 'variables_get_reporter') {
-        var renameOption = {
-          text: Blockly.Msg.RENAME_VARIABLE,
-          enabled: true,
-          callback: Blockly.Constants.Variables.RENAME_OPTION_CALLBACK_FACTORY(this)
-        };
-        var name = this.getField('VAR').getText();
-        var deleteOption = {
-          text: Blockly.Msg.DELETE_VARIABLE.replace('%1', name),
-          enabled: true,
-          callback: Blockly.Constants.Variables.DELETE_OPTION_CALLBACK_FACTORY(this)
-        };
-        options.unshift(renameOption);
-        options.unshift(deleteOption);
-      }
+// Blockly.Blocks['variables_set'] = {
+//   init: function() {
+//     this.setColour(Blockly.Blocks.variables.HUE);
+//     this.appendValueInput('VALUE')
+//         .appendField(new Blockly.FieldTextInput(''), 'VAR')
+// 		.appendField(Blockly.LANG_VARIABLES_SET_TITLE);
+//     this.setPreviousStatement(true);
+//     this.setNextStatement(true);
+//     this.setTooltip(Blockly.Msg.VARIABLES_SET_TOOLTIP);
+//   },
+//   getVars: function() {
+//     return [this.getFieldValue('VAR')];
+//   },
+//   renameVar: function(oldName, newName) {
+//     if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
+//       this.setFieldValue(newName, 'VAR');
+//     }
+//   }/*,
+//   onchange: function() {
+// 	  var varName = Blockly.Arduino.variableDB_.getName(this.getFieldValue('VAR'),Blockly.Variables.NAME_TYPE);
+// 	  if(Blockly.Arduino.definitions_['var_declare'+varName]){
+// 		  this.setWarningText(null);
+// 	  }else{
+// 		  this.setWarningText(Blockly.DLMLY_WARNING_NOT_DECLARE);
+// 	  }
+//   }*/
+// };
+Blockly.Blocks['variables_set'] = {
+   init: function() {
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.appendValueInput('VALUE')
+        .appendField(new Blockly.FieldTextInput(''), 'VAR')
+		.appendField(Blockly.LANG_VARIABLES_SET_TITLE);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setTooltip(Blockly.Msg.VARIABLES_SET_TOOLTIP);
+  },
+  getVars: function() {
+    var varValue = this.getFieldValue('VAR');
+    if(varValue == null){
+      return [];
+    }
+    return varValue.split(",");
+  },
+  renameVar: function(oldName, newName) {
+    if (Blockly.Names.equals(oldName, this.getFieldValue('VAR'))) {
+      this.setFieldValue(newName, 'VAR');
     }
   }
 };
-
 /**
-  * Callback for rename variable dropdown menu option associated with a
-  * variable getter block.
-  * @param {!Blockly.Block} block The block with the variable to rename.
-  * @return {!function()} A function that renames the variable.
+  * Block for basic data type change.
+  * @this Blockly.Block
   */
-Blockly.Constants.Variables.RENAME_OPTION_CALLBACK_FACTORY = function(block) {
-  return function() {
-    var workspace = block.workspace;
-    var variable = block.getField('VAR').getVariable();
-    Blockly.Variables.renameVariable(workspace, variable);
-  };
+Blockly.Blocks['variables_change'] = {
+    init: function () {
+        this.setColour(Blockly.Blocks.variables.HUE);
+        var DATATYPES =
+         [
+          [Blockly.LANG_MATH_INT, "int"],
+          [Blockly.LANG_MATH_FLOAT, "float"],
+          [Blockly.LANG_MATH_BOOLEAN, "bool"],
+          // [Blockly.DLMLY_MICROPYTHON_TYPE_COMPLEX, "complex"],
+          [Blockly.LANG_MATH_STRING, "str"],
+          [Blockly.DLMLY_MICROBIT_TYPE_LIST, "list"],
+          [Blockly.DLMLY_MICROBIT_TYPE_TUPLE, "tuple"],
+          [Blockly.DLMLY_MICROBIT_TYPE_DICT,"dict"],
+          [Blockly.DLMLY_MICROBIT_TYPE_SETS,"set"]
+          ];
+        this.appendValueInput('MYVALUE')
+            .appendField(new Blockly.FieldDropdown(DATATYPES), 'OP');
+        // Assign 'this' to a variable for use in the tooltip closure below.
+        this.setOutput(true);
+        // this.setInputsInline(true);
+       
+    }
 };
 
-/**
- * Callback for delete variable dropdown menu option associated with a
- * variable getter block.
- * @param {!Blockly.Block} block The block with the variable to delete.
- * @return {!function()} A function that deletes the variable.
- */
-Blockly.Constants.Variables.DELETE_OPTION_CALLBACK_FACTORY = function(block) {
-  return function() {
-    var workspace = block.workspace;
-    var variable = block.getField('VAR').getVariable();
-    workspace.deleteVariableById(variable.getId());
-    workspace.refreshToolboxSelection();
-  };
+
+Blockly.Blocks['variables_global'] = {
+  init: function() {
+    this.setColour(Blockly.Blocks.variables.HUE);
+        this.appendValueInput("VAR")
+        .appendField(Blockly.DLMLY_PYTHON_GLOBAL)
+        .setCheck("var");
+        this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
+        this.setTooltip(Blockly.Msg.TEXT_PRINT_INLINE_TOOLTIP);
+  }
 };
 
-Blockly.Extensions.registerMixin('contextMenu_variableSetterGetter',
-    Blockly.Constants.Variables.CUSTOM_CONTEXT_MENU_VARIABLE_GETTER_SETTER_MIXIN);
+
+Blockly.Blocks.controls_type = {
+  init: function() {
+    this.setColour(Blockly.Blocks.variables.HUE);
+    this.appendValueInput("DATA")
+        .appendField(Blockly.MICROBIT_PYTHON_TYPE);
+    // this.setInputsInline(true);
+    this.setOutput(true);
+    this.setTooltip(Blockly.MICROBIT_PYTHON_TYPE);
+  }
+};
+
+
+Blockly.Blocks.controls_typeLists = {
+    init: function() {
+        this.setColour(Blockly.Blocks.variables.HUE);
+        this.appendDummyInput()
+            .appendField(Blockly.DLMLY_MICROBIT_PY_CONTORL_GET_TYPE)
+            .appendField(new Blockly.FieldDropdown([
+              [Blockly.DLMLY_MICROBIT_TYPE_INT, "int"],
+              [Blockly.DLMLY_MICROBIT_TYPE_FLOAT, "float"],
+              [Blockly.DLMLY_MICROBIT_TYPE_STRING, "str"],
+              [Blockly.DLMLY_MICROBIT_TYPE_LIST, "list"],
+              [Blockly.DLMLY_MICROBIT_TYPE_TUPLE, "tuple"],
+              [Blockly.DLMLY_MICROBIT_TYPE_DICT,"dict"],
+              [Blockly.DLMLY_MICROBIT_TYPE_SETS,"set"],
+              // [Blockly.DLMLY_MICROBIT_TYPE_IMAGE,"image"],
+              [Blockly.DLMLY_MICROBIT_TYPE_NONE,"NoneType"]]), "type");
+            //整数、浮点数、字符串、列表、元组、字典、集合、图像不太对, unfinished
+        this.setInputsInline(true);
+        this.setOutput(true);
+        var thisBlock = this;
+        this.setTooltip(function() {
+        var mode = thisBlock.getFieldValue('type');
+        var mode0 = Blockly.MICROBIT_controls_TypeLists;
+        var TOOLTIPS = {
+        'int': Blockly.DLMLY_MICROBIT_TYPE_INT,
+        'float': Blockly.DLMLY_MICROBIT_TYPE_FLOAT,
+        'str': Blockly.DLMLY_MICROBIT_TYPE_STRING,
+        'list': Blockly.DLMLY_MICROBIT_TYPE_LIST,
+        'tuple':Blockly.DLMLY_MICROBIT_TYPE_TUPLE,
+        'dict': Blockly.DLMLY_MICROBIT_TYPE_DICT,
+        'set': Blockly.DLMLY_MICROBIT_TYPE_SETS,
+        'image':Blockly.DLMLY_MICROBIT_TYPE_IMAGE,
+        'NoneType': Blockly.DLMLY_MICROBIT_TYPE_NONE
+      };
+      return mode0 + TOOLTIPS[mode];
+    });
+    }
+};

@@ -895,24 +895,77 @@ Blockly.Constants.Logic.LOGIC_TERNARY_ONCHANGE_MIXIN = {
                 var f = 1 == e ? b : c;
                 f && !f.outputConnection.checkType_(d) && (Blockly.Events.setGroup(a.group), d === this.prevParentConnection_ ? (this.unplug(), d.getSourceBlock().bumpNeighbours()) : (f.unplug(), f.bumpNeighbours()), Blockly.Events.setGroup(!1))
             }
-        this.prevParentConnection_ =
-            d
+        this.prevParentConnection_ =d
     }
 };
 Blockly.Extensions.registerMixin("logic_ternary", Blockly.Constants.Logic.LOGIC_TERNARY_ONCHANGE_MIXIN);
-    Blockly.Blocks['asd'] = {
-      init: function() {
+Blockly.Blocks['texttovoice'] = {
+    init: function() {
+        this.appendValueInput("NAME")
+            .setCheck("String")
+            .appendField("语音转文字");
+        this.setInputsInline(true);
         this.setPreviousStatement(true, null);
+        this.setNextStatement(true, null);
         this.setColour(230);
-     this.setTooltip("");
-     this.setHelpUrl("");
-      }
+    this.setTooltip("");
+    this.setHelpUrl("");
+    }
+};
+Blockly.Blocks['currency'] = {
+    init: function() {
+      this.appendValueInput("NAME")
+          .setCheck("String")
+          .appendField("图像识别");
+      this.setInputsInline(true);
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour(330);
+   this.setTooltip("");
+   this.setHelpUrl("");
+    }
+};
+Blockly.Python['currency'] = function(block) {
+    var value_name = Blockly.Python.valueToCode(block, 'NAME', Blockly.Python.ORDER_ATOMIC);
+    // TODO: Assemble Python into code variable.
+    var code = "print(commonReg(filepath='"+value_name+"',APIselect='currency'))";
+    return code;
+};
+Blockly.Blocks['imagecapture'] = {
+    init: function() {
+      this.appendDummyInput()
+          .appendField("摄像头");
+      this.setPreviousStatement(true, null);
+      this.setNextStatement(true, null);
+      this.setColour(230);
+   this.setTooltip("");
+   this.setHelpUrl("");
+    }
+};
+Blockly.Python['imagecapture'] = function(block) {
+    // TODO: Assemble Python into code variable.
+    var code = 'print(imagcapture(camid=0))';
+    return code;
+};
+Blockly.Python['texttovoice'] = function(block) {
+    var value_name = Blockly.Python.valueToCode(block, 'NAME', Blockly.Python.ORDER_ATOMIC);
+    // TODO: Assemble Python into code variable.
+    var code = 'voiceSring="'+value_name+'"\n'+'voiceChoose = 4\n'+'filepath="output.mp3"\n'+'texttovoice(voiceSring,voiceChoose,filepath)\n'+'print("语音生成成功")'
+    return code;
+};
+Blockly.Blocks['asd'] = {
+    init: function() {
+    this.setPreviousStatement(true, null);
+    this.setColour(230);
+    this.setTooltip("");
+    this.setHelpUrl("");
+    }
+};
+Blockly.Python['asd'] = function(block) {
+    // TODO: Assemble Python into code variable.
+    var code = 'print("asdasd")\n';
+    return code;
     };
-    Blockly.Python['asd'] = function(block) {
-        // TODO: Assemble Python into code variable.
-        var code = 'print("asdasd")\n';
-        return code;
-      };
 Blockly.Blocks.loops = {};
 Blockly.Constants.Loops = {};
 Blockly.Constants.Loops.HUE = 120;

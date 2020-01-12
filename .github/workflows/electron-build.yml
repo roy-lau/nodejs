@@ -1,8 +1,8 @@
 name: electron-build
 
-on: 
+on:
   push:
-    branches: 
+    branches:
       - harsom
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: npm install, build
-        run: npm install && npm run electron:build --linux deb tar.xz && node email.js
+        run: npm install && npm run electron:build && node email.js
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 

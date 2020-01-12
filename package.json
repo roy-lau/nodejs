@@ -1,0 +1,24 @@
+{
+  "name": "harsom",
+  "version": "1.0.0",
+  "description": "a electron project",
+  "main": "app.js",
+  "scripts": {
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "electron:build": "electron-builder --linux deb tar.xz"
+  },
+  "keywords": [],
+  "author": "Roy",
+  "license": "ISC",
+  "dependencies": {
+    "adm-zip": "^0.4.13",
+    "emailjs": "^2.2.0",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.5"
+  },
+  "devDependencies": {
+    "electron": "^6.1.7",
+    "electron-builder": "^21.2.0"
+  }
+}

@@ -77,6 +77,4 @@ def voiceTotext(appId=APP_ID, apiKey=API_KEY, secretKey=SECRET_KEY, lan='ch', pa
     lan_id = switch_lan(lan)
     start_time = time.time()
     try:
-        ret = client.asr(get_file_content(path), 'pcm', 16000, {'dev_pid': lan_id,
-
-                                                                })
+        ret = client.asr(get_file_content(path), 'pcm', 16000, {'dev_pid': lan_id,})

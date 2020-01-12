@@ -1,6 +1,16 @@
 var run = false
 var boxid = []
-
+$(document).ready(function(){
+    var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
+    socket.on('my response', function(msg) {
+        $('#dlm_code').append('<p>Received: ' + msg.data + '</p>');
+    });
+    $('#dlm_runbtn').click(function(event) {
+        var code = Blockly.Python.workspaceToCode(demoWorksplace);
+        socket.emit('myevent', {data: code});
+        return false;
+    });
+});
 function dlm_menu_btn(a) {
     switch (a.id) {
         case 'dlm_menu_icon_0':
@@ -167,47 +177,35 @@ function dlm_yx_asd(){
 }
 
 
-function ajaxtj(e){
-    Blockly.Python.addReservedWords('code');
-    var code = Blockly.Python.workspaceToCode(demoWorksplace);
-    var s = {'code':code}
-    $.ajax({
-        url:"http://127.0.0.1:5000/recv",    //请求的url地址
-        dataType:"text",   //返回格式为json
-        async:true,//请求是否异步，默认为异步，这也是ajax重要特性
-        data:s,    //参数值
-        type:"POST",   //请求方式
-        beforeSend:function(){
-            //请求前的处理
-        },
-        success:function(req){
-            //请求成功时处理
-            // var selList = document.getElementsByClassName('selectBox')
-            // var p =req
-            // var j =0
-            // for(var i = 0; i <selList.length;i++){
-            //     // var index = selList[i].selectedIndex
-            //     if(p.slt[j]==i){
-            //         selList[i].selectedIndex = 1
-            //         j++
-            //     }
-            // }
-            // var s = JSON.parse(req)
-            alert(req)
-            // var ss = document.getElementsByClassName('autographDiv')
-            // var sss = document.createElement('img')
-            // sss.src = "data:" + s.asd[0] + "," + s.asd[1]
-            // var str = "data:" + s.asd[0] + "," + s.asd[1]
-            // ss[1].innerHTML = "<img src = "+str+">"
-            document.getElementById('dlm_code').innerHTML=req
+// function ajaxtj(e){
+//     Blockly.Python.addReservedWords('code');
+//     var code = Blockly.Python.workspaceToCode(demoWorksplace);
+//     // JSON.stringify(s)
+//     $.ajax({
+//         url:"http://127.0.0.1:5000/recv",    //请求的url地址
+//         dataType:"text",   //返回格式为json
+//         async:true,//请求是否异步，默认为异步，这也是ajax重要特性
+//         data:code,    //参数值
+//         type:"POST",   //请求方式
+//         beforeSend:function(){
+//         //         
+//         },
+//         success:function(req){
+//             // req = JSON.parse(req)
+//             document.getElementById('dlm_code').innerHTML=req
 
-        },
-        complete:function(){
-            //请求完成的处理
-        },
-        error:function(req){
-            //请求出错处理
-        console.log(req)
-        }
-    });
+//         },
+//         complete:function(){
+//             //请求完成的处理
+//         },
+//         error:function(req){
+//             //请求出错处理
+//         }
+//     });
+// }
+
+
+function cclear(){
+    var s = document.getElementById('dlm_code')
+    s.innerHTML=''
 }

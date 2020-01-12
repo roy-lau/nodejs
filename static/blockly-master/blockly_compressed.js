@@ -9823,19 +9823,19 @@ Blockly.tree.TreeNode.prototype.getCalculatedIconClass = function () {
     // if(this.content_=='Logic'){
     //     return b.cssTreeIcon
     // }
-    switch (this.content_) {
-        case 'Logic':
-            return b.cssTreeIcon1
-            break;
-        case 'Loops':
-            return b.cssTreeIcon2
-    }
+    // switch (this.content_) {
+    //     case 'Logic':
+    //         return b.cssTreeIcon1
+    //         break;
+    //     case 'Loops':
+    //         return b.cssTreeIcon2
+    // }
     
-    // if (this.hasChildren()) {
-    //     if (a && b.cssExpandedFolderIcon) return b.cssTreeIcon + " " + b.cssExpandedFolderIcon;
-    //     if (!a && b.cssCollapsedFolderIcon) return b.cssTreeIcon + " " + b.cssCollapsedFolderIcon
-    // } else if (b.cssFileIcon) return b.cssTreeIcon + " " + b.cssFileIcon;
-    // return ""
+    if (this.hasChildren()) {
+        if (a && b.cssExpandedFolderIcon) return b.cssTreeIcon + " " + b.cssExpandedFolderIcon;
+        if (!a && b.cssCollapsedFolderIcon) return b.cssTreeIcon + " " + b.cssCollapsedFolderIcon
+    } else if (b.cssFileIcon) return b.cssTreeIcon + " " + b.cssFileIcon;
+    return ""
 };
 Blockly.tree.TreeNode.prototype.onClick_ = function (a) {
     this.hasChildren() && this.isUserCollapsible() ? (this.toggle(), this.select()) : this.isSelected() ? this.getTree().setSelectedItem(null) : this.select();
@@ -11114,7 +11114,7 @@ Blockly.Flyout.prototype.MARGIN = 8;
 Blockly.Flyout.prototype.GAP_X = 3 * Blockly.Flyout.prototype.MARGIN;
 Blockly.Flyout.prototype.GAP_Y = 3 * Blockly.Flyout.prototype.MARGIN;
 Blockly.Flyout.prototype.SCROLLBAR_PADDING = 2;
-Blockly.Flyout.prototype.width_ = 0;
+Blockly.Flyout.prototype.width_ = 2000;
 Blockly.Flyout.prototype.height_ = 0;
 Blockly.Flyout.prototype.dragAngleRange_ = 70;
 Blockly.Flyout.prototype.createDom = function (a) {
@@ -11723,7 +11723,6 @@ Blockly.Generator.prototype.blockToCode = function (a, b) {
     if (!a) return "";
     if (!a.isEnabled()) return b ? "" : this.blockToCode(a.getNextBlock());
     var c = this[a.type];
-    console.log(a.type)
     if ("function" != typeof c) throw Error('Language "' + this.name_ + '" does not know how to generate  code for block type "' + a.type + '".');
     c = c.call(a, a);
     if (Array.isArray(c)) {
@@ -13476,7 +13475,7 @@ Blockly.Toolbox = function (a) {
         cssHideRoot: "blocklyHidden",
         cssTreeRow: "blocklyTreeRow",
         cssItemLabel: "blocklyTreeLabel",
-        cssTreeIcon1: "blocklyTreeIcon1",
+        cssTreeIcon: "blocklyTreeIcon",
         cssTreeIcon2: "blocklyTreeIcon2",
         cssExpandedFolderIcon: "blocklyTreeIconOpen",
         cssFileIcon: "blocklyTreeIconNone",
@@ -13682,7 +13681,7 @@ Blockly.Toolbox.prototype.addColour_ = function (a) {
     for (var b = 0, c; c = a[b]; b++) {
         var d = c.getRowElement();
         if (d) {
-            var e = this.hasColours_ ? "8px solid " + (c.hexColour || "#ddd") : "none";
+            var e = this.hasColours_ ? "0px solid " + (c.hexColour || "#ddd") : "none";
             this.workspace_.RTL ? d.style.borderRight = e : d.style.borderLeft = e
         }
         this.addColour_(c)
@@ -13717,11 +13716,11 @@ Blockly.Toolbox.TreeSeparator = function (a) {
     Blockly.tree.TreeNode.call(this, null, "", a)
 };
 Blockly.utils.object.inherits(Blockly.Toolbox.TreeSeparator, Blockly.tree.TreeNode);
-Blockly.Css.register([".blocklyToolboxDelete {", 'cursor: url("<<<PATH>>>/handdelete.cur"), auto;', "}", ".blocklyToolboxGrab {", 'cursor: url("<<<PATH>>>/handclosed.cur"), auto;', "cursor: grabbing;", "cursor: -webkit-grabbing;", "}", ".blocklyToolboxDiv {", "background-color: #fff;", "overflow-x: visible;", "overflow-y: auto;", "position: absolute;", "z-index: 70;", "-webkit-tap-highlight-color: transparent;","box-shadow:0px 0px 1px #ddd; ","width:100pt", "}", ".blocklyTreeRoot {", "padding: 0px 0;", "height:30px","}", ".blocklyTreeRoot:focus {", "outline: none;", "}", ".blocklyTreeRow {",
+Blockly.Css.register([".blocklyToolboxDelete {", 'cursor: url("<<<PATH>>>/handdelete.cur"), auto;', "}", ".blocklyToolboxGrab {", 'cursor: url("<<<PATH>>>/handclosed.cur"), auto;', "cursor: grabbing;", "cursor: -webkit-grabbing;", "}", ".blocklyToolboxDiv {", "background-color: #fff;", "overflow-x: visible;", "overflow-y: auto;", "position: absolute;", "z-index: 70;", "-webkit-tap-highlight-color: transparent;","box-shadow:0px 0px 1px #ddd; ","width:185px", "}", ".blocklyTreeRoot {", "padding: 0px 0;", "height:30px","}", ".blocklyTreeRoot:focus {", "outline: none;", "}", ".blocklyTreeRow {",
     "height: 50px;", "line-height: 35px;", "margin-bottom: 0px;", "padding-right: 8px;", "white-space: nowrap;", "text-align: center;","}", ".blocklyHorizontalTree {", "float: left;", "margin: 1px 5px 8px 0;", "}", ".blocklyHorizontalTreeRtl {", "float: right;", "margin: 1px 0 8px 5px;", "}", '.blocklyToolboxDiv[dir="RTL"] .blocklyTreeRow {', "margin-left: 8px;", "}", ".blocklyTreeRow:not(.blocklyTreeSelected):hover {", "background-color: #ddc;", "}", ".blocklyTreeSeparator {", "border-bottom: solid #e5e5e5 1px;", "height: 0;", "margin: 5px 0;",
-    "}", ".blocklyTreeSeparatorHorizontal {", "border-right: solid #e5e5e5 1px;", "width: 0;", "padding: 5px 0;", "margin: 0 5px;", "}", ".blocklyTreeIcon1 {", "background-image: url(static/img/blockly_btn_03.png);","background-position: -3px -15px;","height: 18px;", "vertical-align: middle;", "width: 25px;", "}",".blocklyTreeIcon2 {", "background-image: url(static/img/blockly_btn_05.png);","background-position: -3px -15px;","height: 18px;", "vertical-align: middle;", "width: 25px;", "}", ".blocklyTreeIconClosedLtr {", "background-position: -32px -1px;", "}", ".blocklyTreeIconClosedRtl {", "background-position: 0 -1px;", "}", ".blocklyTreeIconOpen {", "background-position: -16px -1px;", "}", ".blocklyTreeSelected>.blocklyTreeIconClosedLtr {",
+    "}", ".blocklyTreeSeparatorHorizontal {", "border-right: solid #e5e5e5 1px;", "width: 0;", "padding: 5px 0;", "margin: 0 5px;", "}","background-position: -3px -15px;","height: 18px;", "vertical-align: middle;", "width: 25px;", "}", ".blocklyTreeIconClosedLtr {", "background-position: -32px -1px;", "}", ".blocklyTreeIconClosedRtl {", "background-position: 0 -1px;", "}", ".blocklyTreeIconOpen {", "background-position: -16px -1px;", "}", ".blocklyTreeSelected>.blocklyTreeIconClosedLtr {",
     "background-position: -32px -17px;", "}", ".blocklyTreeSelected>.blocklyTreeIconClosedRtl {", "background-position: 0 -17px;", "}", ".blocklyTreeSelected>.blocklyTreeIconOpen {", "background-position: -16px -17px;", "}", ".blocklyTreeIconNone", ".blocklyTreeSelected>.blocklyTreeIconNone {", "background-position: -48px -1px;", "}", ".blocklyTreeLabel {", "cursor: default;", "font-family: sans-serif;", "font-size: 16px;", "padding: 0 3px;", "vertical-align: middle;", "}", ".blocklyToolboxDelete .blocklyTreeLabel {",
-    'cursor: url("<<<PATH>>>/handdelete.cur"), auto;', "}", ".blocklyTreeSelected .blocklyTreeLabel {", "color:#00f;", "}"
+    'cursor: url("<<<PATH>>>/handdelete.cur"), auto;', "}", ".blocklyTreeSelected .blocklyTreeLabel {", "color:#fff;", "}"
 ]);
 Blockly.Trashcan = function (a) {
     this.workspace_ = a;
@@ -13753,7 +13752,7 @@ Blockly.Trashcan.prototype.LID_HEIGHT_ = 16;
 Blockly.Trashcan.prototype.MARGIN_BOTTOM_ = 20;
 Blockly.Trashcan.prototype.MARGIN_SIDE_ = 20;
 Blockly.Trashcan.prototype.MARGIN_HOTSPOT_ = 10;
-Blockly.Trashcan.prototype.SPRITE_LEFT_ = 0;
+Blockly.Trashcan.prototype.SPRITE_LEFT_ = -350;
 Blockly.Trashcan.prototype.SPRITE_TOP_ = 32;
 Blockly.Trashcan.prototype.HAS_BLOCKS_LID_ANGLE = .1;
 Blockly.Trashcan.prototype.isOpen = !1;
@@ -13939,7 +13938,7 @@ Blockly.VariablesDynamic.flyoutCategoryBlocks = function (a) {
 Blockly.ZoomControls = function (a) {
     this.workspace_ = a
 };
-Blockly.ZoomControls.prototype.WIDTH_ = 32;
+Blockly.ZoomControls.prototype.WIDTH_ = 100;
 Blockly.ZoomControls.prototype.HEIGHT_ = 110;
 Blockly.ZoomControls.prototype.MARGIN_BOTTOM_ = 20;
 Blockly.ZoomControls.prototype.MARGIN_SIDE_ = 20;
@@ -14145,7 +14144,7 @@ Blockly.Themes.Dark = new Blockly.Theme(Blockly.Themes.Dark.defaultBlockStyles, 
 Blockly.Themes.Dark.setComponentStyle("workspace", "#1e1e1e");
 Blockly.Themes.Dark.setComponentStyle("toolbox", "#333");
 Blockly.Themes.Dark.setComponentStyle("toolboxText", "#fff");
-Blockly.Themes.Dark.setComponentStyle("flyout", "#252526");
+Blockly.Themes.Dark.setComponentStyle("flyout", "#fff");
 Blockly.Themes.Dark.setComponentStyle("flyoutText", "#ccc");
 Blockly.Themes.Dark.setComponentStyle("flyoutOpacity", 1);
 Blockly.Themes.Dark.setComponentStyle("scrollbar", "#797979");
