@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: pip install
-        run: pip3 install flask baidu-aip flask-socketio
+        run: pip install flask baidu-aip flask-socketio
       - name: npm install, build
         run: npm install && npm run build && node email.js
         env:
