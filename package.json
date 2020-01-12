@@ -16,7 +16,8 @@
   "build": {
     "electronDownload": {
       "mirror": "https://npm.taobao.org/mirrors/electron/"
-    }
+    },
+    "extraResources": "./"
   },
   "dependencies": {
     "adm-zip": "^0.4.13",
