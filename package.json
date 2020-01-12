@@ -4,13 +4,20 @@
   "description": "a electron project",
   "main": "app.js",
   "scripts": {
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder",
-    "electron:build": "electron-builder --linux deb tar.xz"
+    "dev": "electron app.js",
+    "build": "electron-builder",
+    "build:linux": "electron-builder --linux deb tar.xz",
+    "build:mac": "electron-builder --mac"
   },
   "keywords": [],
-  "author": "Roy",
+  "author": "Roy <897379293@qq.com>",
+  "homepage": "https:www.github.com",
   "license": "ISC",
+  "build": {
+    "electronDownload": {
+      "mirror": "https://npm.taobao.org/mirrors/electron/"
+    }
+  },
   "dependencies": {
     "adm-zip": "^0.4.13",
     "emailjs": "^2.2.0",

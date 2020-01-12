@@ -7,10 +7,19 @@ let win
 function createWindow() {
 
     // call python
-    let subpy = require('child_process').spawn('python', ['./flaskserver.py']);
-    // let subpy = require('child_process').spawn('python', ['./flaskserver.py']);
-    let mainAddr = 'http://127.0.0.1:5000';
+    let spawn = require('child_process').spawn,
+        subpy = spawn('python3', ['flaskserver.py']),
+        mainAddr = 'http://127.0.0.1:5000';
 
+    subpy.stdout.on('data', data => {
+        console.info('[py->]', data.toString());
+
+        // python3 启动后启动 electron
+        startUp();
+    })
+    subpy.stdout.on('close', (code, signal) => {
+        console.error(`py close: ${signal} ${code}`);
+    });
 
     function openWindow() {
         // 创建浏览器窗口。
@@ -43,18 +52,16 @@ function createWindow() {
     function startUp() {
         let rq = require('request-promise');
         rq(mainAddr)
-            .then(function(htmlString) {
-                console.log('server started!');
+            .then(htmlString => {
+                console.log('electron monitoreed python started!');
                 openWindow();
             })
-            .catch(function(err) {
-                //console.log('waiting for the server start...');
+            .catch(err => {
+                console.log('waiting for the Python start...');
                 startUp();
             });
     };
 
-    // fire!
-    startUp();
 }
 
 // Electron 会在初始化后并准备

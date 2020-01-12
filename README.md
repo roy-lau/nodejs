@@ -5,14 +5,18 @@
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+### run project
+
 ```
-yarn electron:serve
+yarn dev
 ```
 
-### Compiles and minifies for production
+### build
+
 ```
 yarn build
+yarn build:linux
+yarn build:mac
 ```
 
 ### 简介（迪乐姆）

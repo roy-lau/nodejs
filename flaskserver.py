@@ -1,6 +1,5 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
-from static.interfacepy.voiceChoose import *
 app = Flask(__name__)
 socketio = SocketIO(app)
 def print(s):
@@ -14,7 +13,7 @@ def test_message(message):
     exec(message['data'])
 @socketio.on('connect', namespace='/test')
 def test_connect():
-    emit('my response', {'data': 'Connected'})
+    emit('my response', {'data': '客户端准备就绪'})
 
 @socketio.on('disconnect', namespace='/test')
 def test_disconnect():

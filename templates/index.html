@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script src="./static/admin/js/vendor/jquery/jquery.min.js"></script>
+    <script>if (typeof module === 'object') {window.jQuery = window.$ = module.exports;};</script>
     <script src='static/blockly-master/blockly_compressed.js'></script>
     <script src='static/blockly-master/python_compressed.js'></script>
     <script src='static/blockly-master/blocks_compressed.js'></script>
-    <script src="static/blockly-master/blockly_uncompressed.js"></script>
     <script src='static/blockly-master/msg/js/zh-hans.js'></script>
-    <!-- <script src="//code.jquery.com/jquery-3.4.1.min.js"></script> -->
-    <script src="static/admin/js/vendor/jquery/jquery.min.js"></script>
+    
     <script src="static/js/socketio.js"></script>
     <link rel="stylesheet" href="static/css/color_dlm_python_advance.css">
 
@@ -72,6 +72,7 @@
           <block type="controls_if" ></block>
           <block type="controls_if">
             <mutation else="1"></mutation>
+          </block>
           </block>
           <block type="controls_if">
             <mutation elseif="1" else="1"></mutation>
@@ -178,7 +179,7 @@
         <sep></sep>
         <category name="文本" colour='%{BKY_LISTS_HUE}' >
           <block type="text">
-            <field name="TEXT">输入文字</field>
+            <field name="TEXT">输入文字</field>  
           </block>
         </category>
         <category name="随机">
@@ -378,17 +379,24 @@
             </next>
           </block>
         </category>
-        <category name="硬件">
-          <block type="texttovoice" ></block>
-          <block type="currency" >
+        <category name="硬件"">
+          <block type="texttovoice" >
             <value name="NAME">
               <block type="text">
-                <field name="TEXT">输入文件路径</field>
+                <field name="TEXT">输入文字</field>  
               </block>
             </value>
           </block>
-          <block type="imagecapture" ></block>
+          <block type="currency" >
+            <value name="NAME">
+              <block type="text">
+                <field name="TEXT">输入文件路径</field>  
+              </block>
+            </value>
+          </block>
+          <block type="imagecapture"></block>
         </category>
+        
     </xml>
 
     <script>

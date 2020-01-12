@@ -1,11 +1,13 @@
 var run = false
 var boxid = []
+
 $(document).ready(function(){
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
     socket.on('my response', function(msg) {
-        $('#dlm_code').append('<p>Received: ' + msg.data + '</p>');
+        $('#dlm_code').append('<p>' + msg.data + '</p>');
     });
     $('#dlm_runbtn').click(function(event) {
+        $('#dlm_code').text('')
         var code = Blockly.Python.workspaceToCode(demoWorksplace);
         socket.emit('myevent', {data: code});
         return false;
