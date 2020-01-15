@@ -7,10 +7,13 @@ def print(s):
 @app.route('/')
 def index():
     return render_template('index.html')
-
 @socketio.on('myevent', namespace='/test')
 def test_message(message):
-    exec(message['data'])
+    
+    try:
+        exec(message['data'])
+    except Exception as r:
+        print('错误:'+repr(r))
 @socketio.on('connect', namespace='/test')
 def test_connect():
     emit('my response', {'data': '客户端准备就绪'})

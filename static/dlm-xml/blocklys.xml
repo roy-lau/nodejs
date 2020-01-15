@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xml>
+    <category name='输入/输出' colour='20'>
+       <block type="inout_print">
+         <value name="VAR"></value>
+       </block>
+      <block type="inout_print_inline">
+         <value name="VAR"></value>
+      </block>
+      <block type="inout_print_end"></block>
+      <block type="inout_type_input"></block>
+      <block type="inout_print_many"></block>
+      <block type="inout_print_container"></block>
+      <block type="inout_print_item"></block>
+
+    </category>
+    <category name="控制" colour="120">
+      <block type="logic_compare"></block>
+      <block type="logic_operation"></block>
+      <block type="logic_negate"></block>
+      <block type="logic_boolean"></block>
+      <block type="logic_null"></block>
+      <block type="logic_ternary"></block>
+    </category>
+    <category name="数学" colour="230">
+      <block type="math_number"></block>
+      <block type="math_arithmetic"></block>
+      <block type="math_single"></block>
+      <block type="math_constant"></block>
+      <block type="math_number_property"></block>
+      <block type="math_change"></block>
+      <block type="math_round"></block>
+      <block type="math_trig"></block>
+      <block type="math_on_list"></block>
+      <block type="math_modulo"></block>
+      <block type="math_constrain"></block>
+      <block type="math_random_int"></block>
+      <block type="math_random_float"></block>
+      <block type="math_atan2"></block>
+    </category>
+    <category name="逻辑" colour="210">
+      <block type="controls_if"></block>
+      <block type="controls_ifelse"></block>
+      <block type="logic_compare"></block>
+      <block type="logic_operation"></block>
+      <block type="logic_negate"></block>
+      <block type="logic_boolean"></block>
+      <block type="logic_null"></block>
+      <block type="logic_ternary"></block>
+    </category>
+    <category name="文本" colour="160">
+      <block type="text_join"></block>
+      <block type="text_append"></block>
+      <block type="text_length"></block>
+      <block type="text_isEmpty"></block>
+      <block type="text_indexOf"></block>
+      <block type="text_charAt"></block>
+      <block type="text_getSubstring"></block>
+      <block type="text_changeCase"></block>
+      <block type="text_trim"></block>
+      <block type="text_print"></block>
+      <block type="text_prompt_ext"></block>
+      <block type="text_prompt"></block>
+      <block type="text_count"></block>
+      <block type="text_replace"></block>
+      <block type="text_reverse"></block>
+    </category>
+    <category name="列表" colour="260">
+      <block type="lists_create_empty"></block>
+      <block type="lists_create_with"></block>
+      <block type="lists_repeat"></block>
+      <block type="lists_length"></block>
+      <block type="lists_isEmpty"></block>
+      <block type="lists_indexOf"></block>
+      <block type="lists_getIndex"></block>
+      <block type="lists_setIndex"></block>
+      <block type="lists_getSublist"></block>
+      <block type="lists_sort"></block>
+      <block type="lists_split"></block>
+      <block type="lists_reverse"></block>
+    </category>
+    <category name="元组" custom="PROCEDURE" colour="195">
+    </category>
+    <category name="字典" colour='345' >
+      <block type="text">
+        <field name="TEXT">输入文字</field>
+      </block>
+    </category>
+    <category name="集合" colour='100'>
+      <block type="procedures_defnoreturn">
+        <mutation>
+          <arg name="list"></arg>
+        </mutation>
+        <field name="NAME">randomize</field>
+        <statement name="STACK">
+          <block type="controls_for" inline="true">
+            <field name="VAR">x</field>
+            <value name="FROM">
+              <block type="math_number">
+                <field name="NUM">1</field>
+              </block>
+            </value>
+            <value name="TO">
+              <block type="lists_length" inline="false">
+                <value name="VALUE">
+                  <block type="variables_get">
+                    <field name="VAR">list</field>
+                  </block>
+                </value>
+              </block>
+            </value>
+            <value name="BY">
+              <block type="math_number">
+                <field name="NUM">1</field>
+              </block>
+            </value>
+            <statement name="DO">
+              <block type="variables_set" inline="false">
+                <field name="VAR">y</field>
+                <value name="VALUE">
+                  <block type="math_random_int" inline="true">
+                    <value name="FROM">
+                      <block type="math_number">
+                        <field name="NUM">1</field>
+                      </block>
+                    </value>
+                    <value name="TO">
+                      <block type="lists_length" inline="false">
+                        <value name="VALUE">
+                          <block type="variables_get">
+                            <field name="VAR">list</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                  </block>
+                </value>
+                <next>
+                  <block type="variables_set" inline="false">
+                    <field name="VAR">temp</field>
+                    <value name="VALUE">
+                      <block type="lists_getIndex" inline="true">
+                        <mutation statement="false" at="true"></mutation>
+                        <field name="MODE">GET</field>
+                        <field name="WHERE">FROM_START</field>
+                        <value name="AT">
+                          <block type="variables_get">
+                            <field name="VAR">y</field>
+                          </block>
+                        </value>
+                        <value name="VALUE">
+                          <block type="variables_get">
+                            <field name="VAR">list</field>
+                          </block>
+                        </value>
+                      </block>
+                    </value>
+                    <next>
+                      <block type="lists_setIndex" inline="false">
+                        <value name="AT">
+                          <block type="variables_get">
+                            <field name="VAR">y</field>
+                          </block>
+                        </value>
+                        <value name="LIST">
+                          <block type="variables_get">
+                            <field name="VAR">list</field>
+                          </block>
+                        </value>
+                        <value name="TO">
+                          <block type="lists_getIndex" inline="true">
+                            <mutation statement="false" at="true"></mutation>
+                            <field name="MODE">GET</field>
+                            <field name="WHERE">FROM_START</field>
+                            <value name="AT">
+                              <block type="variables_get">
+                                <field name="VAR">x</field>
+                              </block>
+                            </value>
+                            <value name="VALUE">
+                              <block type="variables_get">
+                                <field name="VAR">list</field>
+                              </block>
+                            </value>
+                          </block>
+                        </value>
+                        <next>
+                          <block type="lists_setIndex" inline="false">
+                            <value name="AT">
+                              <block type="variables_get">
+                                <field name="VAR">x</field>
+                              </block>
+                            </value>
+                            <value name="LIST">
+                              <block type="variables_get">
+                                <field name="VAR">list</field>
+                              </block>
+                            </value>
+                            <value name="TO">
+                              <block type="variables_get">
+                                <field name="VAR">temp</field>
+                              </block>
+                            </value>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </statement>
+          </block>
+        </statement>
+      </block>
+    </category>
+    <category name="存储" colour='0'>
+      <block type="text_print">
+        <value name="TEXT">
+          <block type="text">
+            <field name="TEXT">'Twas brillig, and the slithy toves</field>
+          </block>
+        </value>
+        <next>
+          <block type="text_print">
+            <value name="TEXT">
+              <block type="text">
+                <field name="TEXT">  Did gyre and gimble in the wabe:</field>
+              </block>
+            </value>
+            <next>
+              <block type="text_print">
+                <value name="TEXT">
+                  <block type="text">
+                    <field name="TEXT">All mimsy were the borogroves,</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="text_print">
+                    <value name="TEXT">
+                      <block type="text">
+                        <field name="TEXT">  And the mome raths outgrabe.</field>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+      <block type="text_print">
+        <value name="TEXT">
+          <block type="text">
+            <field name="TEXT">"Beware the Jabberwock, my son!</field>
+          </block>
+        </value>
+        <next>
+          <block type="text_print">
+            <value name="TEXT">
+              <block type="text">
+                <field name="TEXT">  The jaws that bite, the claws that catch!</field>
+              </block>
+            </value>
+            <next>
+              <block type="text_print">
+                <value name="TEXT">
+                  <block type="text">
+                    <field name="TEXT">Beware the Jubjub bird, and shun</field>
+                  </block>
+                </value>
+                <next>
+                  <block type="text_print">
+                    <value name="TEXT">
+                      <block type="text">
+                        <field name="TEXT">  The frumious Bandersnatch!"</field>
+                      </block>
+                    </value>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </category>
+    <category name="数据" colour='180'>
+      <block type="texttovoice" >
+        <value name="NAME">
+          <block type="text">
+            <field name="TEXT">输入文字</field>
+          </block>
+        </value>
+      </block>
+      <block type="currency" >
+        <value name="NAME">
+          <block type="text">
+            <field name="TEXT">static/out.jpg</field>
+          </block>
+        </value>
+      </block>
+      <block type="imagecapture"></block>
+      <block type="voicetext"></block>
+    </category>
+    <category name="网络" colour='180'>
+      <block type="texttovoice" >
+        <value name="NAME">
+          <block type="text">
+            <field name="TEXT">输入文字</field>
+          </block>
+        </value>
+      </block>
+      <block type="currency" >
+        <value name="NAME">
+          <block type="text">
+            <field name="TEXT">static/out.jpg</field>
+          </block>
+        </value>
+      </block>
+      <block type="imagecapture"></block>
+      <block type="voicetext"></block>
+    </category>
+    <category name="S4A硬件" colour='180'>
+      <block type="texttovoice" >
+        <value name="NAME">
+          <block type="text">
+            <field name="TEXT">输入文字</field>
+          </block>
+        </value>
+      </block>
+      <block type="currency" >
+        <value name="NAME">
+          <block type="text">
+            <field name="TEXT">static/out.jpg</field>
+          </block>
+        </value>
+      </block>
+      <block type="imagecapture"></block>
+      <block type="voicetext"></block>
+    </category>
+    <category name="变量" colour='180'>
+      <block type="texttovoice" >
+        <value name="NAME">
+          <block type="text">
+            <field name="TEXT">输入文字</field>
+          </block>
+        </value>
+      </block>
+      <block type="currency" >
+        <value name="NAME">
+          <block type="text">
+            <field name="TEXT">static/out.jpg</field>
+          </block>
+        </value>
+      </block>
+      <block type="imagecapture"></block>
+      <block type="voicetext"></block>
+    </category>
+    <category name="函数" colour='180'>
+      <block type="texttovoice" >
+        <value name="NAME">
+          <block type="text">
+            <field name="TEXT">输入文字</field>
+          </block>
+        </value>
+      </block>
+      <block type="currency" >
+        <value name="NAME">
+          <block type="text">
+            <field name="TEXT">static/out.jpg</field>
+          </block>
+        </value>
+      </block>
+      <block type="imagecapture"></block>
+      <block type="voicetext"></block>
+    </category>
+</xml>
+
+

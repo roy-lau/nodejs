@@ -77,4 +77,13 @@ def voiceTotext(appId=APP_ID, apiKey=API_KEY, secretKey=SECRET_KEY, lan='ch', pa
     lan_id = switch_lan(lan)
     start_time = time.time()
     try:
-        ret = client.asr(get_file_content(path), 'pcm', 16000, {'dev_pid': lan_id,})
+        ret = client.asr(get_file_content(path), 'pcm', 16000, {'dev_pid': lan_id,
+
+                                                                })
+        ans = ret['result'][0]
+    except Exception as e:
+        ans = 'false,没有接收到有效的语音信号！'
+
+    # used_time = time.time() - start_time
+    return (ans,ret)
+    

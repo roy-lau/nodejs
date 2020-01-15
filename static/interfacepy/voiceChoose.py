@@ -12,5 +12,5 @@ def texttovoice(voiceString='我是迪乐姆',vocieChoose=3,filepath='output.mp3
 if __name__ == "__main__":
     voiceSring='您好请问火车站怎么走'
     voiceChoose = 4
-    filepath='output.mp3'
+    filepath='./MP3/output.mp3'
     texttovoice(voiceSring,voiceChoose,filepath)

@@ -31,5 +31,5 @@ def commonReg(app_id=APP_ID,api_key=API_KEY, secret_key=SECRET_KEY,filepath='exa
 
 
 
-if __name__=='__main__':
-    print(commonReg(filepath='/tmp/pycharm_project_466/trybest/example.jpg',APIselect='currency'))
+def dlmexe(s):
+    return str(commonReg(filepath=s,APIselect='currency'))

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="./static/admin/js/vendor/jquery/jquery.min.js"></script>
+    <script>if (typeof module === 'object') {window.jQuery = window.$ = module.exports;};</script>
+ <!--    <script src='static/blockly-master/blockly_compressed.js'></script>
+    <script src='static/blockly-master/python_compressed.js'></script>
+    <script src='static/blockly-master/blocks_compressed.js'></script>
+    <script src='static/blockly-master/msg/js/zh-hans.js'></script> -->
+
+    <script src='static/blockly/blockly.js'></script>
+    <script src='static/blockly/python.js'></script>
+    <script src='static/blockly/blocks.js'></script>
+    <script src='static/blockly/browser.js'></script>
+    <script src='static/blockly/core-browser.js'></script>
+    <script src='static/blockly/index.js'></script>
+    <script src='static/blockly/msg/zh-hans.js'></script>
+
+    <script src="static/js/dml_blocklu1.js"></script>
+    <script src="static/js/socketio.js"></script>
+    <link rel="stylesheet" href="static/css/color_dlm_python_advance.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href='static/css/index.css'>
+    <title>测试网页</title>
+    <link rel="icon" href='static/img/favicon.ico' sizes="32x32">
+</head>
+
+<body>
+    <div id="dlm_body">
+        <div id="dlm_head">
+            <a href="/">
+                <img id="dlm_menu_icon_0" style="width: 100px; height: 50px; padding-left: 55px; padding-top: 15px;float: left;" src='static/img/dlm_icon.png' alt="">
+            </a>
+            <div id="dlm_menu">
+                <div class="dlm_menu_icon" id="dlm_menu_icon_1" onclick="dlm_menu_btn(this)"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_2" onclick="dlm_menu_btn(this)"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_3" onclick="dlm_menu_btn(this)"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_4" onclick="dlm_menu_btn(this)"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_9" onclick="dlm_menu_btn(this)"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_8" onclick="dlm_menu_btn(this)"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_7" onclick="window.open('/dlm_sj_zy')"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_6" onclick="window.open('/dlm_Sample')"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_5" onclick="dlm_menu_btn(this)"></div>
+            </div>
+        </div>
+        <div id="dlm_subject" style="display: block;">
+            <div id="dlm_blockly"></div>
+            <div id="dlm_code_run">
+                <div id="dlm_runbtn_div">
+                    <div id="dlm_runbtn">运行/停止</div>
+                    <div id="dlm_clearbtn" onclick="cclear()">清除</div>
+                </div>
+                <!-- <div></div> -->
+                <div id="dlm_code" style="word-break: break-all; word-wrap:break-word;"></div>
+            </div>
+        </div>
+        <div id="dlm_wj_menu" style="position: absolute; top: 80px;left: 200px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;">
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">创建</ul>
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">打开云端项目</ul>
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">打开本地项目</ul>
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">保存到云端</ul>
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">保存到本地</ul>
+        </div>
+        <div id="dlm_zy_menu" style="position: absolute; top: 80px;left: 494px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;">
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">图片库</ul>
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">音频库</ul>
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">文件库</ul>
+        </div>
+        <div id="dlm_yh_menu" style="position: absolute; top: 80px;right: 0px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;">
+            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_zp')">我的作品</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_bj')">我的班级</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_tz')">我的贴子</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_sc')">我的收藏</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_gz')">我的关注</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_xx')">我的消息</ul>
+            <ul class="dlm_wj_menu_box">退出登录</ul>
+        </div>
+    </div>
+    <xml id="toolbox" style="display: none">
+        <category name="判断" colour="%{BKY_LOGIC_HUE}">
+            <block type="controls_if"></block>
+            <block type="controls_if">
+                <mutation else="1"></mutation>
+            </block>
+            </block>
+            <block type="controls_if">
+                <mutation elseif="1" else="1"></mutation>
+            </block>
+        </category>
+        <category name="真假" colour="%{BKY_LOGIC_HUE}">
+            <block type="logic_compare"></block>
+            <block type="logic_operation"></block>
+            <block type="logic_negate"></block>
+            <block type="logic_boolean"></block>
+            <block type="logic_null"></block>
+            <block type="logic_ternary"></block>
+        </category>
+        <category name="循环" colour="%{BKY_LOOPS_HUE}">
+            <block type="controls_repeat_ext">
+                <value name="TIMES">
+                    <block type="math_number">
+                        <field name="NUM">10</field>
+                    </block>
+                </value>
+            </block>
+            <block type="controls_whileUntil"></block>
+            <block type="controls_for">
+                <field name="VAR">i</field>
+                <value name="FROM">
+                    <block type="math_number">
+                        <field name="NUM">1</field>
+                    </block>
+                </value>
+                <value name="TO">
+                    <block type="math_number">
+                        <field name="NUM">10</field>
+                    </block>
+                </value>
+                <value name="BY">
+                    <block type="math_number">
+                        <field name="NUM">1</field>
+                    </block>
+                </value>
+            </block>
+            <block type="controls_forEach"></block>
+            <block type="controls_flow_statements"></block>
+        </category>
+        <category name="数学" colour="%{BKY_MATH_HUE}">
+            <block type="math_number">
+                <field name="NUM">123</field>
+            </block>
+            <block type="math_arithmetic"></block>
+            <block type="math_single"></block>
+            <block type="math_trig"></block>
+            <block type="math_constant"></block>
+            <block type="math_number_property"></block>
+            <block type="math_round"></block>
+            <block type="math_on_list"></block>
+            <block type="math_modulo"></block>
+            <block type="math_constrain">
+                <value name="LOW">
+                    <block type="math_number">
+                        <field name="NUM">1</field>
+                    </block>
+                </value>
+                <value name="HIGH">
+                    <block type="math_number">
+                        <field name="NUM">100</field>
+                    </block>
+                </value>
+            </block>
+            <block type="math_random_int">
+                <value name="FROM">
+                    <block type="math_number">
+                        <field name="NUM">1</field>
+                    </block>
+                </value>
+                <value name="TO">
+                    <block type="math_number">
+                        <field name="NUM">100</field>
+                    </block>
+                </value>
+            </block>
+            <block type="math_random_float"></block>
+            <block type="math_atan2"></block>
+        </category>
+        <category name="列表" colour="%{BKY_LISTS_HUE}">
+            <block type="lists_create_empty"></block>
+            <block type="lists_create_with"></block>
+            <block type="lists_repeat">
+                <value name="NUM">
+                    <block type="math_number">
+                        <field name="NUM">5</field>
+                    </block>
+                </value>
+            </block>
+            <block type="lists_length"></block>
+            <block type="lists_isEmpty"></block>
+            <block type="lists_indexOf"></block>
+            <block type="lists_getIndex"></block>
+            <block type="lists_setIndex"></block>
+        </category>
+        <sep></sep>
+        <category name="变量" custom="VARIABLE" colour="%{BKY_VARIABLES_HUE}">
+        </category>
+        <category name="函数" custom="PROCEDURE" colour="%{BKY_PROCEDURES_HUE}">
+        </category>
+        <sep></sep>
+        <category name="文本" colour='%{BKY_LISTS_HUE}'>
+            <block type="text">
+                <field name="TEXT">输入文字</field>
+            </block>
+        </category>
+        <category name="随机">
+            <block type="procedures_defnoreturn">
+                <mutation>
+                    <arg name="list"></arg>
+                </mutation>
+                <field name="NAME">randomize</field>
+                <statement name="STACK">
+                    <block type="controls_for" inline="true">
+                        <field name="VAR">x</field>
+                        <value name="FROM">
+                            <block type="math_number">
+                                <field name="NUM">1</field>
+                            </block>
+                        </value>
+                        <value name="TO">
+                            <block type="lists_length" inline="false">
+                                <value name="VALUE">
+                                    <block type="variables_get">
+                                        <field name="VAR">list</field>
+                                    </block>
+                                </value>
+                            </block>
+                        </value>
+                        <value name="BY">
+                            <block type="math_number">
+                                <field name="NUM">1</field>
+                            </block>
+                        </value>
+                        <statement name="DO">
+                            <block type="variables_set" inline="false">
+                                <field name="VAR">y</field>
+                                <value name="VALUE">
+                                    <block type="math_random_int" inline="true">
+                                        <value name="FROM">
+                                            <block type="math_number">
+                                                <field name="NUM">1</field>
+                                            </block>
+                                        </value>
+                                        <value name="TO">
+                                            <block type="lists_length" inline="false">
+                                                <value name="VALUE">
+                                                    <block type="variables_get">
+                                                        <field name="VAR">list</field>
+                                                    </block>
+                                                </value>
+                                            </block>
+                                        </value>
+                                    </block>
+                                </value>
+                                <next>
+                                    <block type="variables_set" inline="false">
+                                        <field name="VAR">temp</field>
+                                        <value name="VALUE">
+                                            <block type="lists_getIndex" inline="true">
+                                                <mutation statement="false" at="true"></mutation>
+                                                <field name="MODE">GET</field>
+                                                <field name="WHERE">FROM_START</field>
+                                                <value name="AT">
+                                                    <block type="variables_get">
+                                                        <field name="VAR">y</field>
+                                                    </block>
+                                                </value>
+                                                <value name="VALUE">
+                                                    <block type="variables_get">
+                                                        <field name="VAR">list</field>
+                                                    </block>
+                                                </value>
+                                            </block>
+                                        </value>
+                                        <next>
+                                            <block type="lists_setIndex" inline="false">
+                                                <value name="AT">
+                                                    <block type="variables_get">
+                                                        <field name="VAR">y</field>
+                                                    </block>
+                                                </value>
+                                                <value name="LIST">
+                                                    <block type="variables_get">
+                                                        <field name="VAR">list</field>
+                                                    </block>
+                                                </value>
+                                                <value name="TO">
+                                                    <block type="lists_getIndex" inline="true">
+                                                        <mutation statement="false" at="true"></mutation>
+                                                        <field name="MODE">GET</field>
+                                                        <field name="WHERE">FROM_START</field>
+                                                        <value name="AT">
+                                                            <block type="variables_get">
+                                                                <field name="VAR">x</field>
+                                                            </block>
+                                                        </value>
+                                                        <value name="VALUE">
+                                                            <block type="variables_get">
+                                                                <field name="VAR">list</field>
+                                                            </block>
+                                                        </value>
+                                                    </block>
+                                                </value>
+                                                <next>
+                                                    <block type="lists_setIndex" inline="false">
+                                                        <value name="AT">
+                                                            <block type="variables_get">
+                                                                <field name="VAR">x</field>
+                                                            </block>
+                                                        </value>
+                                                        <value name="LIST">
+                                                            <block type="variables_get">
+                                                                <field name="VAR">list</field>
+                                                            </block>
+                                                        </value>
+                                                        <value name="TO">
+                                                            <block type="variables_get">
+                                                                <field name="VAR">temp</field>
+                                                            </block>
+                                                        </value>
+                                                    </block>
+                                                </next>
+                                            </block>
+                                        </next>
+                                    </block>
+                                </next>
+                            </block>
+                        </statement>
+                    </block>
+                </statement>
+            </block>
+        </category>
+        <category name="实例">
+            <block type="text_print">
+                <value name="TEXT">
+                    <block type="text">
+                        <field name="TEXT">'Twas brillig, and the slithy toves</field>
+                    </block>
+                </value>
+                <next>
+                    <block type="text_print">
+                        <value name="TEXT">
+                            <block type="text">
+                                <field name="TEXT"> Did gyre and gimble in the wabe:</field>
+                            </block>
+                        </value>
+                        <next>
+                            <block type="text_print">
+                                <value name="TEXT">
+                                    <block type="text">
+                                        <field name="TEXT">All mimsy were the borogroves,</field>
+                                    </block>
+                                </value>
+                                <next>
+                                    <block type="text_print">
+                                        <value name="TEXT">
+                                            <block type="text">
+                                                <field name="TEXT"> And the mome raths outgrabe.</field>
+                                            </block>
+                                        </value>
+                                    </block>
+                                </next>
+                            </block>
+                        </next>
+                    </block>
+                </next>
+            </block>
+            <block type="text_print">
+                <value name="TEXT">
+                    <block type="text">
+                        <field name="TEXT">"Beware the Jabberwock, my son!</field>
+                    </block>
+                </value>
+                <next>
+                    <block type="text_print">
+                        <value name="TEXT">
+                            <block type="text">
+                                <field name="TEXT"> The jaws that bite, the claws that catch!</field>
+                            </block>
+                        </value>
+                        <next>
+                            <block type="text_print">
+                                <value name="TEXT">
+                                    <block type="text">
+                                        <field name="TEXT">Beware the Jubjub bird, and shun</field>
+                                    </block>
+                                </value>
+                                <next>
+                                    <block type="text_print">
+                                        <value name="TEXT">
+                                            <block type="text">
+                                                <field name="TEXT"> The frumious Bandersnatch!"</field>
+                                            </block>
+                                        </value>
+                                    </block>
+                                </next>
+                            </block>
+                        </next>
+                    </block>
+                </next>
+            </block>
+        </category>
+        <category name="硬件">
+            <block type="texttovoice">
+                <value name="NAME">
+                    <block type="text">
+                        <field name="TEXT">输入文字</field>
+                    </block>
+                </value>
+            </block>
+            <block type="currency">
+                <value name="NAME">
+                    <block type="text">
+                        <field name="TEXT">static/out.jpg</field>
+                    </block>
+                </value>
+            </block>
+            <block type="imagecapture"></block>
+            <block type="voicetext"></block>
+        </category>
+    </xml>
+    <!-- <script for="window" event="onload">
+      xmldso.XMLDocument.load("static/dlm-xml/blocklys.xml");
+    </script> -->
+    <script>
+    var demoWorksplace = Blockly.inject('dlm_blockly', { media: "static/blockly-master/media/", collapse: false, toolbox: document.getElementById('toolbox') })
+ console.log(Object.keys(Blockly.Blocks))
+    </script>
+    <script src='static/js/dlm_blockly.js'></script>
+
+</body>
+
+</html>

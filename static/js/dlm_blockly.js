@@ -4,15 +4,28 @@ var boxid = []
 $(document).ready(function(){
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
     socket.on('my response', function(msg) {
+        if(msg.data=='bf'){
+            player()
+            return false
+        }
+        if(msg.data=='cc'){
+            window.open("static/out.jpg?" + Math.random())
+            return false
+        }
         $('#dlm_code').append('<p>' + msg.data + '</p>');
     });
     $('#dlm_runbtn').click(function(event) {
+        socket.emit('myevent', {data: $('#dlm_code').text()});
         $('#dlm_code').text('')
-        var code = Blockly.Python.workspaceToCode(demoWorksplace);
-        socket.emit('myevent', {data: code});
         return false;
     });
 });
+function player(){
+    
+    var audio= new Audio("static/MP3/output.mp3"+'?' + Math.random());//这里的路径写上mp3文件在项目中的绝对路径
+    
+    audio.play();
+}
 function dlm_menu_btn(a) {
     switch (a.id) {
         case 'dlm_menu_icon_0':
