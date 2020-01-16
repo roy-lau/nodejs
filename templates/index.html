@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+   <!--  <script src='static/blockly_compressed.js?' +Math.random()></script>
+    <script src='static/python_compressed.js?' +Math.random()></script>
+    <script src='static/blocks_compressed.js?' +Math.random()></script>
+    <script src='static/msg/js/zh-hans.js' +Math.random()></script> -->
 
+    <script src='static/dist/blockly.js'></script>
+    <script src='static/dist/python.js'></script>
+    <script src='static/dist/blocks.js'></script>
+    <script src='static/dist/index.js'></script>
+    <script src='static/dist/browser.js'></script>
+    <script src='static/dist/core-browser.js'></script>
+    <script src='static/dist/msg/zh-hans.js'></script>
+    <script src="static/js/dml_blocklu1.js?" +Math.random()></script>
 
-    <script src='static/blockly_compressed.js?'+Math.random()></script>
-    <script src='static/python_compressed.js?'+Math.random()></script>
-    <script src='static/blocks_compressed.js?'+Math.random()></script>
-    <script src="static/js/dml_blocklu1.js?"+Math.random()></script>
-    <script src='static/msg/js/zh-hans.js'+Math.random()></script>
     <script src="static/js/jquery.min.js"></script>
-    <script>if (typeof module === 'object') {window.jQuery = window.$ = module.exports;};</script>
+    <script>
+    if (typeof module === 'object') { window.jQuery = window.$ = module.exports; };
+    </script>
     <script src="static/js/socketio.js"></script>
     <link rel="stylesheet" href="static/css/color_dlm_python_advance.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,67 +29,101 @@
     <title>测试网页</title>
     <link rel="icon" href='static/img/favicon.ico' sizes="32x32">
 </head>
+
 <body>
     <div id="dlm_body">
-      <div id="dlm_head">
-        <img id = "dlm_menu_icon_0" onclick="window.open(' /')"" style="width: 100px; height: 50px; padding-left: 55px; padding-top: 15px;float: left;" src='static/img/dlm_icon.png' alt="">
-        <div id="dlm_menu">
-          <div class="dlm_menu_icon" id="dlm_menu_icon_1" onclick="dlm_menu_btn(this)"></div>
-          <div class="dlm_menu_icon" id="dlm_menu_icon_2" onclick="dlm_menu_btn(this)" ></div>
-          <div class="dlm_menu_icon" id="dlm_menu_icon_3" onclick="dlm_menu_btn(this)" ></div>
-          <div class="dlm_menu_icon" id="dlm_menu_icon_4" onclick="dlm_menu_btn(this)" ></div>
-          <div class="dlm_menu_icon" id="dlm_menu_icon_9" onclick="dlm_menu_btn(this)" ></div>
-          <div class="dlm_menu_icon" id="dlm_menu_icon_8" onclick="dlm_menu_btn(this)" ></div>
-          <div class="dlm_menu_icon" id="dlm_menu_icon_7" onclick="window.open(' /dlm_sj_zy')" ></div>
-          <div class="dlm_menu_icon" id="dlm_menu_icon_6" onclick="window.open(' /dlm_Sample')" ></div>
-          <div class="dlm_menu_icon" id="dlm_menu_icon_5" onclick="dlm_menu_btn(this)" ></div>
+        <div id="dlm_head">
+            <img id="dlm_menu_icon_0" onclick="window.open(' /')"" style=" width: 100px; height: 50px; padding-left: 55px; padding-top: 15px;float: left;" src='static/img/dlm_icon.png' alt="">
+            <div id="dlm_menu">
+                <div class="dlm_menu_icon" id="dlm_menu_icon_1" onclick="dlm_menu_btn(this)"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_2" onclick="dlm_menu_btn(this)"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_3" onclick="dlm_menu_btn(this)"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_4" onclick="dlm_menu_btn(this)"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_9" onclick="dlm_menu_btn(this)"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_8" onclick="dlm_menu_btn(this)"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_7" onclick="window.open(' /dlm_sj_zy')"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_6" onclick="window.open(' /dlm_Sample')"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_5" onclick="dlm_menu_btn(this)"></div>
+            </div>
         </div>
-      </div>
-      <div id="dlm_subject" style="display: block;">
-          <div id="dlm_blockly"></div>
-          <div id="dlm_code_run">
-              <div id="dlm_runbtn_div">
-                  <div id="dlm_runbtn">运行/停止</div>
-                  <div id="dlm_clearbtn"onclick="cclear()">清除</div>
-              </div>
-              <!-- <div></div> -->
-              <div id="dlm_code" style="word-break: break-all; word-wrap:break-word;"></div>
-          </div>
-      </div>
-      <div id="dlm_wj_menu" style="position: absolute; top: 80px;left: 200px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;" >
-        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)" >创建</ul>
-        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)" >打开云端项目</ul>
-        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">打开本地项目</ul>
-        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">保存到云端</ul>
-        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">保存到本地</ul>
-      </div>
-      <div id="dlm_zy_menu" style="position: absolute; top: 80px;left: 494px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;" >
-        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">图片库</ul>
-        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">音频库</ul>
-        <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">文件库</ul>
-      </div>
-      <div id="dlm_yh_menu" style="position: absolute; top: 80px;right: 0px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;" >
-        <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_zp')">我的作品</ul>
-        <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_bj')">我的班级</ul>
-        <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_tz')">我的贴子</ul>
-        <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_sc')">我的收藏</ul>
-        <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_gz')">我的关注</ul>
-        <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_xx')">我的消息</ul>
-        <ul class="dlm_wj_menu_box" >退出登录</ul>
-      </div>
+        <div id="dlm_subject" style="display: block;">
+            <div id="dlm_blockly"></div>
+            <div id="dlm_code_run">
+                <div id="dlm_runbtn_div">
+                    <div id="dlm_runbtn" onclick="runJS()">运行/停止</div>
+                    <div id="dlm_clearbtn" onclick="clearCode()">清除</div>
+                </div>
+                <!-- <div></div> -->
+                <div id="dlm_code" style="word-break: break-all; word-wrap:break-word;"></div>
+            </div>
+        </div>
+        <div id="dlm_wj_menu" style="position: absolute; top: 80px;left: 200px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;">
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">创建</ul>
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">打开云端项目</ul>
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">打开本地项目</ul>
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">保存到云端</ul>
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">保存到本地</ul>
+        </div>
+        <div id="dlm_zy_menu" style="position: absolute; top: 80px;left: 494px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;">
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">图片库</ul>
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">音频库</ul>
+            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">文件库</ul>
+        </div>
+        <div id="dlm_yh_menu" style="position: absolute; top: 80px;right: 0px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;">
+            <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_zp')">我的作品</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_bj')">我的班级</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_tz')">我的贴子</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_sc')">我的收藏</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_gz')">我的关注</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_xx')">我的消息</ul>
+            <ul class="dlm_wj_menu_box">退出登录</ul>
+        </div>
     </div>
     <script>
-      xmlDoc=loadXMLDoc("static/dlm-xml/blocklys.xml?"+Math.random());
-      var demoWorksplace = Blockly.inject('dlm_blockly',{media:"static/media/" ,collapse:false,toolbox:xmlDoc.firstChild})
-      // var demoWorksplace = Blockly.inject('dlm_blockly',{media:"static//media/" ,collapse:false,toolbox:document.getElementById('asd')})
-      function myUpdateFunction(){
-            Blockly.Python.addReservedWords('code');
-            var code = Blockly.Python.workspaceToCode(demoWorksplace);
-            document.getElementById('dlm_code').innerHTML=code
-        }
+    let xmlDoc = loadXMLDoc("static/dlm-xml/blocklys.xml?" + Math.random()),
+        demoWorksplace = Blockly.inject('dlm_blockly', {
+            media: "static/media/",
+            collapse: false,
+            toolbox: xmlDoc.firstChild,
+            zoom: {
+                controls: true,
+                wheel: true
+            }
+        })
+    // var demoWorksplace = Blockly.inject('dlm_blockly',{media:"static//media/" ,collapse:false,toolbox:document.getElementById('asd')})
+
+
+    // 页面加载完触发此事件
+    $(function() {
         demoWorksplace.addChangeListener(myUpdateFunction);
+
+        let changedXmlText = localStorage.getItem("changeXmlText"),
+            changedXml = Blockly.Xml.textToDom(changedXmlText);
+        Blockly.Xml.domToWorkspace(changedXml, demoWorksplace);
+    })
+    // 积木发生变化时触发此事件
+    function myUpdateFunction() {
+        Blockly.Python.addReservedWords('code');
+        let code = Blockly.Python.workspaceToCode(demoWorksplace);
+        $("#dlm_code").html(code)
+
+        let changeXml = Blockly.Xml.workspaceToDom(demoWorksplace),
+            changeXmlText = Blockly.Xml.domToText(changeXml);
+        localStorage.setItem("changeXmlText", changeXmlText);
+
+    }
+
+    // function runJS() {
+    //     var code = Blockly.Generator.workspaceToCode('JavaScript');
+    //     console.log(code)
+    //     try {
+    //         eval(code);
+    //     } catch (e) {
+    //         alert('Program error:\n' + e);
+    //     }
+    // }
     </script>
     <script src='static/js/dlm_blockly.js'></script>
-
 </body>
+
 </html>

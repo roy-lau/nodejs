@@ -114,6 +114,7 @@ Blockly.Blocks['logic_compare_continous'] = {
         .appendField(new Blockly.FieldDropdown(OPERATORS2), 'OP2');    
     this.setInputsInline(true);    
     this.setTooltip(Blockly.DLMLY_PYTHON_LOGIC_COMPARE_CONTINOUS_TOOLTIP);
+    
   }
 };
 

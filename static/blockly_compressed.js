@@ -10589,6 +10589,7 @@ Blockly.FieldDropdown.prototype.trimOptions_ = function () {
     if (Array.isArray(a)) {
         for (var b = !1, c = 0; c < a.length; c++) {
             var d = a[c][0];
+            
             "string" == typeof d ? a[c][0] = Blockly.utils.replaceMessageReferences(d) : (null != d.alt && (a[c][0].alt = Blockly.utils.replaceMessageReferences(d.alt)), b = !0)
         }
         if (!(b || 2 > a.length)) {
