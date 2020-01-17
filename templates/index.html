@@ -3,37 +3,20 @@
 
 <head>
     <meta charset="UTF-8">
-   <!--  <script src='static/blockly_compressed.js?' +Math.random()></script>
-    <script src='static/python_compressed.js?' +Math.random()></script>
-    <script src='static/blocks_compressed.js?' +Math.random()></script>
-    <script src='static/msg/js/zh-hans.js' +Math.random()></script> -->
-
-    <script src='static/dist/blockly.js'></script>
-    <script src='static/dist/python.js'></script>
-    <script src='static/dist/blocks.js'></script>
-    <script src='static/dist/index.js'></script>
-    <script src='static/dist/browser.js'></script>
-    <script src='static/dist/core-browser.js'></script>
-    <script src='static/dist/msg/zh-hans.js'></script>
-    <script src="static/js/dml_blocklu1.js?" +Math.random()></script>
-
-    <script src="static/js/jquery.min.js"></script>
-    <script>
-    if (typeof module === 'object') { window.jQuery = window.$ = module.exports; };
-    </script>
-    <script src="static/js/socketio.js"></script>
-    <link rel="stylesheet" href="static/css/color_dlm_python_advance.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href='static/css/index.css'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>测试网页</title>
     <link rel="icon" href='static/img/favicon.ico' sizes="32x32">
+    <link rel="stylesheet" href='static/css/index.css'>
+    <link rel="stylesheet" href="static/css/color_dlm_python_advance.css">
 </head>
 
 <body>
     <div id="dlm_body">
         <div id="dlm_head">
-            <img id="dlm_menu_icon_0" onclick="window.open(' /')"" style=" width: 100px; height: 50px; padding-left: 55px; padding-top: 15px;float: left;" src='static/img/dlm_icon.png' alt="">
+            <a href="/">
+                <img id="dlm_menu_icon_0" style="width: 100px; height: 50px; padding-left: 55px; padding-top: 15px;float: left;" src='static/img/dlm_icon.png' alt="dlm logo">
+            </a>
             <div id="dlm_menu">
                 <div class="dlm_menu_icon" id="dlm_menu_icon_1" onclick="dlm_menu_btn(this)"></div>
                 <div class="dlm_menu_icon" id="dlm_menu_icon_2" onclick="dlm_menu_btn(this)"></div>
@@ -41,8 +24,8 @@
                 <div class="dlm_menu_icon" id="dlm_menu_icon_4" onclick="dlm_menu_btn(this)"></div>
                 <div class="dlm_menu_icon" id="dlm_menu_icon_9" onclick="dlm_menu_btn(this)"></div>
                 <div class="dlm_menu_icon" id="dlm_menu_icon_8" onclick="dlm_menu_btn(this)"></div>
-                <div class="dlm_menu_icon" id="dlm_menu_icon_7" onclick="window.open(' /dlm_sj_zy')"></div>
-                <div class="dlm_menu_icon" id="dlm_menu_icon_6" onclick="window.open(' /dlm_Sample')"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_7" onclick="window.open('/dlm_sj_zy')"></div>
+                <div class="dlm_menu_icon" id="dlm_menu_icon_6" onclick="window.open('/dlm_Sample')"></div>
                 <div class="dlm_menu_icon" id="dlm_menu_icon_5" onclick="dlm_menu_btn(this)"></div>
             </div>
         </div>
@@ -70,16 +53,44 @@
             <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">文件库</ul>
         </div>
         <div id="dlm_yh_menu" style="position: absolute; top: 80px;right: 0px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;">
-            <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_zp')">我的作品</ul>
-            <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_bj')">我的班级</ul>
-            <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_tz')">我的贴子</ul>
-            <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_sc')">我的收藏</ul>
-            <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_gz')">我的关注</ul>
-            <ul class="dlm_wj_menu_box" onclick="window.open(' /dlm_yh_xx')">我的消息</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_zp')">我的作品</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_bj')">我的班级</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_tz')">我的贴子</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_sc')">我的收藏</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_gz')">我的关注</ul>
+            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_xx')">我的消息</ul>
             <ul class="dlm_wj_menu_box">退出登录</ul>
         </div>
     </div>
-    <script>
+</body>
+<script src='static/js/libs/blocklys/index.js'></script>
+<script src='static/js/libs/blocklys/blockly.js'></script>
+<script src='static/js/libs/blocklys/python.js'></script>
+<script src='static/js/libs/blocklys/blocks.js'></script>
+<script src='static/js/libs/blocklys/core-browser.js'></script>
+<script src='static/js/libs/blocklys/msg/zh-hans1.js'></script>
+<script src="static/js/libs/blocklys/py.js"></script>
+<script src="static/js/libs/jquery.min.js"></script>
+<script src="static/js/libs/socketio.js"></script>
+<script>
+</script>
+<script>
+/**
+ * js 放在 body 下面，这样就能在 dom 加载完成后再加载 js 。js 的加载不影响页面展示，所以放在下面
+ *
+ *  ⬆️ 上面都引用的第三方的 模块 包 等
+ *
+ *  ⬇️ 下面都是自己写的
+ */
+
+// 处理 jq 在 electron 中兼容问题
+if (typeof module === 'object') { window.jQuery = window.$ = module.exports; };
+
+
+
+// 页面加载完触发此事件
+$(function() {
+
     let xmlDoc = loadXMLDoc("static/dlm-xml/blocklys.xml?" + Math.random()),
         demoWorksplace = Blockly.inject('dlm_blockly', {
             media: "static/media/",
@@ -90,18 +101,14 @@
                 wheel: true
             }
         })
-    // var demoWorksplace = Blockly.inject('dlm_blockly',{media:"static//media/" ,collapse:false,toolbox:document.getElementById('asd')})
 
+    let changedXmlText = localStorage.getItem("changeXmlText"),
+        changedXml = Blockly.Xml.textToDom(changedXmlText);
+    Blockly.Xml.domToWorkspace(changedXml, demoWorksplace);
 
-    // 页面加载完触发此事件
-    $(function() {
-        demoWorksplace.addChangeListener(myUpdateFunction);
-
-        let changedXmlText = localStorage.getItem("changeXmlText"),
-            changedXml = Blockly.Xml.textToDom(changedXmlText);
-        Blockly.Xml.domToWorkspace(changedXml, demoWorksplace);
-    })
     // 积木发生变化时触发此事件
+    demoWorksplace.addChangeListener(myUpdateFunction);
+
     function myUpdateFunction() {
         Blockly.Python.addReservedWords('code');
         let code = Blockly.Python.workspaceToCode(demoWorksplace);
@@ -112,7 +119,6 @@
         localStorage.setItem("changeXmlText", changeXmlText);
 
     }
-
     // function runJS() {
     //     var code = Blockly.Generator.workspaceToCode('JavaScript');
     //     console.log(code)
@@ -122,8 +128,9 @@
     //         alert('Program error:\n' + e);
     //     }
     // }
-    </script>
-    <script src='static/js/dlm_blockly.js'></script>
-</body>
+})
+</script>
+<script src="static/js/home/dml_blocklu1.js"></script>
+<script src='static/js/home/dlm_blockly.js'></script>
 
 </html>
