@@ -13,63 +13,58 @@
 
 <body>
     <div id="dlm_body">
-        <div id="dlm_head">
-            <a href="/">
+        <header id="dlm_head">
+            <a href="./index.html">
                 <img id="dlm_menu_icon_0" style="width: 100px; height: 50px; padding-left: 55px; padding-top: 15px;float: left;" src='../static/img/dlm_icon.png' alt="dlm logo">
             </a>
             <div id="dlm_menu">
-                <div class="dlm_menu_icon" id="dlm_menu_icon_1" onclick="dlm_menu_btn(this)"></div>
-                <div class="dlm_menu_icon" id="dlm_menu_icon_2" onclick="dlm_menu_btn(this)"></div>
-                <div class="dlm_menu_icon" id="dlm_menu_icon_3" onclick="dlm_menu_btn(this)"></div>
-                <div class="dlm_menu_icon" id="dlm_menu_icon_4" onclick="dlm_menu_btn(this)"></div>
-                <div class="dlm_menu_icon" id="dlm_menu_icon_9" onclick="dlm_menu_btn(this)"></div>
-                <div class="dlm_menu_icon" id="dlm_menu_icon_8" onclick="dlm_menu_btn(this)"></div>
-                <div class="dlm_menu_icon" id="dlm_menu_icon_7" onclick="window.open('/dlm_sj_zy')"></div>
-                <div class="dlm_menu_icon" id="dlm_menu_icon_6" onclick="window.open('/dlm_Sample')"></div>
-                <div class="dlm_menu_icon" id="dlm_menu_icon_5" onclick="dlm_menu_btn(this)"></div>
-            </div>
-        </div>
-        <div id="dlm_subject" style="display: block;">
-            <div id="dlm_blockly"></div>
-            <div id="dlm_code_run">
-                <div id="dlm_runbtn_div">
-                    <div id="dlm_runbtn" >运行</div>
-                    <div id="dlm_stopbtn" >停止</div>
-                    <div id="dlm_clearbtn" onclick="clearCode()">清除</div>
+                <div class="dlm_menu_icon dlm_menu_icon_1">
+                    <div id="dlm_menu_list">
+                        <ul class="dlm_wj_menu_box">创建</ul>
+                        <ul class="dlm_wj_menu_box">打开云端项目</ul>
+                        <ul id="dlm_wj_menu_box_loadhost" class="dlm_wj_menu_box">打开本地项目
+                            <input accept="text/csv" id="contained" name="csvfile" type="file" style="display: none;" />
+                        </ul>
+                        <ul class="dlm_wj_menu_box">保存到云端</ul>
+                        <ul id="dlm_wj_menu_box_savrhost" class="dlm_wj_menu_box">保存到本地</ul>
+                    </div>
                 </div>
-                <!-- <div></div> -->
-                <div id="dlm_code" style="word-break: break-all; word-wrap:break-word;"></div>
+                <a href="./edit_python.html" class="dlm_menu_icon dlm_menu_icon_2"></a>
+                <div class="dlm_menu_icon dlm_menu_icon_3">
+                    <div id="dlm_menu_list">
+                        <ul class="dlm_wj_menu_box">图片库</ul>
+                        <ul class="dlm_wj_menu_box">音频库</ul>
+                        <ul class="dlm_wj_menu_box">文件库</ul>
+                    </div>
+                </div>
+                <div class="dlm_menu_icon dlm_menu_icon_4"></div>
+                <div class="dlm_menu_icon dlm_menu_icon_9">
+                    <div id="dlm_menu_list">
+                        <a href="/dlm_yh_zp"><ul class="dlm_wj_menu_box"> 我的作品</ul></a>
+                        <a href="/dlm_yh_bj"><ul class="dlm_wj_menu_box"> 我的班级</ul></a>
+                        <a href="/dlm_yh_tz"><ul class="dlm_wj_menu_box"> 我的贴子</ul></a>
+                        <a href="/dlm_yh_sc"><ul class="dlm_wj_menu_box"> 我的收藏</ul></a>
+                        <a href="/dlm_yh_gz"><ul class="dlm_wj_menu_box"> 我的关注</ul></a>
+                        <a href="/dlm_yh_xx"><ul class="dlm_wj_menu_box"> 我的消息</ul></a>
+                        <ul class="dlm_wj_menu_box">退出登录</ul>
+                    </div>
+                </div>
+                <div class="dlm_menu_icon dlm_menu_icon_8"></div>
+                <a href="./dlm_sj_zy.html" class="dlm_menu_icon dlm_menu_icon_7"></a>
+                <a href="./dlm_Sample.html" class="dlm_menu_icon dlm_menu_icon_6"></a>
+                <div class="dlm_menu_icon dlm_menu_icon_5"></div>
             </div>
-        </div>
-        <div id="dlm_wj_menu" style="position: absolute; top: 80px;left: 200px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;">
-            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">创建</ul>
-            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">打开云端项目</ul>
-            <ul id="dlm_wj_menu_box_loadhost" class="dlm_wj_menu_box" >打开本地项目
-                <input
-                accept="text/csv"
-                id="contained"
-                name="csvfile"
-                type="file"
-                style="display: none;"
-              />
-            </ul>
-            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">保存到云端</ul>
-            <ul id="dlm_wj_menu_box_savrhost" class="dlm_wj_menu_box" >保存到本地</ul>
-        </div>
-        <div id="dlm_zy_menu" style="position: absolute; top: 80px;left: 494px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;">
-            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">图片库</ul>
-            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">音频库</ul>
-            <ul class="dlm_wj_menu_box" onclick="dlmmenuboxclick(this)">文件库</ul>
-        </div>
-        <div id="dlm_yh_menu" style="position: absolute; top: 80px;right: 0px;width: 128px;background-color: #fff;border: 1px solid #000; border-radius: 3px;display: none;">
-            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_zp')">我的作品</ul>
-            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_bj')">我的班级</ul>
-            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_tz')">我的贴子</ul>
-            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_sc')">我的收藏</ul>
-            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_gz')">我的关注</ul>
-            <ul class="dlm_wj_menu_box" onclick="window.open('/dlm_yh_xx')">我的消息</ul>
-            <ul class="dlm_wj_menu_box">退出登录</ul>
-        </div>
+        </header>
+        <section id="dlm_subject" style="display: block;">
+            <div id="dlm_blockly"></div>
+            <div id="dlm_code_warp">
+                <div class="dlm_btn_grop">
+                    <div id="dlm_run_stop_btn">运 行</div>
+                    <div id="dlm_clear_btn">清 除</div>
+                </div>
+                <div id="dlm_edit"></div>
+            </div>
+        </section>
     </div>
 </body>
 <script src='../static/js/libs/blocklys/index.js'></script>
@@ -79,18 +74,14 @@
 <script src='../static/js/libs/blocklys/core-browser.js'></script>
 <script src='../static/js/libs/blocklys/msg/zh-hans1.js'></script>
 <script src="../static/js/libs/blocklys/py.js"></script>
-
 <script src="../static/js/libs/ace/ace.js"></script>
-
 <script src="../static/js/libs/jquery.min.js">
 // 处理 jq 在 electron 中兼容问题
 if (typeof module === 'object') { window.jQuery = window.$ = module.exports; };
 </script>
-
+<script src="../static/js/header.js"></script>
 <script src="../static/js/libs/socketio.js"></script>
-
 <script src="../static/js/home/dml_blocklu1.js"></script>
-<script src='../static/js/home/dlm_blockly.js'></script>
 <script src='../static/js/home/index.js'></script>
 <script src='../static/js/home/edit.js'></script>
 

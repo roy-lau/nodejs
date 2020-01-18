@@ -148,17 +148,17 @@ Blockly.Python.blynk_iot_get_data = function() {
   	GetDataCode=Blockly.Python.variableDB_.getName(this.arguments_[0],Blockly.Variables.NAME_TYPE);
   	if(this.argumentstype_[0]=="int")
   		GetDataCode+= "= param.asInt();\n"
-  	else if(this.argumentstype_[0]=="String") 
+  	else if(this.argumentstype_[0]=="String")
   		GetDataCode+= "= param.asStr();\n"
-  	else if(this.argumentstype_[0]=="long") 
+  	else if(this.argumentstype_[0]=="long")
   		GetDataCode+= "= param.asDouble();\n"
-  	else if(this.argumentstype_[0]=="float") 
+  	else if(this.argumentstype_[0]=="float")
   		GetDataCode+= "= param.asFloat();\n"
-  	else if(this.argumentstype_[0]=="boolean") 
+  	else if(this.argumentstype_[0]=="boolean")
   		GetDataCode+= "= param.asInt();\n"
-  	else if(this.argumentstype_[0]=="byte") 
+  	else if(this.argumentstype_[0]=="byte")
   		GetDataCode+= "= param.asStr();\n"
-  	else if(this.argumentstype_[0]=="char") 
+  	else if(this.argumentstype_[0]=="char")
   		GetDataCode+= "= param.asStr();\n"
   }
   else
@@ -169,19 +169,19 @@ Blockly.Python.blynk_iot_get_data = function() {
   		GetDataCode+=Blockly.Python.variableDB_.getName(this.arguments_[x],Blockly.Variables.NAME_TYPE);
   		if(this.argumentstype_[x]=="int")
   			GetDataCode+= "= param["+x+"].asInt();\n"
-  		else if(this.argumentstype_[x]=="String") 
+  		else if(this.argumentstype_[x]=="String")
   			GetDataCode+= "= param["+x+"].asStr();\n"
-  		else if(this.argumentstype_[x]=="long") 
+  		else if(this.argumentstype_[x]=="long")
   			GetDataCode+= "= param["+x+"].asDouble();\n"
-  		else if(this.argumentstype_[x]=="float") 
+  		else if(this.argumentstype_[x]=="float")
   			GetDataCode+= "= param["+x+"].asFloat();\n"
-  		else if(this.argumentstype_[x]=="boolean") 
+  		else if(this.argumentstype_[x]=="boolean")
   			GetDataCode+= "= param["+x+"].asInt();\n"
-  		else if(this.argumentstype_[x]=="byte") 
+  		else if(this.argumentstype_[x]=="byte")
   			GetDataCode+= "= param["+x+"].asStr();\n"
-  		else if(this.argumentstype_[x]=="char") 
+  		else if(this.argumentstype_[x]=="char")
   			GetDataCode+= "= param["+x+"].asStr();\n"
-  	}	
+  	}
   }
 
   if(this.arguments_.length>0)
@@ -209,7 +209,7 @@ Blockly.Python.requests_get = function() {
   var code=varName+'= '+ 'requests.get(' + str + ')\n';
 
   return code;
- 
+
 };
 
 
@@ -223,7 +223,7 @@ Blockly.Python.requests_attribute = function() {
 
 
 Blockly.Python.requests_method = function() {
-  Blockly.Python.definitions_.import_requests = "import requests";    
+  Blockly.Python.definitions_.import_requests = "import requests";
     var method = this.getFieldValue('DIR');
   var str =Blockly.Python.valueToCode(this, 'VAR', Blockly.Python.ORDER_ATOMIC) ;
   var code="requests." + method + "(" +  str  + ')\n';
@@ -471,7 +471,7 @@ Blockly.Python.series_create = function() {
     Blockly.Variables.NAME_TYPE);
   var code=varName+' = ' + 'pandas.Series(' + varName1 + ')\n';
   return code;
- 
+
 };
 
 Blockly.Python.series_create_from_index = function() {
@@ -479,14 +479,14 @@ Blockly.Python.series_create_from_index = function() {
   var dropdown_type = this.getFieldValue('TYPE');
 
   var varName1 = Blockly.Python.valueToCode(this, 'SER', Blockly.Python.ORDER_ASSIGNMENT) || '0';
-  
+
   var varName2 = Blockly.Python.valueToCode(this, 'INDEX',Blockly.Python.ORDER_ATOMIC) || '\'\'';
   var varName = Blockly.Python.variableDB_.getName(this.getFieldValue('VAR'),
     Blockly.Variables.NAME_TYPE);
   var code=varName+' = ' + 'pandas.Series('  + varName1 + ','  + 'index=' + varName2 + ')\n';
-  
+
   return code;
- 
+
 };
 
 Blockly.Python.dataframe_create = function() {
@@ -497,7 +497,7 @@ Blockly.Python.dataframe_create = function() {
     Blockly.Variables.NAME_TYPE);
   var code=varName+' = ' + 'pandas.DataFrame(' + varName1 + ')\n';
   return code;
- 
+
 };
 
 Blockly.Python.dataframe_create_from_index = function() {
@@ -505,26 +505,26 @@ Blockly.Python.dataframe_create_from_index = function() {
   var dropdown_type = this.getFieldValue('TYPE');
   var varName1 = Blockly.Python.valueToCode(this, 'SER', Blockly.Python.ORDER_ASSIGNMENT) || '0';
   var varName2 = Blockly.Python.valueToCode(this, 'INDEX_COLUMN',Blockly.Python.ORDER_ATOMIC) || '\'\'';
-  var varName3 = Blockly.Python.valueToCode(this, 'INDEX_RAW',Blockly.Python.ORDER_ATOMIC) || '\'\'';  
+  var varName3 = Blockly.Python.valueToCode(this, 'INDEX_RAW',Blockly.Python.ORDER_ATOMIC) || '\'\'';
   var varName = Blockly.Python.variableDB_.getName(this.getFieldValue('VAR'),
     Blockly.Variables.NAME_TYPE);
   var code=varName+' = ' + 'pandas.DataFrame('  + varName1 + ','  + 'columns=' + varName2 + ',index=' + varName3 + ')\n';
   return code;
- 
+
 };
 
 Blockly.Python.dataframe_create_from_one_index = function() {
   Blockly.Python.definitions_.import_pandas = "import pandas";
   var dropdown_type = this.getFieldValue('TYPE');
   var name = this.getFieldValue('COLUMN_RAW');
-  
+
   var varName1 = Blockly.Python.valueToCode(this, 'SER', Blockly.Python.ORDER_ASSIGNMENT) || '0';
-  var varName2 = Blockly.Python.valueToCode(this, 'INDEX',Blockly.Python.ORDER_ATOMIC) || '\'\'';  
+  var varName2 = Blockly.Python.valueToCode(this, 'INDEX',Blockly.Python.ORDER_ATOMIC) || '\'\'';
   var varName = Blockly.Python.variableDB_.getName(this.getFieldValue('VAR'),
     Blockly.Variables.NAME_TYPE);
   var code=varName+' = ' + 'pandas.DataFrame('  + varName1 + ','  + name + '=' + varName2  + ')\n';
   return code;
- 
+
 };
 
 Blockly.Python.series_create_from_text = function() {
@@ -532,8 +532,8 @@ Blockly.Python.series_create_from_text = function() {
   var dropdown_type = this.getFieldValue('TYPE');
   var varName = Blockly.Python.variableDB_.getName(this.getFieldValue('VAR'),
     Blockly.Variables.NAME_TYPE);
-  
-  var text=this.getFieldValue('TEXT');  
+
+  var text=this.getFieldValue('TEXT');
   var code = varName+' = '+ 'pandas.Series([' + text + '])\n';
   return code;
 };
@@ -551,7 +551,7 @@ Blockly.Python.series_get_num = function() {
   var varName = Blockly.Python.valueToCode(this, 'SER', Blockly.Python.ORDER_ASSIGNMENT) || '0';
   var argument0 = Blockly.Python.valueToCode(this, 'AT',
     Blockly.Python.ORDER_ADDITIVE) || '1';
-  
+
   var code=varName+'['+argument0+']';
   return [code,Blockly.Python.ORDER_ATOMIC];
 };
@@ -644,13 +644,13 @@ Blockly.Python.dicts_create_with = function() {
   //var size=window.parseFloat(this.getFieldValue('SIZE'));
   var code = new Array(this.itemCount_);
   var default_value = '0';
-  
+
 
 
   for (var n = 0; n < this.itemCount_; n++) {
 
   var keyName = this.getFieldValue('KEY' + n);
-    
+
   code[n] = keyName+":"+(Blockly.Python.valueToCode(this, 'ADD' + n, Blockly.Python.ORDER_NONE) || default_value);
   }
   var code = varName+'= '+ '{' + code.join(', ') + '}\n';
@@ -738,8 +738,8 @@ Blockly.Python.dicts_add_change_del = function(block){
   var where = block.getFieldValue('OP');
   var KEY = Blockly.Python.valueToCode(this, 'KEY', Blockly.Python.ORDER_ASSIGNMENT);
   // var text=this.getFieldValue('KEY');
-  
-  
+
+
 
   switch (mode) {
     case 'INSERT':
@@ -747,7 +747,7 @@ Blockly.Python.dicts_add_change_del = function(block){
       var at2 = Blockly.Python.valueToCode(this, 'AT2', Blockly.Python.ORDER_ASSIGNMENT) || '0';
       var code = dict + "["  + KEY + "] = " + at2 + '\n'
       break;
-    
+
     case 'DELETE':
       var code = 'del ' + dict + "["  + KEY + "]\n"
       break;
@@ -806,7 +806,7 @@ Blockly.Python.dicts_create_with_noreturn = function() {
 Blockly.Python.factory_from_import = function() {
 	var path = this.getFieldValue('path');
 	var module = this.getFieldValue('module');
-	Blockly.Python.definitions_['import_'+path+'_'+module] = 'from '+path+' import ' + module;	
+	Blockly.Python.definitions_['import_'+path+'_'+module] = 'from '+path+' import ' + module;
 	return '';
 };
 
@@ -900,8 +900,8 @@ Blockly.Python.factory_block_return_with_textarea = function() {
 Blockly.Python.hardware_arduino_start=function(){
   Blockly.Python.definitions_['import_s4alib'] = 'import s4alib';
   var v = Blockly.Python.valueToCode(this, 'SUB', Blockly.Python.ORDER_ATOMIC);
-  // var code= v + '.start()\n';  
-  var code = v + ' = s4alib.s4a_start("'+JSFuncs.getCom()+'")\n'; 
+  // var code= v + '.start()\n';
+  var code = v + ' = s4alib.s4a_start("'+JSFuncs.getCom()+'")\n';
   return code;
 };
 
@@ -955,7 +955,7 @@ var profile = {
         analog_write: [["5", "5"], ["6", "6"], ["9", "9"]],
         analog_read: [["A0", "0"], ["A1", "1"], ["A2", "2"], ["A3", "3"], ["A4", "4"], ["A5", "5"]],
         digital_read: [["2", "2"], ["3", "3"]],
-        digital_write: [["10", "10"], ["11", "11"], ["12", "12"], ["13", "13"]],        
+        digital_write: [["10", "10"], ["11", "11"], ["12", "12"], ["13", "13"]],
     }
 };
 
@@ -1005,9 +1005,9 @@ Blockly.Python.inout_type_input = function() {
 };
 
 Blockly.Python.inout_print_many = function() {
-  
+
   var dropdown_type = this.getFieldValue('TYPE');
-  
+
   var code = new Array(this.itemCount_);
   var default_value = '0';
 
@@ -1110,7 +1110,7 @@ Blockly.Python.lists_insert_value = function(){
   var varName = Blockly.Python.valueToCode(this, 'LIST', Blockly.Python.ORDER_ASSIGNMENT) || '0';
   var at = Blockly.Python.valueToCode(this, 'AT', Blockly.Python.ORDER_ADDITIVE) || '0';
   var VALUE = Blockly.Python.valueToCode(this, 'VALUE', Blockly.Python.ORDER_ASSIGNMENT) || '0';
-  var code=varName + '.insert('  + at + ', ' + VALUE + ')\n';  
+  var code=varName + '.insert('  + at + ', ' + VALUE + ')\n';
   return code;
 };
 
@@ -1160,7 +1160,7 @@ Blockly.Python.lists_pop = function(){
 Blockly.Python.list_trig = function (a) {
   var b = a.getFieldValue("OP"), c;
   Blockly.Python.definitions_['import_math'] = "import math";
-  a = Blockly.Python.valueToCode(a, 'data', Blockly.Python.ORDER_NONE) 
+  a = Blockly.Python.valueToCode(a, 'data', Blockly.Python.ORDER_NONE)
   switch (b) {
   case "LEN":
   c = "len(" + a + ")";
@@ -1249,7 +1249,7 @@ case 'STD_DEV':
   }
   if (c)
   return [c, Blockly.Python.ORDER_ATOMIC];
-  
+
 };
 
 
@@ -1327,8 +1327,8 @@ Blockly.Python['lists_setIndex3'] = Blockly.Python['lists_set_index']
 Blockly.Python['lists_insert_value2'] = Blockly.Python['lists_insert_value']
 Blockly.Python['lists_remove_at2'] = Blockly.Python['lists_remove_at']
 
-Blockly.Python.lists_zip = function() {    
-  var dropdown_type = this.getFieldValue('TYPE');  
+Blockly.Python.lists_zip = function() {
+  var dropdown_type = this.getFieldValue('TYPE');
   var code = new Array(this.itemCount_);
   var default_value = '[]';
   for (var n = 0; n < this.itemCount_; n++) {
@@ -1361,7 +1361,7 @@ Blockly.Python.logic_compare_continous = function() {
   var mode1 = this.getFieldValue('OP1');
   var operator1 = Blockly.Python.logic_compare.OPERATORS[mode1];
   var mode2 = this.getFieldValue('OP2');
-  var operator2 = Blockly.Python.logic_compare.OPERATORS[mode2];  
+  var operator2 = Blockly.Python.logic_compare.OPERATORS[mode2];
   var argument0 = Blockly.Python.valueToCode(this, 'A', Blockly.Python.ORDER_RELATIONAL) || '0';
   var argument1 = Blockly.Python.valueToCode(this, 'B', Blockly.Python.ORDER_RELATIONAL) || '0';
   var argument2 = Blockly.Python.valueToCode(this, 'C', Blockly.Python.ORDER_RELATIONAL) || '0';
@@ -1498,7 +1498,7 @@ Blockly.Python.math_arithmetic = function (a) {
   return [d + c + a, b]
 };
 
-Blockly.Python.math_selfcalcu = function (a) {    
+Blockly.Python.math_selfcalcu = function (a) {
   var argument0 = Blockly.Python.valueToCode(this, 'A', Blockly.Python.ORDER_RELATIONAL) || '0';
   var argument1 = Blockly.Python.valueToCode(this, 'B', Blockly.Python.ORDER_RELATIONAL) || '0';
   var operator = this.getFieldValue('OP');
@@ -1628,7 +1628,7 @@ Blockly.Python.math_random = function() {
   if (type=='int'){
     var code = 'random.randint(' + argument0 +  ', ' + argument1 + ')';
   }else if (type=='float'){
-    var code = 'random.uniform(' + argument0 +  ', ' + argument1 + ')';  
+    var code = 'random.uniform(' + argument0 +  ', ' + argument1 + ')';
   }
   return [code, Blockly.Python.ORDER_UNARY_POSTFIX];
 };
@@ -1916,11 +1916,11 @@ Overrides for generic Python code generation.
 
 
 Blockly.Python.set_create_with = function() {
-  
+
   var dropdown_type = this.getFieldValue('TYPE');
   var varName = Blockly.Python.variableDB_.getName(this.getFieldValue('VAR'),
     Blockly.Variables.NAME_TYPE);
-  
+
   var code = new Array(this.itemCount_);
   var default_value = '0';
 
@@ -2157,21 +2157,21 @@ Blockly.Python.controls_end_program = function () {
 };
 
 Blockly.Python.time_localtime= function() {
-    Blockly.Python.definitions_.import_time = "import time";    
+    Blockly.Python.definitions_.import_time = "import time";
     var op=this.getFieldValue('op');
     var code="time.localtime()["+op+"]";
-    switch (op) {    
+    switch (op) {
     case "all":
        var code1 = "time.localtime()";
        return [code1, Blockly.Python.ORDER_ASSIGNMENT];
        break;
     default:
     	return [code, Blockly.Python.ORDER_ASSIGNMENT];
-    	break;       
+    	break;
   }
 }
 
-Blockly.Python.system_eval = function(block) {  
+Blockly.Python.system_eval = function(block) {
   var codestr =  Blockly.Python.valueToCode(this, 'VAR', Blockly.Python.ORDER_ATOMIC) ;
   var code="eval" +  '(' + codestr + ')';
   return [code, Blockly.Python.ORDER_ATOMIC];
@@ -2229,11 +2229,11 @@ Blockly.Python.ascii_to_char = function () {
 };
 
 Blockly.Python.char_to_ascii = function () {
-    var charvalue = Blockly.Python.valueToCode(this, 'VAR', Blockly.Python.ORDER_ATOMIC) || 'a'; 
+    var charvalue = Blockly.Python.valueToCode(this, 'VAR', Blockly.Python.ORDER_ATOMIC) || 'a';
     return ['ord(' +charvalue +')', Blockly.Python.ORDER_ATOMIC];
 };
 
-Blockly.Python.number_to_text = function() {  
+Blockly.Python.number_to_text = function() {
   var str = Blockly.Python.valueToCode(this, 'VAR', Blockly.Python.ORDER_ATOMIC) || '0'
   return ['str('+str+')', Blockly.Python.ORDER_ATOMIC];
 };
@@ -2434,7 +2434,7 @@ Blockly.Python.text_format_noreturn = function() {
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
-Blockly.Python.text_substring3 = Blockly.Python.text_substring 
+Blockly.Python.text_substring3 = Blockly.Python.text_substring
 Blockly.Python.text_compareTo = Blockly.Python.text_compare_to
 Blockly.Python.text_char_at3 = Blockly.Python.text_char_at
 
@@ -2551,7 +2551,7 @@ Blockly.Python.tuple_find = function(){
 Blockly.Python.tuple_trig = function (a) {
   var b = a.getFieldValue("OP"), c;
   Blockly.Python.definitions_['import_math'] = "import math";
-  a = Blockly.Python.valueToCode(a, 'data', Blockly.Python.ORDER_NONE) 
+  a = Blockly.Python.valueToCode(a, 'data', Blockly.Python.ORDER_NONE)
   switch (b) {
   case "LEN":
   c = "len(" + a + ")";
@@ -2640,7 +2640,7 @@ case 'STD_DEV':
   }
   if (c)
   return [c, Blockly.Python.ORDER_FUNCTION_CALL];
-  
+
 };
 
 Blockly.Python['tuple_getSublist'] = function(block) {
@@ -2741,7 +2741,7 @@ Blockly.Python.turtle_create = function() {
   var varName = Blockly.Python.variableDB_.getName(this.getFieldValue('VAR'),
     Blockly.Variables.NAME_TYPE);
   //var size=window.parseFloat(this.getFieldValue('SIZE'));
-  
+
   //Blockly.Python.definitions_['var_declare'+varName] = varName+'= '+ 'turtle.Turtle()\n';
   var code=varName+'= '+ 'turtle.Turtle()\n';
   return code;
@@ -2809,7 +2809,7 @@ Blockly.Python.turtle_pos_shape = function() {
   Blockly.Python.definitions_.import_turtle = "import turtle";
   var varName = Blockly.Python.valueToCode(this, 'TUR', Blockly.Python.ORDER_ASSIGNMENT) || '0';
   var get = this.getFieldValue('DIR');
-  var code=varName + '.' + get + '()';  
+  var code=varName + '.' + get + '()';
   return [code,Blockly.Python.ORDER_ATOMIC];
 };
 
@@ -2887,7 +2887,7 @@ Blockly.Python.turtle_setxy = function() {
 
 Blockly.Python.turtle_circle_advanced = function() {
   Blockly.Python.definitions_.import_turtle = "import turtle";
-  var varName = Blockly.Python.valueToCode(this, 'TUR', Blockly.Python.ORDER_ASSIGNMENT) || '0';  
+  var varName = Blockly.Python.valueToCode(this, 'TUR', Blockly.Python.ORDER_ASSIGNMENT) || '0';
   var argument = Blockly.Python.valueToCode(this, 'data', Blockly.Python.ORDER_ASSIGNMENT) || '0';
   var num = Blockly.Python.valueToCode(this, 'VAR', Blockly.Python.ORDER_ATOMIC);
   var code=varName+".circle (" +  num  +','+ argument+ ')\n';
@@ -2965,23 +2965,23 @@ Blockly.Python.turtle_shape = function() {
   Blockly.Python.definitions_.import_turtle = "import turtle";
     var varName = Blockly.Python.valueToCode(this, 'TUR', Blockly.Python.ORDER_ASSIGNMENT) || '0';
     var direction = this.getFieldValue('DIR');
-  
+
   var code=varName+".shape('"  + direction + "')\n";
   return code;
 };
 
 Blockly.Python.turtle_textinput = function(block) {
-  Blockly.Python.definitions_.import_turtle = "import turtle";  
+  Blockly.Python.definitions_.import_turtle = "import turtle";
   var title =  Blockly.Python.valueToCode(this, 'TITLE', Blockly.Python.ORDER_ATOMIC) ;
-  var prompt =  Blockly.Python.valueToCode(this, 'PROMPT', Blockly.Python.ORDER_ATOMIC) ;  
+  var prompt =  Blockly.Python.valueToCode(this, 'PROMPT', Blockly.Python.ORDER_ATOMIC) ;
   var code="turtle.textinput" + '(' + title + ',' + prompt + ')';
   return [code,Blockly.Python.ORDER_ATOMIC];
 };
 
 Blockly.Python.turtle_numinput = function(block) {
-  Blockly.Python.definitions_.import_turtle = "import turtle";  
+  Blockly.Python.definitions_.import_turtle = "import turtle";
   var title =  Blockly.Python.valueToCode(this, 'TITLE', Blockly.Python.ORDER_ATOMIC) ;
-  var prompt =  Blockly.Python.valueToCode(this, 'PROMPT', Blockly.Python.ORDER_ATOMIC) ;  
+  var prompt =  Blockly.Python.valueToCode(this, 'PROMPT', Blockly.Python.ORDER_ATOMIC) ;
   var data = Blockly.Python.valueToCode(this, 'DEFAULT', Blockly.Python.ORDER_ATOMIC);
   var min = Blockly.Python.valueToCode(this, 'MIN', Blockly.Python.ORDER_ATOMIC);
   var max = Blockly.Python.valueToCode(this, 'MAX', Blockly.Python.ORDER_ATOMIC);
@@ -3129,7 +3129,7 @@ Blockly.Python.variables_get = function() {
 //   argument0 = Blockly.Python.valueToCode(this, 'VALUE',Blockly.Python.ORDER_ASSIGNMENT) ||  'None';
 //   var varName = Blockly.Python.variableDB_.getName(this.getFieldValue('VAR'),
 //       Blockly.Variables.NAME_TYPE);
-  
+
 //   if (dropdown_type === 'number')
 //       Blockly.Python.definitions_['var_declare' + varName] = 'let ' + ' ' + varName + ' = 0;';
 //   else if(dropdown_type === 'string')
@@ -3138,7 +3138,7 @@ Blockly.Python.variables_get = function() {
 //       Blockly.Python.definitions_['var_declare' + varName] = 'let ' + ' ' + varName + ' = true;';
 //   else if(dropdown_type.startsWith('Array'))
 //       Blockly.Python.definitions_['var_declare' + varName] = 'let ' + varName + ':' + dropdown_type + ' = [];';
-  
+
 
 //   if(Blockly.Python.setups_['var_declare' + varName] === undefined) {
 //       Blockly.Python.setups_['var_declare' + varName] =  varName + ' = ' + argument0 + '\n';
