@@ -46,7 +46,7 @@
 
 ### 安装所需的包
 ```
-pip install flask baidu-aip flask-socketio
+pip install flask baidu-aip flask-socketio flask_cors
 ```
 
 

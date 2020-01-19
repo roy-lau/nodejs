@@ -21,15 +21,12 @@ ul {
     background-image: url("../img/dlm_head.jpg");
 }
 
-#dlm_menu {
-    width: 100%;
-    padding-top: 22px;
-}
 
 .dlm_menu_icon {
     background: url("../img/dlm_menu.png") no-repeat;
+    margin: 23px 0;
     width: 30px;
-    height: 36px;
+    height: 33px;
 }
 
 .dlm_menu_icon_1 {
@@ -547,35 +544,6 @@ th {
     padding-left: 17px;
 }
 
-#dlm_lb_zt {
-    width: 32px;
-    height: 20px;
-}
-
-.dlm_dl_dl_sr {
-    width: 316px;
-    height: 40px;
-    line-height: 42px;
-    padding-left: 22px;
-    background-color: #ddd;
-    margin: 0 auto;
-    margin-top: 53px;
-    text-align: left;
-    color: #666;
-}
-
-.dlm_dl_dl_sr1 {
-    width: 340px;
-    height: 42px;
-    line-height: 42px;
-    padding-left: 22px;
-    background-color: #ddd;
-    margin: 0 auto;
-    margin-top: 53px;
-    text-align: left;
-    color: #666;
-    border-style: none
-}
 
 select:focus {
     outline: none;

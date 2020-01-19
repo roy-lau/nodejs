@@ -1,12 +1,19 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
+import sys
 from flask_cors import CORS
+class redirect:
+    def write(self,str1):
+        if str1!='\n':
+            emit('my response', {'data': str1})
+    def flush(self):
+        pass
 app = Flask(__name__)
 CORS(app)
 socketio = SocketIO(app,cors_allowed_origins='*')
-
-def print(s):
-    emit('my response', {'data': s})
+r = redirect()
+sys.stdout = r
+    
 @app.route('/')
 def index():
     return render_template('index.html')

@@ -9,10 +9,10 @@ $(function() {
      * @return {[type]}   [description]
      */
     $(".dlm_menu_icon").click(function(event) {
-        $(this).children("#dlm_menu_list").toggle();
+        $(this).children("#dlm_menu_list").toggle()
         event.stopPropagation();
+    }).mouseleave(function(){
+        $(this).children("#dlm_menu_list").hide()
     })
-    $(document).click(function() {
-        $(".dlm_menu_icon #dlm_menu_list").hide()
-    });
+
 })
