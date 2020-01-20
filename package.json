@@ -17,13 +17,7 @@
     "electronDownload": {
       "mirror": "https://npm.taobao.org/mirrors/electron/"
     },
-    "extraResources": "./",
-    "win": {
-      "icon": "./static/img/favicon2.ico"
-    },
-    "linux": {
-      "icon": "./static/img/favicon2.ico"
-    }
+    "extraResources": "./"
   },
   "dependencies": {
     "adm-zip": "^0.4.13",
