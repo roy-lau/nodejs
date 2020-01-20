@@ -94,7 +94,7 @@
          * 下面是原 dlm_blockly.js 文件的代码，处理头部菜单的代码被我整理成 header.js 文件了
          */
         var socket = io.connect('ws://127.0.0.1:5000/test');
-        
+
         socket.on('my response', function(msg) {
             if (msg.data == 'bf') {
                 player()

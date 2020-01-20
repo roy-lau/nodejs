@@ -17,14 +17,19 @@
     "electronDownload": {
       "mirror": "https://npm.taobao.org/mirrors/electron/"
     },
-    "extraResources": "./"
+    "extraResources": "./",
+    "win": {
+      "icon": "./static/img/favicon2.ico"
+    },
+    "linux": {
+      "icon": "./static/img/favicon2.ico"
+    }
   },
   "dependencies": {
     "adm-zip": "^0.4.13",
     "emailjs": "^2.2.0",
     "request": "^2.88.0",
-    "request-promise": "^4.2.5",
-    "yarn": "^1.21.1"
+    "request-promise": "^4.2.5"
   },
   "devDependencies": {
     "electron": "^6.1.7",

@@ -16,23 +16,10 @@ function createWindow() {
         }
     })
 
-
-    let spawn = require('child_process').spawn,
-    subpy3 = spawn('python3', ['flaskserver.py']);
-
-    subpy3.stdout.on('data', data => {
-        console.info('[py3->]', data.toString());
-    })
-    subpy3.stdout.on('close', (code, signal) => {
-        console.error(`py3 close: ${signal} ${code}`);
-        process.kill(0)
-    });
-
     // 加载index.html文件
     mainWindow.loadFile('templates/index.html')
     // 打开开发者工具
-    // mainWindow.webContents.openDevTools()
-
+    mainWindow.webContents.openDevTools()
 
     // 当 window 被关闭，这个事件会被触发。
     mainWindow.on('closed', function() {
@@ -40,11 +27,6 @@ function createWindow() {
         // 通常会把多个 window 对象存放在一个数组里面，
         // 与此同时，你应该删除相应的元素。
         mainWindow = null
-        // 关闭 Python
-        subpy3.kill('SIGTERM', (code, signal) => {
-            console.error(`py kill: ${signal} ${code}`);
-        })
-        subpy3 = null
     })
 }
 
