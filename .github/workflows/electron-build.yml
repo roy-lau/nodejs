@@ -22,7 +22,7 @@ jobs:
 #       - name: pip install
 #         run: pip install flask baidu-aip flask-socketio
       - name: npm install, build
-        run: npm install && sudo npm run build && ll && node email.js
+        run: npm install && sudo npm run build && ls dist && node email.js
         env:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
