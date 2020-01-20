@@ -1,0 +1,65 @@
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        background-color: #ddd;
+    }
+
+    .text-left {
+        text-align: left;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    #head {
+        width: 100%;
+        height: 80px;
+        background-image: url("../img/dlm_head.jpg");
+    }
+
+    .logo {
+        float: left;
+        margin: 5px 20px;
+    }
+
+    .head-list {
+        margin: 0;
+        width: 84%;
+        float: left;
+    }
+
+    .head-list li {
+        float: left;
+        width: 10%;
+        height: 80px;
+        line-height: 80px;
+        text-align: center;
+        vertical-align: middle;
+        cursor: pointer;
+        color: white;
+        list-style: none;
+    }
+
+    .head-list li.edit_python {
+    	display: block;
+		margin: 20px 10px;
+		height: 40px;
+		line-height: 40px;
+		padding: 0px 10px;
+        border: 1px solid white;
+        border-radius: 20px;
+    }
+    .head-list li.edit_python a{
+    	color: white;
+    	text-decoration: none;
+    	font-size: 15px;
+    }
+
+    .head-list li .iconfont {
+        font-size: 18px;
+        font-weight: bold;
+    }
