@@ -3632,7 +3632,6 @@ Blockly.Blocks['math_number'] = {
     
     this.setOutput(true, Number);
     this.setTooltip(Blockly.Msg.MATH_NUMBER_TOOLTIP);
-    console.log('asd')
   }
 };
 

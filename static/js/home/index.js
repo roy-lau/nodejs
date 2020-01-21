@@ -1,4 +1,4 @@
-    let xmlDoc = loadXMLDoc("http://129.204.163.41:60006/static/dlm-xml/blocklys.xml?" + Math.random()),
+    let xmlDoc = loadXMLDoc("/static/dlm-xml/blocklys.xml?" + Math.random()),
         demoWorksplace = Blockly.inject('dlm_blockly', {
             media: "../static/media/",
             collapse: false,
@@ -8,7 +8,6 @@
                 wheel: true
             }
         })
-
     // 页面加载完触发此事件
     $(function() {
 
@@ -41,59 +40,71 @@
          * 设置编辑器
          * 每次 积木变化 将 blockly 生成的 Python 代码放到右侧编辑器里
          */
+        let editor = ace.edit("dlm_edit");
+        editor.setTheme("ace/theme/monokai");
+        // editor.setTheme("ace/theme/xcode");
+        editor.getSession().setMode("ace/mode/python");
+        editor.setFontSize(17);
+        editor.setShowPrintMargin(false);
+        editor.setReadOnly(true);
+        editor.setScrollSpeed(0.05);
+
         function showEditByCode() {
             Blockly.Python.addReservedWords('code');
-
-            let editor = ace.edit("dlm_edit");
-            editor.setTheme("ace/theme/monokai");
-            // editor.setTheme("ace/theme/xcode");
-            editor.getSession().setMode("ace/mode/python");
-            editor.setFontSize(17);
-            editor.setShowPrintMargin(false);
-            editor.setReadOnly(true);
-            editor.setScrollSpeed(0.05);
-
             let code = Blockly.Python.workspaceToCode(demoWorksplace) || '';
+            setEditCode(code)
+        }
+        /**
+         * 设置编辑器的代码
+         * @param {[type]} code 代码
+         */
+        function setEditCode(code) {
             let chinese_code = code.replace(/(_[0-9A-F]{2}_[0-9A-F]{2}_[0-9A-F]{2})+/g, function(s) { return decodeURIComponent(s.replace(/_/g, '%')); });
             editor.setValue(chinese_code, -1);
         }
 
+
         //加载本地xml作品
-        var s = document.getElementById('dlm_wj_menu_box_loadhost')
-        var c = document.getElementById('contained')
-        s.onclick = function(){
-            c.click()
-        }
-        var contained = document.querySelector("#contained");
-        var fileReader = new FileReader();
-        fileReader.onload = function(e){
-            Blockly.Xml.domToWorkspace(createXml(e.target.result).firstChild, demoWorksplace);
-        }
+        var s = document.getElementById('dlm_wj_menu_box_loadhost')
+        var c = document.getElementById('contained')
+        s.onclick = function() {
+            c.click()
+        }
+
+        var contained = document.querySelector("#contained");
+        var fileReader = new FileReader();
+        fileReader.onload = function(e) {
+            Blockly.Xml.domToWorkspace(createXml(e.target.result).firstChild, demoWorksplace);
+        }
+
         function handleUpload(e) {
             var file = e.target.files[0];
 
             fileReader.readAsText(file);
         }
         contained.addEventListener("change", handleUpload);
-        function createXml(str){
-            if(document.all){
-            　　var xmlDom=new ActiveXObject("Microsoft.XMLDOM")
-            　　xmlDom.loadXML(str)
-            　　return xmlDom
-        　　}
-        　　else
-        　　    return new DOMParser().parseFromString(str, "text/xml")
-        　　}
+
+        function createXml(str) {
+            if (document.all) {
+                var xmlDom = new ActiveXObject("Microsoft.XMLDOM")
+                xmlDom.loadXML(str)
+                return xmlDom
+            } else
+                return new DOMParser().parseFromString(str, "text/xml")
+        }
         // 清除代码/积木
         $("#dlm_clear_btn").click(function() {
-            // console.log(Blockly.Xml)
+            $("#code_result").hide() // 隐藏程序运行结果区
+            $("#code_result").text() // 程序运行结果区置空
+            setEditCode("")
         })
 
 
-        /**
+        /*
          * 下面是原 dlm_blockly.js 文件的代码，处理头部菜单的代码被我整理成 header.js 文件了
          */
-        var socket = io.connect('ws://127.0.0.1:5000/test');
+
+        var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
 
         socket.on('my response', function(msg) {
             if (msg.data == 'bf') {
@@ -104,12 +115,55 @@
                 window.open("static/out.jpg?" + Math.random())
                 return false
             }
-            let chinese_code = msg.data.replace(/(_[0-9A-F]{2}_[0-9A-F]{2}_[0-9A-F]{2})+/g, function(s) { return decodeURIComponent(s.replace(/_/g, '%')); });
+            if (msg.data == 'over') {
+
+                $('#dlm_run_stop_btn').text('运 行')
+                return false
+            }
             let editor = ace.edit("dlm_edit");
-            editor.setValue(chinese_code, -1);
+            let str1 = editor.getValue()
+            let str2 = str1 + msg.data
+            setEditCode(str2)
+
+        });
+        socket.on('my connect', function(msg) {
+            $('#dlm_run_stop_btn').text('运 行')
+            let editor = ace.edit("dlm_edit");
+            let str1 = editor.getValue()
+            let str2 = str1 + msg.data
+            setEditCode(str2)
         });
         $('#dlm_run_stop_btn').click(function(event) {
-            socket.emit('myevent', { data: Blockly.Python.workspaceToCode(demoWorksplace) });
+            $("#code_result").show() // 显示程序运行结果区
+            $("#code_result").text("开始安装\n开始运行\n长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长超长\n\n\n") // 程序运行结果区设置值
+            if ($('#dlm_run_stop_btn').text() == '停 止') {
+                socket.emit('restart', { data: 'ting' });
+            } else {
+                $('#dlm_run_stop_btn').text('停 止')
+                socket.emit('myevent', { data: Blockly.Python.workspaceToCode(demoWorksplace) });
+                return false;
+            }
+
+        });
+
+        $('#dlm_wj_menu_box_savrhost').click(function(event) {
+            var s = prompt('输入文件名!')
+            let changeXml = Blockly.Xml.workspaceToDom(demoWorksplace),
+                changeXmlText = Blockly.Xml.domToText(changeXml);
+            exportRaw(s + '.xml', changeXmlText)
+            return false;
+        });
+
+        $('#dlm_run_shutdown_btn').click(function(event) {
+            socket.emit('exec', { data: 'shutdown -h now' });
+            $(this).text("关闭启动").width(60)
+        });
+        $('#dlm_run_restart_btn').click(function(event) {
+            socket.emit('exec', { data: 'shutdown -r now' });
+            return false;
+        });
+        $('#dlm_run_exec_btn').click(function(event) {
+            socket.emit('exec', { data: a });
             return false;
         });
 
@@ -120,32 +174,19 @@
             audio.play();
         }
 
-        // function ajaxtj(e){
-        //     Blockly.Python.addReservedWords('code');
-        //     var code = Blockly.Python.workspaceToCode(demoWorksplace);
-        //     // JSON.stringify(s)
-        //     $.ajax({
-        //         url:"http://127.0.0.1:5000/recv",    //请求的url地址
-        //         dataType:"text",   //返回格式为json
-        //         async:true,//请求是否异步，默认为异步，这也是ajax重要特性
-        //         data:code,    //参数值
-        //         type:"POST",   //请求方式
-        //         beforeSend:function(){
-        //         //         
-        //         },
-        //         success:function(req){
-        //             // req = JSON.parse(req)
-        //             $('#dlm_code').innerHTML=req
+        function fakeClick(obj) {
+            var ev = document.createEvent("MouseEvents");
+            ev.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+            obj.dispatchEvent(ev);
+        }
 
-        //         },
-        //         complete:function(){
-        //             //请求完成的处理
-        //         },
-        //         error:function(req){
-        //             //请求出错处理
-        //         }
-        //     });
-        // }
-
+        function exportRaw(name, data) {
+            var urlObject = window.URL || window.webkitURL || window;
+            var export_blob = new Blob([data]);
+            var save_link = document.createElementNS("http://www.w3.org/1999/xhtml", "a")
+            save_link.href = urlObject.createObjectURL(export_blob);
+            save_link.download = name;
+            fakeClick(save_link);
+        }
 
     })

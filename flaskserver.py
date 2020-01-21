@@ -1,35 +1,49 @@
+from static.interfacepy.flaskIndex import *
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 import sys
-from flask_cors import CORS
+import threading
+import time
 class redirect:
     def write(self,str1):
-        if str1!='\n':
-            emit('my response', {'data': str1})
+        emit('my response', {'data': str1})
     def flush(self):
         pass
 app = Flask(__name__)
-CORS(app)
-socketio = SocketIO(app,cors_allowed_origins='*')
-r = redirect()
-sys.stdout = r
-    
+socketio = SocketIO(app)
+rp = redirect()
+sys.stdout = rp
+#主页
 @app.route('/')
 def index():
     return render_template('index.html')
+
+#代码执行
 @socketio.on('myevent', namespace='/test')
 def test_message(message):
-    if message['data']=='kill':
-        return
     try:
         exec(message['data'])
+        emit('my response', {'data': 'over'})
     except Exception as r:
-        print('错误:'+repr(r))
+        emit('my response', {'data': '错误:'+repr(r)})
 
+#重启
+@socketio.on('restart', namespace='/test')
+def test_restart(message):
+    emit('my response', {'data': '程序正在重启'})
+    restart_program()
+
+@socketio.on('exec', namespace='/test')
+def test_save(message):
+    with open(r'./static/worksplace/'+message['name']+'.xml.a','w') as f:
+        f.write(message['data'])
+
+#连接
 @socketio.on('connect', namespace='/test')
 def test_connect():
-    emit('my response', {'data': '客户端准备就绪'})
+    emit('my connect', {'data': '客户端准备就绪\n'})
 
+#连接断开
 @socketio.on('disconnect', namespace='/test')
 def test_disconnect():
     print('Client disconnected')

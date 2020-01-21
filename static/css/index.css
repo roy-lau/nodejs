@@ -21,12 +21,15 @@ ul {
     background-image: url("../img/dlm_head.jpg");
 }
 
+#dlm_menu {
+    width: 100%;
+    padding-top: 22px;
+}
 
 .dlm_menu_icon {
     background: url("../img/dlm_menu.png") no-repeat;
-    margin: 23px 0;
     width: 30px;
-    height: 33px;
+    height: 36px;
 }
 
 .dlm_menu_icon_1 {
@@ -111,13 +114,15 @@ ul {
     /* background-color: #000; */
 }
 
-#dlm_subject{
+#dlm_subject {
     height: calc(100% - 80px);
 }
-#dlm_Sample{
+
+#dlm_Sample {
     height: calc(100% - 80px);
 }
-#dlm_blockly{
+
+#dlm_blockly {
     width: 70%;
     height: 100%;
     float: left;
@@ -544,13 +549,53 @@ th {
     padding-left: 17px;
 }
 
-
-select:focus {
-    outline: none;
+#dlm_lb_zt {
+    width: 32px;
+    height: 20px;
 }
 
-.option {
+.dlm_dl_dl_sr {
+    width: 316px;
+    height: 40px;
+    line-height: 42px;
+    padding-left: 22px;
+    background-color: #ddd;
+    margin: 0 auto;
+    margin-top: 53px;
+    text-align: left;
+    color: #666;
+}
+
+.dlm_dl_dl_sr1 {
+    width: 340px;
+    height: 42px;
+    line-height: 42px;
+    padding-left: 22px;
+    background-color: #ddd;
+    margin: 0 auto;
+    margin-top: 53px;
+    text-align: left;
+    color: #666;
+    border-style: none
+}
+
+/*代码运行结果*/
+#code_result {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+}
+
+#dlm_run_shutdown_btn{
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
     text-align: center;
-    font-size: 15px;
-    background-color: #fff;
+    color: white;
+    background-color: #d6933a;
+    cursor: pointer;
+    /*border-radius: 50%;*/
 }

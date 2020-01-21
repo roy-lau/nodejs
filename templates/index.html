@@ -14,9 +14,10 @@
 <body>
     <div id="dlm_body">
         <header id="dlm_head">
-            <a href="./index.html">
+            <a href="/">
                 <img id="dlm_menu_icon_0" style="width: 100px; height: 50px; padding-left: 55px; padding-top: 15px;float: left;" src='../static/img/dlm_icon.png' alt="dlm logo">
             </a>
+            <div id="dlm_menu">
                 <div class="dlm_menu_icon dlm_menu_icon_1">
                     <div id="dlm_menu_list">
                         <ul class="dlm_wj_menu_box">创建</ul>
@@ -52,6 +53,7 @@
                 <a href="./dlm_sj_zy.html" class="dlm_menu_icon dlm_menu_icon_7"></a>
                 <a href="./dlm_Sample.html" class="dlm_menu_icon dlm_menu_icon_6"></a>
                 <div class="dlm_menu_icon dlm_menu_icon_5"></div>
+            </div>
         </header>
         <section id="dlm_subject" style="display: block;">
             <div id="dlm_blockly"></div>
@@ -61,7 +63,9 @@
                     <div id="dlm_clear_btn">清 除</div>
                 </div>
                 <div id="dlm_edit"></div>
+                <textarea name="code_result" id="code_result" cols="53" rows="10" readonly placeholder="程序运行结果区"></textarea>
             </div>
+            <div class="dlm_run_shutdown_btn" id="dlm_run_shutdown_btn">开机启动</div>
         </section>
     </div>
 </body>
@@ -79,7 +83,7 @@
 if (typeof module === 'object') { window.jQuery = window.$ = module.exports; };
 </script>
 <script src="../static/js/header.js"></script>
-<script src="http://129.204.163.41:60006/static/js/dml_blocklu1.js"></script>
+<script src="../static/js/home/dml_blocklu1.js"></script>
 <script src='../static/js/home/index.js'></script>
 
 </html>

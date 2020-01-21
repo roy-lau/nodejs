@@ -1816,13 +1816,7 @@ Blockly.Python.pins_digital_write=Blockly.Python.pins_digital;
 Blockly.Python.pins_digital_read=Blockly.Python.pins_digital;
 Blockly.Python.pins_analog_write=Blockly.Python.pins_digital;
 Blockly.Python.pins_analog_read=Blockly.Python.pins_digital;
-
-
-
-
-
-
-Blockly.Python.procedures_defreturn = function() {
+Blockly.Python.procedures_defnoreturn = function() {
   // Define a procedure with a return value.
   var funcName = Blockly.Python.variableDB_.getName(this.getFieldValue('NAME'),
       Blockly.Procedures.NAME_TYPE);

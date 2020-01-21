@@ -56,6 +56,7 @@ Blockly.Python.init = function (a) {
     for (d = 0; d < a.length; d++) b.push(Blockly.Python.variableDB_.getName(a[d].getId(), Blockly.Variables.NAME_TYPE) + " = None");
     Blockly.Python.definitions_.variables = b.join("\n")
 };
+
 Blockly.Python.finish = function (a) {
     var b = [],
         c = [],
