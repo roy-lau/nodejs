@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>大文件分片上传</title>
+      <style>
+        body{width: 600px;margin: 0 auto;}
+    </style>
+</head>
+
+<body>
+    <h1>大文文件分片上传 之 xhr formdata </h1>
+    <div>
+        选择文件:
+        <input type="file" id="f1" /><br /><br />
+        <div>
+            <progress id="progress" value="0"></progress>
+            <span id="progressText"></span>
+        </div>
+        <button type="button" id="btn-submit">上 传</button>
+    </div>
+</body>
+
+</html>
+<script>
+/**
+ * 思路概括：
+ * 把大文件分成每2m 一块进行上传，发送到服务器同时携带一个标志 暂时用当前的时间戳 ，
+ * 服务端生成临时文件，服务端接受一个文件结束的标志 ，然后将所有的文件进行合并成一个文件，清理临时文件。 返回结果（看情况）
+ */
+
+const progress = document.getElementById('progress'),
+    progressText = document.getElementById('progressText');
+
+function submitUpload() {
+
+    let file = document.getElementById('f1').files[0];
+
+    if (!file) {
+        alert('请选择文件');
+        return;
+    }
+    console.log(file)
+    let fileName = file.name, // 文件名
+        sendChunkCount = 0, // 计算已发送分片数量
+        chunks = sliceChunks(file), // 文件分片列表
+        chunkCount = chunks.length
+
+    // 没有做并发限制，较大文件导致并发过多，tcp 链接被占光 ，需要做下并发控制，比如只有4个在请求在发送
+    for (let i = 0; i < chunkCount; i++) {
+        const fdChunk = new FormData(); // 构造 分片FormData 对象
+        fdChunk.append('f1', chunks[i]);
+        fdChunk.append('type', 'chunk');
+        fdChunk.append('chunkNum', i);
+        fdChunk.append('chunkCount', chunkCount);
+        fdChunk.append('fileName', fileName);
+
+        xhrSend(fdChunk, function() {
+            sendChunkCount += 1;
+            progress.value = sendChunkCount
+            progress.max = chunkCount
+            progressText.innerText = "上传进度：" + ~~(sendChunkCount / chunkCount * 100) + "%"
+            if (sendChunkCount === chunkCount) {
+                console.log('上传完成，发送合并请求');
+
+                const formD = new FormData();
+                formD.append('type', 'merge'); // 后台根据 type:merge 来判断是否上传成功。上传成功后合并分片
+                formD.append('chunkNum', i);
+                formD.append('chunkCount', chunkCount);
+                formD.append('fileName', fileName);
+                xhrSend(formD);
+                progressText.innerText = "完成"
+            }
+        });
+    }
+}
+/**
+ * 拆分文件
+ * @param  {[type]} files     文件对象
+ * @param  {[type]} chunkSize 文件分片大小
+ * @return {[type]} chunks        文件分片列表
+ */
+function sliceChunks(file, chunkSize = (2 * 1024 * 1024)) {
+
+    let chunks = [] // 分片列表
+    // 如果未传入拆分文件的大小，默认设为 2M
+
+    if (file.size > chunkSize) {
+        let start = 0,
+            end = 0;
+
+        while (true) {
+            end += chunkSize;
+            let blob = file.slice(start, end);
+            start += chunkSize;
+            if (!blob.size) {
+                // 拆分结束
+                break;
+            }
+            chunks.push(blob);
+        }
+    } else {
+        chunks.push(file.slice(0));
+    }
+
+    return chunks
+}
+/**
+ * [xhrSend XMLHttpRequest 发送]
+ * @param  {[type]}   fd FormData 对象
+ * @param  {Function} cb 回调函数
+ * @return {[type]}      [description]
+ */
+function xhrSend(fd, cb) {
+
+    let xhr = new XMLHttpRequest(); // 创建对象
+    xhr.open('POST', '/upload-fragmentation', true);
+
+    /**
+     * 监听状态码变化事件
+     * @return {[type]} [description]
+     */
+    xhr.onreadystatechange = function() {
+        // console.log('state change', xhr.readyState);
+        if (xhr.readyState == 4) {
+            let res = JSON.parse(xhr.responseText)
+            console.log(res);
+            cb && cb();
+        }
+    }
+
+    // 注意 send 一定要写在最下面，否则 onprogress 只会执行最后一次 也就是100%的时候
+    xhr.send(fd); // 发送时  Content-Type 默认就是: multipart/form-data;
+}
+
+// 绑定提交事件
+document.getElementById('btn-submit').addEventListener('click', submitUpload);
+</script>

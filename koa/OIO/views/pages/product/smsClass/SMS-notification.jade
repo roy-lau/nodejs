@@ -1,0 +1,191 @@
+extends ../component
+
+block content
+  .container-fluid.mt6
+  .row
+    #nav-items.col-md-2
+      h3.title-item 语音类
+      .nav-item
+        p
+          a(href='/product/Corporate-nickname') 企业外号
+        p
+          a(href='/product/Security-privacy-number') 安全隐私号
+        p
+          a(href='/product/One-button-double-call') 一键双呼
+        p
+          a(href='/product/Business-card') 企业名片
+      h3.title-item 消息类
+      .nav-item
+        p
+          a(href='/product/SMS-authentication-code') 短信验证码
+        p
+          a(href='/product/SMS-platform') 短信发送平台
+        p.current
+          a(href='/product/SMS-notification') 短信通知
+        p
+          a(href='/product/Notice-of-flashing-letters') 闪信通知
+    .col-md-8(style='position: absolute;left: 350px;')
+      // 消息类
+      section#voiceClass
+        h2 消息类
+        section#smsClass-3
+          .row
+            p.h1.col-md-6
+              | 短信通知
+              span.info 已服务10000+企业
+            .pull-right.text-gray
+              a(href='#experience') 体验
+              a(href='#Price') 报价
+          strong.line-h 覆盖三网，低延迟，高到达率！
+          p.text-gray
+            | 号外号
+            sup TM
+            | 为您提供专业短信送达服务，覆盖三网，高到达率，广泛用于订单通知，服务通知、物流信息等各类信息通知。
+          a.btn-green(href='') 立即接入使用
+          #experience.row
+            p.h1.col-md-12.end-line 使用场景
+          strong.line-h 为阳光保险，提供高效的通知服务
+          p.text-gray 短信接口简单易用、接入快速、三网合一，下发快、不堵塞、不延迟，保证用户体验和转化率
+          .smsScene.row
+            ul.col-md-3.tab-list
+              li.row.on-list
+                span.col-md-1 1
+                p
+                  | 用户使用 手机APP或web端
+              li.row
+                span.col-md-1 2
+                p
+                  | 号外号向 用户发送验证码
+              li.row
+                span.col-md-1 3
+                p
+                  | 用户收到 信验证码完成注册
+            .col-md-9.tab-img.on-imgs
+              img(src='http://www.yuntongxun.com/front/images/produce_duanxinyangzhengma2.png', alt='用户使用手机APP或web端')
+              p 使用号外号的短信验证码服务多平台支持、低门槛、下发快、15分钟接入
+            .col-md-9.tab-img
+              img(src='http://www.yuntongxun.com/front/images/produce_duanxinyangzhengma4.png', alt='用户使用手机APP或web端')
+              p 运营商106直连通道，覆盖全国多线负载路由一次接入永久稳定，免除重复开发之劳
+            .col-md-9.tab-img
+              img(src='http://www.yuntongxun.com/front/images/produce_duanxinyangzhengma7.png', alt='用户使用手机APP或web端')
+              p 10万线并发支持，满足超规模业务量使用需求保证急速用户收到验证码
+          .tips1(style='padding-top: 200px;')
+            p 保证客户安全，相关问题都有专业的客户支持协助解决。
+          br
+          br
+          #Price.row
+            p.h1.col-md-12.end-line 产品价格
+          .row
+            img(src='http://www.yuntongxun.com/front/images/produce_duanxinyangzhengma_jiage.png', alt='产品价格')
+            br
+            br
+            ul.col-md-3.sale-list
+              li
+                span.sale1 75折
+                span.connet 语音验证码4.5分/条
+              li
+                span.sale 92折
+                span.connet 流量折后9.2折
+              li
+                span.sale 75折
+                span.connet 通话4.5分/分钟
+            ul.col-md-3.sale-list
+              li
+                span.sale1 83折
+                span.connet 语音验证码5分/条
+              li
+                span.sale 95折
+                span.connet 流量折后9.5折
+              li
+                span.sale 83折
+                span.connet 通话5分/分钟
+            ul.col-md-3.sale-list
+              li
+                span.sale1 92折
+                span.connet 语音验证码5.5分/条
+              li
+                span.sale 98折
+                span.connet 流量折后9.8折
+              li
+                span.sale 92折
+                span.connet 通话5.5分/分钟
+            ul.col-md-3.sale-list
+              li
+                span.sale1 原价
+                span.connet 语音验证码6分/条
+              li
+                span.sale 折扣
+                span.connet 流量折扣价
+              li
+                span.sale 原价
+                span.connet 通话6分/分钟
+          br
+          p 还有低至 0.04元/条 的短信优惠包，超值优惠，不限使用时间
+          a.btn-green(href='') 更多优惠包
+          .row
+            p.h1.col-md-12.end-line 行业应用
+          .row
+            .col-md-4.block-scene
+              img(src='http://www.cainfoharbor.com/upload/my/2017042409350348091.jpg', alt='物流提醒')
+              p
+                strong.line-h 物流提醒
+              p.text-gray 买家下单后，告知商品的物流状态，发货快递单号，请买家注意查收。物流提醒助力提升店铺服务质量，安抚客户，使客户放心。
+            .col-md-4.block-scene
+              img(src='http://www.cainfoharbor.com/upload/my/2017042409350544092.jpg', alt='服务通知')
+              p
+                strong.line-h 服务通知
+              p.text-gray 资金相关重要环节，如确认支付、买家撤销退款、卖家同意退款、卖家确认收到退货等操作时，需要进行手机身份验证，以保障资金安全。
+            .col-md-4.block-scene
+              img(src='http://www.cainfoharbor.com/upload/my/2017042409350772693.jpg', alt='订票通知')
+              p
+                strong.line-h 订票通知
+              p.text-gray 在客户购票后，下发提醒短信，票务信息一手掌握。
+          .row
+            p.h1.col-md-12.end-line 服务优势
+          .row
+            .col-md-4.block-scene
+              img(src='http://www.cainfoharbor.com/upload/my/20170410093759282223.png', alt='快速稳定')
+              p
+                strong.line-h 快速稳定
+              p.text-gray 高速短信通道，最高可达800条/秒，短信发送最快3秒到达。
+            .col-md-4.block-scene
+              img(src='http://www.cainfoharbor.com/upload/my/20170410093802126224.png', alt='满足个性化')
+              p
+                strong.line-h 满足个性化
+              p.text-gray 支持自定义签名， 支持为不同的客户提供,独享通道、专用通道、大客户通道。
+            .col-md-4.block-scene
+              img(src='http://www.cainfoharbor.com/upload/my/20170410093804606225.png', alt='实时监测')
+              p
+                strong.line-h 实时监测
+              p.text-gray 系统采用自动报警机制，随时随地,监测短信发送与接收情况。
+          .row
+            p.h1.col-md-12.end-line 24小时服务
+          .Prompt
+            p 号外号的售前、售后都非常专业，遇到问题也有技术人员协助，再也不怕遇到问题难解决了，合作很放心。
+          p
+            // 联系<a href="tel:010-86466511">010-86466511</a>
+            | 可查余额、账单、体验服务、7x24小时自助服务，还有最新活动优先通知喔~
+          .FastAccess
+            h1 开始接入号外号！
+            br
+            .time-line
+            .pull-left.step1 1
+            .pull-left.step2 2
+            .pull-left.step3 3
+            .pull-left.step4 ok
+            br.clearfix
+            br
+            br
+            .row
+              .col-md-3
+                p 首先，注册号外号账号
+                a.btn.btn-warning(href='http://101.201.101.70:8080/ucrm/register_toRegister.action') 免费注册
+              .col-md-3
+                p 花1分钟，开发者信息认证
+                a.btn.btn-warning(href='') 开发者认证 →
+              .col-md-3
+                p 查看API文档，准备接入
+                a.btn.btn-warning(href='') 查看开发文档 →
+              .col-md-3
+                p ok!使用号外号产品
+                a.btn.btn-warning(href='') 完成 ！

@@ -1,0 +1,103 @@
+
+/* 通用样式 */
+.m0{margin: 0;} //外边框为0
+.text-gray{color: gray;font-size: 1em;} // 字体颜色为灰色
+
+
+// 快速接入使用——按钮
+.btn-white{width: 150px; height: 35px;display: block;margin-top: 20px; border-radius: 18px;border: 1px solid #1FA66E;
+	text-align: center;line-height: 35px;font-size: 1.3em;
+	background-color: white;color: #1FA66E;
+	&:hover{background-color: #1FA66E;color: white;text-decoration: none;-webkit-backface-visibility: hidden;}
+}
+
+// 价格——框
+.Price-box{
+	height: 250px;
+	width: 180px;
+	margin: 10px;
+	float: left;
+	text-align: center;
+	border: 1px solid #C7CBD3;
+	.Price-box-title{
+		line-height: 50px;
+		border-bottom: 1px solid #C7CBD3;
+		.Price-money{
+			color: #fb364a;
+			font-size: 36px;
+		}
+	}
+	.Price-h{
+		font-size: 22px;
+		line-height: 55px;
+		font-weight: bold;
+		color: #3d4f5b;
+	}
+	.Price-Original-price{ color: #C7CBD3;line-height: 30px;text-decoration: line-through;}
+	.Price-Contain{color: #2fb26a;line-height: 30px;}
+	.Price-go-purchase{
+		display: inline-block;
+		width: 158px;
+		height: 48px;
+		margin: 10px 0;
+		line-height: 48px;
+		text-align: center;
+		color: #fff;
+		font-size: 18px;
+		font-weight: bold;
+		background-color: #fb364a;
+		border-radius: 3px;
+		-webkit-border-radius: 3px;
+		-moz-border-radius: 3px;
+	}
+	.one{margin: 50px 0;}
+}
+.clearfix,
+.clearfix:after,
+.clearfix:before{ clear: both; overflow: hidden;zoom:1;}
+/* 左侧列表*/
+.leftArea{
+	position: fixed;top: 61px;
+	background-color: #091720;color: white;
+
+	.leftArea-label-sms{background-color: #F83251;}
+	.leftArea-label-voice{background-color: #B83FCD;}
+	h3{font-weight: bold;font-size: 23px;text-indent: 60px;line-height: 81px;}
+	li{line-height: 52px;text-indent: 120px;padding-right: 50px;
+		a{color: white;
+			&:hover{text-decoration: underline;}
+		}
+	}
+	// a:link {color: #FF0000}		未访问的链接
+	// a:visited {color: #FF0000}	/*已访问的链接 */
+}
+/* 右侧内容页 */
+.rightArea{
+	margin-left:266px;margin-top: 61px;
+	background-color: #EFEFEF;
+	hr{color: #C7CBD3;margin-top: 30px;}
+	h2{font-size: 30px;margin: 50px 0 20px 16px;}
+	#sms-page1,
+	#sms-page2,
+	#sms-page3,
+	#sms-page4,
+	#voice-page1,
+	#voice-page2,
+	#voice-page3,
+	#voice-page4{
+		background-color: #EFEFEF;}
+
+	.sms-box-page1,
+	.sms-box-page2,
+	.sms-box-page3,
+	.sms-box-page4,
+	.voice-box-page1,
+	.voice-box-page2,
+	.voice-box-page3,
+	.voice-box-page4{width: 866px;margin: 0 auto;padding: 45px 40px;
+		border-radius: 1%;box-shadow: 0 5px 15px #cac8e9;background-color: white;}
+	#sms-footer,
+	#voice-footer{text-align: center;margin: 0 auto;
+		.QAlist{li{list-style: none;line-height: 23px; a{color: #000;}}}
+	}
+}
