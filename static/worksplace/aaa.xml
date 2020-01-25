@@ -1,0 +1,1 @@
+<xml xmlns="https://developers.google.com/blockly/xml"><block type="inout_print_end" id="f*-hu+/yB9kqJIyuQC?W" x="173" y="151"><value name="VAR"><block type="text" id="7?*T!7,qfHK^+)|-%afb"><field name="TEXT">Hello</field></block></value><value name="END"><block type="text" id=".`j6.TYUmG0LXtn,XN4["><field name="TEXT">,</field></block></value></block></xml>
