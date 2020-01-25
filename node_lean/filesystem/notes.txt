@@ -1,4 +1,0 @@
-1、 fs.stat && fs.statSync 提供了访问文件的属性信息
-2、 fs.readdir && fs.readdirSync 提供读取文件目录信息
-3、 fs.unlink && unlinkSync  进行删除文件操作，不可以删除文件夹
-4、 fs.rmdir && fs.rmdirSync 进行删除文件夹操作，但文件夹必须为空文件夹
