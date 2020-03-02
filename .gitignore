@@ -1,30 +1,6 @@
-<<<<<<< HEAD
 <span style="font-size: small;">
 node_modules    
 ./node_modules    
 */node_modules
 
 </span>
-=======
-.DS_Store
-node_modules
-/dist
-.zip
-# local env files
-.env.local
-.env.*.local
-
-# Log files
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Editor directories and files
-.idea
-.vscode
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
->>>>>>> a689badc717b47679396d7e302876fd8ebd8f865

@@ -9,10 +9,61 @@ const SQL = require('mssql'),
 
 
 const db = {
-    // 基于事务的方式 执行SQL
+    // 基于连接池和事务的方式 执行SQL
     query(sql) {
         return new Promise((resolve, reject) => {
-          // 创建连接池
+            // 创建连接池
+            new SQL.ConnectionPool(config.db_addr).connect().then(pool => {
+
+                // 创建事务连接池
+                const transaction = pool.transaction()
+                // const transaction = new sql.Transaction(pool)
+                // 开启事务
+                transaction.begin().then(t => {
+
+
+                    // 监听 sql 事务是否已经回滚
+                    let rolledBack = false
+                    transaction.on('rollback', aborted => {
+                        // emited with aborted === true
+                        rolledBack = true
+                    })
+
+                    pool.request(transaction)
+                        // new SQL.Request(transaction)
+                        .query(sql, (err, result) => {
+                            // insert should fail because of invalid value
+                            if (err) {
+                                // 如果已经回滚过，就不再回滚了
+                                if (!rolledBack) {
+                                    // 事务回滚
+                                    transaction.rollback(err => {
+                                        if (err) reject('【SQL server】 transaction.rollback err->\n ' + err) // 回滚出错
+                                        console.info('【SQL server】 成功回滚')
+                                    })
+                                }
+                                reject('【SQL server】 Request.query err->\n ' + sql + '\n' + err)
+                            } else {
+                                // 提交事务
+                                transaction.commit(err => {
+                                    // 提交出错
+                                    if (err) reject('【SQL server】 transaction.commit err->\n ' + err)
+                                    // 提交成功
+                                    resolve(result)
+                                })
+                            }
+                        })
+                }).catch(err => {
+                    if (err) reject('【SQL server】 transaction.begin err->\n ' + err) // 开始启动事务出错
+                })
+            }).catch(err => {
+                console.error("【SQL server】 ConnectionPool and connect err->\n ", err)
+            })
+        })
+    },
+    queryT(sql) {
+        return new Promise((resolve, reject) => {
+            // 创建连接池
             const pool = new SQL.ConnectionPool(config.db_addr, (err) => {
 
                 // 创建事务连接池
@@ -20,7 +71,7 @@ const db = {
 
                 // 开启事务
                 transaction.begin(err => {
-                    if (err) reject('【SQL server】 transaction.begin err: '+ err) // 开始启动事务出错
+                    if (err) reject('【SQL server】 transaction.begin err->\n ' + err) // 开始启动事务出错
 
                     // 监听 sql 事务是否已经回滚
                     let rolledBack = false
@@ -35,18 +86,18 @@ const db = {
                             if (err) {
                                 // 如果已经回滚过，就不再回滚了
                                 if (!rolledBack) {
-                                  // 事务回滚
+                                    // 事务回滚
                                     transaction.rollback(err => {
-                                        if (err) reject('【SQL server】 transaction.rollback err: '+ err) // 回滚出错
+                                        if (err) reject('【SQL server】 transaction.rollback err->\n ' + err) // 回滚出错
                                         console.info('【SQL server】 成功回滚')
                                     })
                                 }
-                               reject('【SQL server】 Request.query err: \n '+ sql +'\n'+ err)
+                                reject('【SQL server】 Request.query err->\n ' + sql + '\n' + err)
                             } else {
                                 // 提交事务
                                 transaction.commit(err => {
                                     // 提交出错
-                                    if (err) reject('【SQL server】 transaction.commit err: '+ err)
+                                    if (err) reject('【SQL server】 transaction.commit err->\n ' + err)
                                     // 提交成功
                                     resolve(result)
                                 })
@@ -85,5 +136,3 @@ const db = {
 }
 
 module.exports = db;
-
-

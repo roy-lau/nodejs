@@ -1,0 +1,37 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch downCase-header",
+            "program": "${workspaceFolder}\\downCase\\downHeader.js"
+        },{
+            "type": "node",
+            "request": "launch",
+            "name": "Launch changeXlsx-tmp",
+            "program": "${workspaceFolder}\\changeXlsx\\tmp.js"
+        },{
+            "type": "node",
+            "request": "launch",
+            "name": "Launch changeXlsx-app",
+            "program": "${workspaceFolder}\\changeXlsx\\app.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch downCase-app",
+            "program": "${workspaceFolder}\\downCase\\app.js"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch downCase-washing",
+            "program": "${workspaceFolder}\\downCase\\washing.js"
+        }
+    ]
+}

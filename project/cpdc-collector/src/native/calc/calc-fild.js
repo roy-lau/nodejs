@@ -203,6 +203,69 @@ async function handlePatFollowUp() {
         console.error('handlePatFollowUp ERR ', err)
     }
 }
+// 计算 引流管信息(有一个引流管信息就算100%，一个也没有就算0%) -- 未验证通过
+async function handlePatDrainageTube() {
+    console.info('计算 引流管')
+    try {
+        let initDrainageTube = {}
+
+        for (let index = 0; index < OBJ_CALC._ids.length; index++) {
+            const key = OBJ_CALC._ids[index]
+        const listPatDrainageTube = await sql.query(`SELECT
+                -- PATIENT_NO,
+                TUBE_NAME AS '引流管部位',
+                RETENTION_DAYS AS '留置天数',
+                POD1,
+                POD3,
+                POD7,
+                AMY_POD1,
+                AMY_POD3,
+                AMY_POD7,
+                AMY_POD_DRAW AS '拔管前AMY'
+            FROM
+                [dbo].[PAT_DRAINAGE_TUBE]
+            WHERE
+                PATIENT_NO= '${key}'`),
+            retPatDrainageTube = listPatDrainageTube.recordset,
+            _DrainageTubeTotal = retPatDrainageTube.length
+        // console.log(key,index,_followUpTreatTotal)
+        if (index == 0) { // 第一次，初始化（如果第一个为空，将会报错 query2）
+            const _keys = ['引流管部位','留置天数','POD1','POD3','POD7','AMY_POD1','AMY_POD3','AMY_POD7','拔管前AMY']
+            for (let k = 0; k < _keys.length; k++) {
+
+                initDrainageTube[_keys[k] + '_total'] = 0
+                initDrainageTube[_keys[k] + '_num'] = 0
+                OBJ_CALC[_keys[k]] = 0
+            }
+        }
+
+        for (let i = 0; i < _DrainageTubeTotal; i++) {
+                const _items = retPatDrainageTube[i]
+
+                _.forEach(_items, (value, key) => {
+                    // console.log(value, key)
+                    if (value) {
+                        initDrainageTube[key + '_total'] += 1
+                        initDrainageTube[key + '_num'] += 1
+                        // OBJ_CALC[key] = (initDrainageTube[key + '_num'] / initDrainageTube[key + '_total'] * 100).toFixed(2) + '%'
+                        // console.log(initDrainageTube[key + '_total'],initDrainageTube[key + '_num'] )
+                        // return
+                    }else{
+                        initDrainageTube[key + '_total'] += 1
+                        initDrainageTube[key + '_num'] += 0
+                        // console.log(initDrainageTube[key + '_total'],initDrainageTube[key + '_num'] )
+                        // return
+                    }
+                        OBJ_CALC[key] = (initDrainageTube[key + '_num'] / initDrainageTube[key + '_total'] * 100).toFixed(2) + '%'
+                        // console.log(OBJ_CALC[key] )
+                });
+            }
+        }
+        // console.log(OBJ_CALC)
+    } catch (err) {
+        console.error('handlePatDrainageTube ERR ', err)
+    }
+}
 // 计算 数据项结果 --- 验证通过
 async function handlePatItemResult(){
     console.info('计算 数据项结果')
@@ -345,7 +408,7 @@ async function queryTest() {
     try {
 
         const listPatientNo = await sql.query(`SELECT PATIENT_NO FROM [dbo].[PAT_VISIT]
-                WHERE PATIENT_NO IN ('ff81dd0731f38630','ffbc4406e37a7c57')`),
+                WHERE PATIENT_NO IN ('802c621a0d478d81','ffbc4406e37a7c57')`),
             retPatientNo = listPatientNo.recordset,
             len = retPatientNo.length
 
@@ -422,6 +485,7 @@ async function queryTotal() {
     try {
 
         const listPatientNo = await sql.query(`SELECT
+                TOP 5000
                 PATIENT_NO
             FROM
                 [dbo].[PAT_VISIT]
@@ -516,19 +580,21 @@ async function query1() {
 }
 
 async function main() {
-console.time("共用时")
 
+    console.time("共用时")
+
+    // await queryTest()
     await queryTotal()
     await handlePatVist()
-    await handlePatItemResult()
+    // await handlePatItemResult()
+    await handlePatDrainageTube()
 
-
-    await handlePatFollowUp()
-    await handlePatFollowUpTreat()
-    await handlePatFollowUpResult()
+    // await handlePatFollowUp()
+    // await handlePatFollowUpTreat()
+    // await handlePatFollowUpResult()
 
     await saveCalcResult('三年入组')
     console.timeEnd("共用时")
-    process.exit()
+    process.exit(0)
 }
 main()

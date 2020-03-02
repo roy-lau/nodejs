@@ -1,7 +1,6 @@
 
 /*
-
-	将处理后的表格，转换为 SQL
+    将处理后的表格，转换为 SQL
  */
 const XLSX = require("xlsx")
 const fs = require('fs')
