@@ -1,105 +1,137 @@
-const mysql = require('mysql');
+const mysql = require("mysql");
 
-const connection = mysql.createConnection({
-    host: '139.199.99.154',
-    user: 'root',
-    password: 'toor',
-    port: '3306',
-    database: 'bbs_koa_test',
-    charset: 'utf8',
-});
+class MysqlModel {
+    constructor() {
+        const config = {
+            connectionLimit: 10,
+            host: '139.199.99.154',
+            user: 'root',
+            password: 'toor123',
+            database: 'bbs_koa_test'
+        }
+        this.mysqlConfig = config
+    }
 
-// 创建数据表
-// mysql> CREATE TABLE IF NOT EXISTS `bbs_user`(
-//    `Id` INT UNSIGNED AUTO_INCREMENT,
-//    `user` constCHAR(100) NOT NULL,
-//    `pwd` constCHAR(100) NOT NULL,
-//    `ip` constCHAR(40) NOT NULL,
-//    `adder` constCHAR(50) NOT NULL,
-//    `create_date` DATE,
-//    PRIMARY KEY ( `Id` )
-// )ENGINE=InnoDB DEFAULT CHARSET=utf8;
-connection.connect();
-module.exports = {
-    // 测试是否链接成功
-    mysql_test() {
-        connection.query('SELECT 1 + 1 AS solution', function(error, results, fields) {
-            if (error) throw error;
-            console.log(`The solution is: ${results[0].solution} ,测试连接成功！`);
-        });
-    },
-    /*
-      @title {新增} 在表格内插入一行数据
-      @param {String} 表格名
-      @return {Object} 查询数据
+    /**
+    * 实例化mysql
     */
-    mysql_add() {
-        // const  addSql = 'INSERT INTO bbs_user(Id,name,url,alexa,country) VALUES(0,?,?,?,?)';
-        const addSql = 'INSERT INTO bbs_user(Id,user,pwd,ip,adder,create_date) VALUES(0,?,?,?,?,?)';
-        const addSqlParams = ['admin', 'admin123', '192.100.1.21', 'CN', NOW()];
-        connection.query(addSql, addSqlParams, function(err, result) {
-            if (err) {
-                console.log('[插入 失败] - ', err.message);
-                return;
-            }
+    mysqlInstance() {
+        /**
+         * 连接池集群选项 - 创建集群连接时，可以传入个含有以下可选值的参数对象：
+            canRetry： 当为true时，PoolCluster会在连接失败时尝试重连（默认：true）
+            removeNodeErrorCount： 连接失败时Node的errorCount计数会增加。当累积到这个值时移除PoolCluster这个节点（默认：5）
+            restoreNodeTimeout： 连接失败后重试连接的毫移数（默认：0）
+            defaultSelector： 默认的选择器（selector）（默认：RR）
+                      RR－依次选择
+                      RANDOM－随机选择
+                      ORDER－选择第一个可用节点
+         */
+        const poolCluster = mysql.createPoolCluster({
+            removeNodeErrorCount: 1,
+            defaultSelector: "RR"
+        });
 
-            console.log('--------------------------插入数据 start---------------------------');
-            //console.log('插入 ID:',result.insertId);
-            console.log('插入数据 ID:', result);
-            console.log('--------------------------插入数据 end-------------------------\n\n');
-        });
-    },
-    /*
-      @title {查询} 查询表格数据
-      @param {String} 表格名
-      @return {Object} 查询数据
-    */
-    mysql_query(tableName) {
-        connection.query(`SELECT * FROM ${tableName}`, function(err, result) {
-            if (err) {
-                console.log('[查询 失败] - ', err.message);
-                return;
-            }
+        const mysqlNodes = this.mysqlConfig;
+        // for (let node in mysqlNodes) {
+        //   poolCluster.add(`${node}`, mysqlNodes[`${node}`]);
+        // }
+        poolCluster.add(mysqlNodes);
 
-            console.log('--------------------------查询数据 start-------------------------');
-            console.log(result);
-            console.log('--------------------------查询数据 end--------------------\n\n');
-        });
-    },
-    /*
-       @title {修改}
-       @param {String} 修改……
-       @param {Array} 修改行的数据
-     */
-    mysql_update(modSql,modSqlParams) {
-        // const modSql = 'UPDATE bbs_user SET name = ?,url = ? WHERE Id = ?';
-        // const modSqlParams = ['菜鸟移动站', 'https://m.runoob.com', 6];
-        connection.query(modSql, modSqlParams, function(err, result) {
-            if (err) {
-                console.log('[更新 失败] - ', err.message);
-                return;
-            }
-            console.log('--------------------------更新数据 start----------------------------');
-            console.log('更新 affectedRows', result.affectedRows);
-            console.log('--------------------------更新数据 end-------------------------\n\n');
-        });
-    },
-    /*
-      删除表格行
-      @param {String} 表格名
-      @param {Number} 表格行
+        return new Promise((resolve, reject) => {
+            poolCluster.getConnection(function (err, connection) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve([
+                        connection,
+                        poolCluster
+                    ]);
+                }
+            })
+        })
+
+    }
+
+    /**
+    * 获取mysql数据库连接
     */
-    mysql_del(tebleName, id) {
-        connection.query(`DELETE FROM ${tebleName} where id=${id}`, function(err, result) {
-            if (err) {
-                console.log('[删除 失败] - ', err.message);
-                return;
-            }
-            console.log('-------------------------删除数据 start----------------------------');
-            console.log('删除 affectedRows', result.affectedRows);
-            console.log('-------------------------删除数据 end--------------------------\n\n');
-        });
-    },
+    async getConnection() {
+        return await this.mysqlInstance();
+    }
 }
 
-connection.end();
+async function mysqlDBUtil() {
+    try {
+        const db = new MysqlModel();
+        const [conn, pool] = await db.getConnection();
+        console.log('mysql连接成功')
+
+        // 回滚事务
+        const rollback = async function () {
+            conn.rollback();
+            console.error('mysql事务发生回滚......rollback')
+        }
+
+        /**
+         * 数据库操作
+         * 
+         * @param {*} sql 
+         * @param {*} options 
+         */
+        const query = function (sql, options) {
+            return new Promise((resolve, reject) => {
+                conn.query(sql, options, function (error, results, fields) {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(results);
+                    }
+                })
+            })
+        }
+
+        // 提交事务
+        const commit = function () {
+            return new Promise((resolve, reject) => {
+                conn.commit(function (err) {
+                    if (err) reject(err);
+                    console.log('mysql事务提交......commit')
+                });
+            })
+        }
+        /**
+        * 关闭连接池，mysql2的包自己不会释放
+        */
+        const close = async function () {
+            pool.end();
+            console.log('mysql连接池关闭.....close');
+        }
+        return {
+            rollback,
+            commit,
+            close,
+            query
+        }
+    } catch (error) {
+        console.error("mysqlDBUtil ERR:")
+        throw new Error(error);
+    }
+}
+// 测试是否链接成功
+//   async function mysql_test() {
+//     const db = await mysql();
+//     try {
+//       const sql = 'SELECT 1 + 1 AS solution';
+//       const result = await db.query(sql);
+//       console.log(`The solution is: ${result[0].solution} ,测试连接成功！`);
+//       return result
+//     } catch (error) {
+//       await db.rollback();
+//     } finally {
+//       await db.close();
+//     }
+//   }
+//   mysql_test()
+
+module.exports = mysqlDBUtil;
+

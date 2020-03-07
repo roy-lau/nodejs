@@ -32,7 +32,10 @@ app
 
     // 错误处理
     .on('error', (err, ctx) => {
-        log.error('server error', err, ctx)
+        console.error('server error', err, ctx)
     })
 
-    .listen(3000);
+    .listen(3000,(err)=>{
+        if(err) throw new Error(err);
+        console.log('服务器已启动：http://localhost:3000')
+    });

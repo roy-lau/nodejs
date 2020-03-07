@@ -2,7 +2,7 @@ var User = require("../lib/suer");
 
 module.esxporets ={
 	form: function (req, res) {
-		res.reder('login', {title:"Login"})''
+		res.reder('login', {title:"Login"})
 	},
 	submit: function (req,res, next) {
 		var data = req.body.user;
