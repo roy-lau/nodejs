@@ -1,0 +1,22 @@
+-- 查询所有医院三年采用机器人辅助手术的病例数
+
+-- 手术方式： YXA_O_152
+-- 	YXA_O	SSFS	1	完全腹腔镜
+-- 	YXA_O	SSFS	2	腔镜转开腹
+-- 	YXA_O	SSFS	3	完全开腹
+-- 	YXA_O	SSFS	4	机器人辅助
+-- 	YXA_O	SSFS	5	纳米刀辅助
+SELECT
+-- 	h.HOSPITAL_NAME,
+	COUNT(a.PATIENT_NO) AS '机器人辅助病例数'
+FROM
+	[dbo].[PAT_VISIT] AS a
+-- 	LEFT JOIN [dbo].[HOSPITAL_DICT] AS h ON a.HOSPITAL_ID=h.HOSPITAL_ID
+	LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS b ON b.SD_ITEM_CODE = 'YXA_O_152' AND b.SD_ITEM_VALUE = '4' 
+WHERE
+	a.SD_CODE = 'YXA_O' 
+	AND a.SD_GROUP='1' -- 入组
+	AND a.DISCHARGE_DATE>='2016/01/01' 
+	AND a.DISCHARGE_DATE<='2018/12/31'
+	AND b.PATIENT_NO= a.PATIENT_NO
+-- 	GROUP BY h.HOSPITAL_NAME

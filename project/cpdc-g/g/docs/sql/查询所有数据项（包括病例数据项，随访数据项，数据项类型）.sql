@@ -1,0 +1,49 @@
+--  查询所有数据项（包括病例数据项，随访数据项，和数据项类型。 好像没有引流管数据项）
+
+
+SELECT
+	a.SD_CODE,
+	
+	a1.ITEM_TYPE_NAME,
+	a1.ITEM_TYPE_CODE,
+	a.ITEM_TYPE_NAME,
+	a.ITEM_TYPE_CODE,
+	
+	dist.*
+FROM
+	-- 数据项字典表
+	[dbo].[SD_ITEM_TYPE_DICT] AS a
+	LEFT JOIN [dbo].[SD_ITEM_TYPE_DICT] AS a1 ON a.PARENT_TYPE_CODE=a1.ITEM_TYPE_CODE
+	
+	LEFT JOIN (
+			
+			-- 诊治字典表
+					SELECT
+					b1.ITEM_NAME AS 'ITEM_NAME',
+					b1.ITEM_CODE AS 'ITEM_CODE',
+					b.ITEM_NAME AS 'ITEM_NAME1',
+					b.ITEM_CODE AS 'ITEM_CODE1',
+					b.ITEM_TYPE_CODE,
+					b.ITEM_PARENT_CODE
+				FROM
+					[dbo].[SD_ITEM_DICT] AS b
+					LEFT JOIN [dbo].[SD_ITEM_DICT] AS b1 ON b.ITEM_PARENT_CODE=b1.ITEM_CODE+'#1'
+				WHERE
+					b.SD_CODE = 'YXA_O'
+				UNION ALL 
+				
+			-- 随访字典表
+				SELECT
+					c1.ITEM_NAME AS 'ITEM_NAME',
+					c1.ITEM_CODE AS 'ITEM_CODE',
+					c.ITEM_NAME AS 'ITEM_NAME1',
+					c.ITEM_CODE AS 'ITEM_CODE1',
+					c.ITEM_TYPE_CODE,
+					c.ITEM_PARENT_CODE
+				FROM
+					[dbo].[FU_SD_ITEM_DICT] AS c
+					LEFT JOIN [dbo].[FU_SD_ITEM_DICT] AS c1 ON c.ITEM_PARENT_CODE=c1.ITEM_CODE+'#1'
+	
+	) AS dist ON a.ITEM_TYPE_CODE= dist.ITEM_TYPE_CODE
+WHERE
+	a.SD_CODE = 'YXA_O'			

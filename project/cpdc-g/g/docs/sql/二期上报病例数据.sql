@@ -1,0 +1,43 @@
+SELECT
+	* 
+FROM
+	[dbo].[PAT_VISIT] 
+WHERE
+	HOSPITAL_ID IN (
+		'10cad864ab9bff17',
+		'160e76e5feb08f17',
+		'1e065fa4b4448f17',
+		'1fbe389e78048f17',
+		'24fa78f005a66f17',
+		'274903c59a9d2997',
+		'3ebea3bad1048f17',
+		'410a34f9238e8f17',
+		'654ed3a64fbc2f17',
+		'6dd9ef52869f8f17',
+		'718068832e0c3b17',
+		'730145a8fadb8f17',
+		'8b3a9f2de6908f17',
+		'9f806601a0c56717',
+		'a3b9ac3ab9218f17',
+		'a71157dc9cf12b17',
+		'abb4d8b05e2c8f17',
+		'ada4dff7ad848f17',
+		'af98f222c9248f17',
+		'b075c4f2812acf17',
+		'b81174e6c649b417',
+		'b83e205fbdbe2f17',
+		'beee428879918f17',
+		'c2349a5354728f17',
+		'c886adaa89f32f17',
+		'd22bddecf1156517',
+		'd261d191ae048f17',
+		'd2bd353881b87597',
+		'd4199f01698f2b17',
+		'db5833cd8d848f17',
+		'e541b6cb08ef2f17',
+		'e9b294934db08f17',
+		'ea681bb64dc3cf17',
+		'ee1b2141e40e0f17',
+		'f21af45b9bdc8f17',
+	'f5c2621767848f17',
+	'f734ea46b86f8f17')

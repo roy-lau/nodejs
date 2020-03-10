@@ -1,0 +1,195 @@
+-- 接受以下术式“胰十二指肠切除术、胰十二指肠切除术（联合门静脉壁切除、）胰十二指肠切除术（保留幽门）、胰体尾脾切除术、根治性顺行模块胰体尾脾切除术、胰体尾切除术（保脾）、全胰切除术、保留十二指肠的胰头肿物切除术、胰腺节段切除术、胰腺上缘肿物切除术”(9198)+至少一次随访(6704)-接受新辅助治疗(6617)-围手术期死亡（术后30天内死亡+院内死亡）
+-- 查询并创建入组表（6564）
+
+SELECT
+		DISTINCT ids.PATIENT_NO
+		INTO #group_table
+	FROM
+		[dbo].[tmp_id] AS ids
+		LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS r ON ids.PATIENT_NO=r.PATIENT_NO
+	WHERE
+		r.SD_ITEM_CODE = 'YXA_O_151'
+		AND r.SD_ITEM_VALUE IN ('1','2','3','4','5','6','7','8','12','15')
+		AND ids.PATIENT_NO IN (
+	-- 	至少一次随访
+		SELECT
+			DISTINCT PATIENT_NO
+		FROM
+			[dbo].[PAT_FOLLOW_UP]
+		WHERE
+			FOLLOW_UP_DATE != '1900-01-01 00:00:00.000'
+			AND FOLLOW_UP_MONTHS!=''
+			AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )
+		)
+		AND ids.PATIENT_NO NOT IN (
+			-- 术前新辅助
+			SELECT
+				 r.PATIENT_NO
+			FROM
+				[dbo].[tmp_id] AS ids
+				LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS r ON ids.PATIENT_NO=r.PATIENT_NO
+			WHERE
+				r.SD_ITEM_CODE = 'YXA_O_117'
+				AND r.SD_ITEM_VALUE = '1'
+		)
+		AND ids.PATIENT_NO NOT IN (
+			-- 查询围手术期(30天内)死亡的患者
+			SELECT
+				die.PATIENT_NO
+			FROM (
+				-- 院内死亡
+				SELECT DISTINCT
+					a.PATIENT_NO
+				FROM
+					[dbo].[PAT_SD_ITEM_RESULT] AS a
+				WHERE
+					a.SD_ITEM_CODE = 'YXA_O_209'
+					AND a.SD_ITEM_VALUE= '1'
+					AND a.PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )
+
+					UNION
+
+				-- 死亡日期 减去 手术日期 小于等于30天
+				SELECT DISTINCT
+					a.PATIENT_NO
+				FROM
+					[dbo].[PAT_SD_ITEM_RESULT] AS a
+					LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS b ON b.SD_ITEM_CODE = 'YXA_O_257' -- 随访死亡日期
+
+					AND b.SD_ITEM_VALUE != ''
+				WHERE
+					a.SD_ITEM_CODE= 'YXA_O_161' -- 手术日期
+
+					AND a.SD_ITEM_CODE!= ''
+					AND b.PATIENT_NO= a.PATIENT_NO
+					AND a.PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )
+					AND DATEDIFF(
+						mm,
+						CONVERT ( VARCHAR ( 100 ), a.SD_ITEM_VALUE, 120 ),
+						CONVERT ( VARCHAR ( 100 ), b.SD_ITEM_VALUE, 120 )
+					) <= '1'
+			) AS die
+		)
+
+-- 入组表（6564）里找 SMA侵犯，肝转移，其他脏器转移 (411)
+SELECT
+	DISTINCT PATIENT_NO
+	INTO #in_three_table
+FROM
+	[dbo].[PAT_SD_ITEM_RESULT] 
+WHERE
+	SD_ITEM_CODE IN ( 'YXA_O_052', 'YXA_O_056', 'YXA_O_064' )
+	AND SD_ITEM_VALUE='1'
+	AND PATIENT_NO IN (
+		SELECT PATIENT_NO FROM #group_table
+	)
+
+-- 从入组表（6564）里排出 SMA侵犯，肝转移，其他脏器转移(411) =  6564-411  = 6153
+SELECT PATIENT_NO INTO #group_in_three_table FROM #group_table WHERE PATIENT_NO NOT IN (	SELECT PATIENT_NO FROM #in_three_table )
+
+-- 查询 6153 里每家医院各占多少
+SELECT 
+	h.HOSPITAL_NAME,
+	COUNT(DISTINCT a.PATIENT_NO) AS '总',
+	COUNT(DISTINCT fu.PATIENT_NO) AS '复发转移数'
+FROM
+	#group_in_three_table AS a
+	LEFT JOIN [dbo].[PAT_VISIT] AS v ON a.PATIENT_NO=v.PATIENT_NO
+	LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS fu ON a.PATIENT_NO=fu.PATIENT_NO 
+		AND fu.SD_ITEM_CODE IN ( 'YXA_O_251', 'YXA_O_254' ) --复发转移
+		AND fu.SD_ITEM_VALUE != ''
+	LEFT JOIN [dbo].[HOSPITAL_DICT] AS h ON v.HOSPITAL_ID=h.HOSPITAL_ID
+	GROUP BY h.HOSPITAL_NAME
+	ORDER BY COUNT(DISTINCT a.PATIENT_NO)
+	
+	
+
+SELECT 
+	h.HOSPITAL_NAME,
+	COUNT(DISTINCT fu.PATIENT_NO) AS '一年内复发转移数'
+FROM
+	#group_in_three_table AS a
+	LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS fu ON a.PATIENT_NO= fu.PATIENT_NO AND fu.SD_ITEM_CODE IN ( 'YXA_O_251', 'YXA_O_254' ) --复发转移
+	LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS r ON fu.PATIENT_NO=r.PATIENT_NO
+	LEFT JOIN [dbo].[PAT_VISIT] AS v ON fu.PATIENT_NO=v.PATIENT_NO
+	LEFT JOIN [dbo].[HOSPITAL_DICT] AS h ON v.HOSPITAL_ID=h.HOSPITAL_ID
+WHERE
+	r.SD_ITEM_CODE= 'YXA_O_161' -- 手术时间
+	
+	AND r.SD_ITEM_VALUE!= '' 
+	AND fu.SD_ITEM_VALUE != ''
+	AND DATEDIFF(mm,CONVERT ( VARCHAR ( 100 ), r.SD_ITEM_VALUE, 120 ),CONVERT ( VARCHAR ( 100 ), fu.SD_ITEM_VALUE, 120 ) ) <='12'
+	AND DATEDIFF(mm,CONVERT ( VARCHAR ( 100 ), r.SD_ITEM_VALUE, 120 ),CONVERT ( VARCHAR ( 100 ), fu.SD_ITEM_VALUE, 120 ) ) >='0'
+	GROUP BY h.HOSPITAL_NAME
+	ORDER BY COUNT(DISTINCT fu.PATIENT_NO)
+	
+	
+	
+-- 从 #group_in_three_table（6153）里剔除复发转移率低于10%的医院，还有 4002 个病例
+	
+SELECT
+	g.PATIENT_NO
+	INTO #not_low_group
+FROM
+	#group_in_three_table AS g
+	LEFT JOIN PAT_VISIT AS v ON g.PATIENT_NO= v.PATIENT_NO 
+WHERE
+	v.HOSPITAL_ID NOT IN (
+		'1a34d2a3ce30b28d',
+		'1fbe389e78048f17',
+		'274903c59a9d2997',
+		'37127accb1918a8d',
+		'3ab92297efa9aa8d',
+		'53aefd7b76452a8d',
+		'9a9d9e15796b3a8d',
+		'9c858253f9558a8d',
+		'9f22aa32f45eaa8d',
+		'b075c4f2812acf17',
+		'bab4d93b58698a8d',
+		'c44d727c86454a8d',
+		'd261d191ae048f17',
+		'df49613a52d18a8d',
+		'e42df8e2237b8a8d',
+	'ea681bb64dc3cf17' 
+	)
+
+
+
+-- 从 4002 里查找 死亡的患者 （1492）
+SELECT DISTINCT
+	a1.PATIENT_NO 
+FROM
+	[dbo].[PAT_FOLLOW_UP_RESULT] AS a1
+-- 	LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS a2 ON a1.PATIENT_NO= a2.PATIENT_NO 
+-- 	AND a2.SD_ITEM_CODE= 'YXA_O_161'  -- 手术时间
+WHERE
+	a1.SD_ITEM_CODE = 'YXA_O_257' -- 有死亡时间的
+	AND a1.SD_ITEM_VALUE != '' 
+-- 		AND DATEDIFF(mm,CONVERT ( VARCHAR ( 100 ), a2.SD_ITEM_VALUE, 120 ),CONVERT ( VARCHAR ( 100 ), a1.SD_ITEM_VALUE, 120 ) ) <='6'
+-- 		AND DATEDIFF(mm,CONVERT ( VARCHAR ( 100 ), a2.SD_ITEM_VALUE, 120 ),CONVERT ( VARCHAR ( 100 ), a1.SD_ITEM_VALUE, 120 ) ) >='0'
+	
+	AND a1.PATIENT_NO IN (
+	
+		SELECT PATIENT_NO FROM #not_low_group
+	)
+	
+	
+	
+-- 从 4002 里查找 复发转移的患者 （1685）
+
+SELECT DISTINCT
+	a1.PATIENT_NO 
+FROM
+	[dbo].[PAT_FOLLOW_UP_RESULT] AS a1
+-- 	LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS a2 ON a1.PATIENT_NO= a2.PATIENT_NO 
+-- 	AND a2.SD_ITEM_CODE= 'YXA_O_161'  -- 手术时间
+WHERE
+	a1.SD_ITEM_CODE IN ('YXA_O_251','YXA_O_254') -- 有复发转移的
+	AND a1.SD_ITEM_VALUE != '' 
+-- 		AND DATEDIFF(mm,CONVERT ( VARCHAR ( 100 ), a2.SD_ITEM_VALUE, 120 ),CONVERT ( VARCHAR ( 100 ), a1.SD_ITEM_VALUE, 120 ) ) <='6'
+-- 		AND DATEDIFF(mm,CONVERT ( VARCHAR ( 100 ), a2.SD_ITEM_VALUE, 120 ),CONVERT ( VARCHAR ( 100 ), a1.SD_ITEM_VALUE, 120 ) ) >='0'
+	
+	AND a1.PATIENT_NO IN (
+	
+		SELECT PATIENT_NO FROM #not_low_group
+	)

@@ -1,0 +1,8 @@
+SELECT
+	ids.id,
+	u.NAME,
+	h.HOSPITAL_NAME
+FROM
+	[dbo].[tmp_id] AS ids
+	LEFT JOIN [dbo].[PAT_VISIT] AS u ON ids.id= u.PATIENT_NO
+	LEFT JOIN [dbo].[HOSPITAL_DICT] AS h ON u.HOSPITAL_ID=h.HOSPITAL_ID

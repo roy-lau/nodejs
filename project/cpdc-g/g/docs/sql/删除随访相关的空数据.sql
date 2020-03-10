@@ -1,0 +1,19 @@
+-- 查询随访里的空数据
+SELECT
+	* 
+FROM
+	[dbo].[PAT_FOLLOW_UP] AS a
+WHERE
+	a.FOLLOW_UP_DATE = '' 
+	AND a.FU_REASON = '' 
+	
+-- 删除随访相关的空数据
+DELETE 
+a
+FROM
+	[dbo].[PAT_FOLLOW_UP] AS a
+	LEFT JOIN [dbo].[PAT_FOLLOW_UP_TREAT] AS b ON a.FU_TIMES= b.FU_TIMES
+	LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS c ON a.FU_TIMES= c.FU_TIMES 
+WHERE
+	a.FOLLOW_UP_DATE = '' 
+	AND a.FU_REASON = ''

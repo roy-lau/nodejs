@@ -1,0 +1,17 @@
+SELECT
+	* 
+FROM
+	(
+	SELECT
+		h.HOSPITAL_NAME AS '医院',
+		COUNT ( u.PATIENT_NO ) AS '病例数' 
+	FROM
+		[dbo].[HOSPITAL_DICT] AS h
+		LEFT JOIN [dbo].[PAT_VISIT] AS u ON h.HOSPITAL_ID= u.HOSPITAL_ID 
+	WHERE
+		SD_CODE = 'YXA_O' 
+	GROUP BY
+		h.HOSPITAL_NAME 
+	) AS a 
+ORDER BY
+	a.[病例数] DESC

@@ -1,0 +1,8 @@
+-- HOSPITAL_CODE 按加入cpdc顺序排列
+SELECT 
+	TOP 38 
+		* 
+FROM
+	[dbo].[HOSPITAL_DICT] 
+ORDER BY
+	HOSPITAL_CODE
