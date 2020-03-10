@@ -53,14 +53,13 @@ const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 async function desensitization_PAT_VISIT() {
     console.info('脱敏 患者患者姓名')
     try {
-        const lists = await sql.query(`SELECT PATIENT_NO,NAME FROM [dbo].[PAT_VISIT]`),
-            rets = lists.recordset
-
-        for (let i = rets.length - 1; i >= 0; i--) {
-            const element = rets[i]
+        const lists = await sql.query(`SELECT TOP 2 PATIENT_NO,NAME FROM [dbo].[PAT_VISIT]`)
+console.info(lists)
+        for (let i = lists.length - 1; i >= 0; i--) {
+            const element = lists[i]
             // await sleep(500) // 每次循环休息 50ms
             // console.log(element.NAME)
-            await sql.query(`UPDATE [dbo].[PAT_VISIT] SET NAME='${desensitization(element.NAME,1, 3)}' WHERE PATIENT_NO='${element.PATIENT_NO}'`)
+            // await sql.query(`UPDATE [dbo].[PAT_VISIT] SET NAME='${desensitization(element.NAME,1, 3)}' WHERE PATIENT_NO='${element.PATIENT_NO}'`)
 
         }
 
@@ -112,7 +111,7 @@ async function desensitization_PAT_SD_ITEM_RESULT() {
 async function main() {
     console.time("共用时")
     await desensitization_PAT_VISIT()
-    await desensitization_PAT_SD_ITEM_RESULT()
+    // await desensitization_PAT_SD_ITEM_RESULT()
     console.timeEnd("共用时")
 
     process.exit('退出……')
