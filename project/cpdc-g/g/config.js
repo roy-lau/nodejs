@@ -4,8 +4,9 @@ module.exports = {
         password: 'sa@123',
         // server: 'localhost',
         server: '192.168.1.253',
-        database: 'RYCPDC_C20200310',
+        // database: 'RYCPDC_C20200310',
         // database: 'RYCPDC_C20191111',
+        database: 'RYCPDC_C20191111new',
         port: 1433,
         pool: {
             min: 0, //连接池最小连接数，默认0
