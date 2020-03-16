@@ -46,6 +46,12 @@ module.exports = function filterKeys(fileData, code) {
     return [list_PAT_VISIT, list_PAT_SD_ITEM_RESULT, list_PAT_DRAINAGE_TUBE, list_PAT_FOLLOW_UP][code]
 }
 
+/**
+ * 设计基本信息表的格式
+ * 
+ * @param {Object} value 基本信息的json
+ * @returns {Object} 
+ */
 function pattern_sheet_PAT_VISIT(value) {
     return {
         PATIENT_NO: value.PATIENT_NO, // GUID

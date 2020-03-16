@@ -3,9 +3,9 @@
     将处理后的表格，转换为 SQL
  */
 const XLSX = require("xlsx")
-const fs = require('fs')
+const fs = require('fs-extra')
 
-const FILE_NAME = "./out/胰腺癌单病种数据元2019.5-10——完成"
+const FILE_NAME = "./out/OK-1584078635764"
 const workbook = XLSX.readFile(FILE_NAME+'.xlsx',{ cellDates: true,dateNF:'YYYY-MM-dd'});
 
 // 获取 Excel 中所有表名
@@ -59,6 +59,7 @@ function generate_PAT_SD_ITEM_RESULT() {
 
 /**
  * 引流管表
+ * @throws 有些空值需要手动处理
  * @return {[type]} [description]
  */
 function generate_PAT_DRAINAGE_TUBE() {
@@ -70,7 +71,7 @@ function generate_PAT_DRAINAGE_TUBE() {
 
     sheetJson.forEach(item => {
         if (item.TUBE_NAME) {
-            SQL += `INSERT INTO PAT_DRAINAGE_TUBE(SD_CODE,PATIENT_NO,TUBE_NAME,RETENTION_DAYS,POD1,POD3,POD7,AMY_POD1,AMY_POD3,AMY_POD7,AMY_POD_DRAW,CREATE_DATE_TIME) VALUES ('${item.SD_CODE}','${item.PATIENT_NO}','${item.TUBE_NAME}',${item.RETENTION_DAYS||null},'${item.POD1}','${item.POD3}','${item.POD7}','${item.AMY_POD1}','${item.AMY_POD3}','${item.AMY_POD7}','${item.AMY_POD_DRAW}','${item.CREATE_DATE_TIME}');\n`
+            SQL += `INSERT INTO PAT_DRAINAGE_TUBE(SD_CODE,PATIENT_NO,TUBE_NAME,RETENTION_DAYS,POD1,POD3,POD7,AMY_POD1,AMY_POD3,AMY_POD7,AMY_POD_DRAW,CREATE_DATE_TIME) VALUES ('${item.SD_CODE}','${item.PATIENT_NO}','${item.TUBE_NAME}',${item.RETENTION_DAYS},'${item.POD1}','${item.POD3}','${item.POD7}','${item.AMY_POD1}','${item.AMY_POD3}','${item.AMY_POD7}','${item.AMY_POD_DRAW}','${item.CREATE_DATE_TIME}');\n`
         }
     })
 }
@@ -165,6 +166,8 @@ generate_PAT_DRAINAGE_TUBE()
 // generate_PAT_FOLLOW_UP_RESULT()
 // generate_PAT_FOLLOW_UP_TREAT()
 
-saveFile(SQL,FILE_NAME)
+// 写入生成的 SQL
+fs.writeFileSync(FILE_NAME+'.sql',SQL.replace(/'undefined'|undefined/g,`NULL`))
 
-saveFile(SQL,'C:\\SmartMedical\\CPDC\\sql\\sql.txt')
+// fs.writeFileSync('C:\\SmartMedical\\CPDC\\sql\\sql.txt',SQL.replace(/'undefined'|undefined/g,`NULL`))
+

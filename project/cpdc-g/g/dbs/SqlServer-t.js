@@ -1,25 +1,11 @@
 const Connection = require('tedious').Connection;
 const Request = require('tedious').Request;
-
-const config = {
-    'server': '192.168.1.253',
-    authentication: {
-        type: 'default',
-        options: {
-            userName: 'sa',
-            password: 'sa@123'
-        }
-    },
-    options: {
-        database: 'RYCPDC_C20200310',
-        encrypt: false
-    }
-};
+const config = require("../config.js")
 
 
 class MsSql {
     constructor() {
-        this.con = new Connection(config)
+        this.con = new Connection(config.tdb_addr)
     }
     query (str) {
         const CON = this.con

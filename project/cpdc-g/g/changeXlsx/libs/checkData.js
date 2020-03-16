@@ -2,7 +2,7 @@
 const sql = require('mssql')
 const uuid = require("uuid");
 
-const CONNECT_SQL = 'mssql://sa:sa@123@192.168.1.253/RYCPDC_C20190902'
+const CONNECT_SQL = 'mssql://sa:sa@123@192.168.1.253/RYCPDC_C20200310'
 
 /**
  * 根据数据库做字典对比，稍慢
@@ -103,7 +103,12 @@ function compareDataFile(data) {
 
 module.exports = {
 
-    // 插入 PATIENT_NO
+    /**
+     * 插入 PATIENT_NO
+     * @description 先通过表格里的 病案号 到数据库里查找 PATIENT_NO
+     *              如果没有查到 PATIENT_NO，通过 uuid.v4() 生成一个
+     * @param {*} json 
+     */
    async insertPATIENT_NO(json) {
         try {
             await sql.connect(CONNECT_SQL)
@@ -122,7 +127,7 @@ module.exports = {
 
             return json
         } catch (err) {
-            console.error(err)
+            console.error('插入 PATIENT_NO ERR: ',err)
         }
     },
 

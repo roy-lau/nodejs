@@ -56,7 +56,8 @@ async function desensitization_PAT_VISIT() {
         const lists = await sql.query(`SELECT TOP 2 PATIENT_NO,NAME FROM [dbo].[PAT_VISIT]`)
 console.info(lists)
         for (let i = lists.length - 1; i >= 0; i--) {
-            const element = lists[i]
+            const element = lists
+            [i]
             // await sleep(500) // 每次循环休息 50ms
             // console.log(element.NAME)
             // await sql.query(`UPDATE [dbo].[PAT_VISIT] SET NAME='${desensitization(element.NAME,1, 3)}' WHERE PATIENT_NO='${element.PATIENT_NO}'`)

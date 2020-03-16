@@ -18,6 +18,21 @@ module.exports = {
         // requestTimeout：                //请求timeout，单位ms 默认15000
         // parseJSON：                     //将json数据集转化成json obj
     },
+    // tedious 包的 SQL 配置
+    tdb_addr:{
+        'server': '192.168.1.253',
+        authentication: {
+            type: 'default',
+            options: {
+                userName: 'sa',
+                password: 'sa@123'
+            }
+        },
+        options: {
+            database: 'RYCPDC_C20200310',
+            encrypt: false
+        }
+    },
     access_addr: 'Provider=Microsoft.Jet.OleDb.4.0;Data Source=RYCPDC.mdb;Jet OLEDB:Database Password=sa@123',
     access_addr_c: 'Provider=Microsoft.Jet.OleDb.4.0;Data Source=C:\\SmartMedical\\CPDC\\Database\\RYCPDC.mdb;Jet OLEDB:Database Password=sa@123',
     access_addr_loaclhost: 'Provider=Microsoft.Jet.OleDb.4.0;Data Source=localhost\\Database\\RYCPDC.mdb;Jet OLEDB:Database Password=sa@123',
