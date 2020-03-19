@@ -1,0 +1,93 @@
+-- 2020年3月11日
+-- 北大 组1
+
+-- 查询围手术期(30天内)死亡的患者
+SELECT
+	die.PATIENT_NO INTO #tmp_die 
+FROM
+	(-- 院内死亡
+	SELECT DISTINCT
+		a.PATIENT_NO 
+	FROM
+		[dbo].[PAT_SD_ITEM_RESULT] AS a 
+	WHERE
+		a.SD_ITEM_CODE = 'YXA_O_209' 
+		AND a.SD_ITEM_VALUE= '1' 
+		AND a.PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' ) 
+    
+    UNION
+    
+    -- 死亡日期 减去 手术日期 小于等于30天
+	SELECT DISTINCT
+		a.PATIENT_NO 
+	FROM
+		[dbo].[PAT_SD_ITEM_RESULT] AS a
+		LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS b ON b.SD_ITEM_CODE = 'YXA_O_257' -- 随访死亡日期
+		
+		AND b.SD_ITEM_VALUE != '' 
+	WHERE
+		a.SD_ITEM_CODE= 'YXA_O_161' -- 手术日期
+		
+		AND a.SD_ITEM_CODE!= '' 
+		AND b.PATIENT_NO= a.PATIENT_NO 
+		AND a.PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' ) 
+		AND DATEDIFF(
+			mm,
+			CONVERT ( VARCHAR ( 100 ), a.SD_ITEM_VALUE, 120 ),
+			CONVERT ( VARCHAR ( 100 ), b.SD_ITEM_VALUE, 120 ) 
+		) <= '1' 
+	) AS die	
+	
+	-- 胰腺导管腺癌里找手术方式（'1', '2', '3', '4', '5', '12', '6', '7', '9', '15'），排出围手术期患者
+	SELECT
+		U.PATIENT_NO
+		INTO #surgical_method
+	FROM
+		[dbo].[PAT_VISIT] AS U 
+	WHERE
+		U.SD_GROUP= '1' 
+		AND U.SD_CODE = 'YXA_O'
+		AND U.ADMISSION_DATE>'2016-01-01 00:00:00.000' 
+		AND U.DISCHARGE_DATE<'2018-12-31 00:00:00.000'
+		AND U.PATIENT_NO IN (
+			SELECT
+				ITEM.PATIENT_NO 
+			FROM
+				[dbo].[PAT_SD_ITEM_RESULT] AS ITEM 
+			WHERE
+				ITEM.SD_ITEM_CODE= 'YXA_O_151' 
+				AND ITEM.SD_ITEM_VALUE IN ( '1', '2', '3', '4', '5', '12', '6', '7', '9', '15' )
+				AND ITEM.PATIENT_NO NOT IN (
+					SELECT * FROM #tmp_die 
+				)
+		)
+
+
+-- 至少一次随访(6666)
+		SELECT
+			DISTINCT PATIENT_NO
+-- 			INTO #in_group
+		FROM
+			[dbo].[PAT_FOLLOW_UP]
+		WHERE
+			FOLLOW_UP_DATE != '1900-01-01 00:00:00.000'
+			AND FOLLOW_UP_MONTHS!=''
+			AND PATIENT_NO IN (SELECT PATIENT_NO FROM #surgical_method)
+
+-- 查询术后6个月内复发的患者
+SELECT-- 	*
+	DISTINCT
+	a.PATIENT_NO
+-- 	INTO #tmp_mo
+FROM
+	[dbo].[PAT_SD_ITEM_RESULT] AS a
+	LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS b ON b.SD_ITEM_CODE = 'YXA_O_251' -- 复发日期
+	AND b.SD_ITEM_VALUE != '' 
+WHERE
+	a.SD_ITEM_CODE= 'YXA_O_161' -- 手术日期
+	AND a.SD_ITEM_CODE!= '' 
+	AND b.PATIENT_NO= a.PATIENT_NO 
+  AND DATEDIFF(mm,CONVERT ( VARCHAR ( 100 ), a.SD_ITEM_VALUE, 120 ),CONVERT ( VARCHAR ( 100 ), b.SD_ITEM_VALUE, 120 ) ) <='6'
+	AND DATEDIFF(mm,CONVERT ( VARCHAR ( 100 ), a.SD_ITEM_VALUE, 120 ),CONVERT ( VARCHAR ( 100 ), b.SD_ITEM_VALUE, 120 ) ) >'0'
+	AND a.PATIENT_NO IN (SELECT * FROM #in_group)
+	

@@ -1,3 +1,5 @@
+-- 入组条件：胰腺导管腺癌
+
 UPDATE PAT_VISIT 
 SET SD_GROUP = 1 
 WHERE

@@ -1,5 +1,5 @@
 -- [dbo].[PAT_SD_ITEM_RESULT] AS 		result 	数据项结果
--- [dbo].[SD_ITEM_DICT] AS					b  			数据项字典
+-- [dbo].[SD_ITEM_DICT] AS				b  			数据项字典
 -- [dbo].[SD_ITEM_CV_DICT] AS 			c 			数据元字典
 
 SELECT
