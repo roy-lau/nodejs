@@ -2,17 +2,15 @@ const Connection = require('tedious').Connection;
 const Request = require('tedious').Request;
 const config = require("../config.js")
 
+module.exports = {
 
-class MsSql {
-    constructor() {
-        this.con = new Connection(config.tdb_addr)
-    }
     query (str) {
-        const CON = this.con
+
+        const CON = new Connection(config.tdb_addr)
         return new Promise((resolve, reject) => {
             CON.on('connect', function (err) {  // 连接数据库，执行匿名函数
                 if (err) {
-                    console.error('数据库连接错误：请检查账号、密码是否正确,且数据库存在\n'+err)
+                    console.error('数据库连接错误：请检查账号、密码是否正确,且数据库存在\n' + err)
                 } else {
                     let request = new Request(str, function (err, rowCount) {
                         if (err) reject(err)
@@ -22,7 +20,8 @@ class MsSql {
 
                     let arr = []
                     request.on('row', function (columns) {  // 查询成功数据返回
-                        const rows = Object.create(null)
+                        // const rows = Object.create(null)
+                        const rows = {}
                         columns.forEach(function (column) {
                             rows[column.metadata.colName] = column.value;   // 获取数据		
                         });
@@ -37,5 +36,3 @@ class MsSql {
         })
     }
 }
-
-module.exports = new MsSql()

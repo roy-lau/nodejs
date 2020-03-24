@@ -1,0 +1,37 @@
+
+-- 计算各医院的患者分期
+SELECT
+    [HOSPITAL_CODE],
+		[城市],
+    	COUNT ( DISTINCT PATIENT_NO ) AS cout,
+	SUM ( CASE WHEN [TNM] = 'IA'  THEN 1 ELSE 0 END ) IA,
+SUM ( CASE WHEN [TNM] = 'IB'  THEN 1 ELSE 0 END ) IB,
+SUM ( CASE WHEN [TNM] = 'IIA'  THEN 1 ELSE 0 END ) IIA,
+SUM ( CASE WHEN [TNM] = 'IIB'  THEN 1 ELSE 0 END ) IIB,
+SUM ( CASE WHEN [TNM] = 'III'  THEN 1 ELSE 0 END ) III,
+SUM ( CASE WHEN [TNM] = 'IV'  THEN 1 ELSE 0 END ) IV
+FROM
+    [dbo].[count_beida]
+WHERE
+    [TNM] != 'NA'
+    AND [手术日期NEW] >= '2016-01-01 00:00:00.000'
+    AND [手术日期NEW] <= '2016-12-31 00:00:00.000'
+GROUP BY
+    [HOSPITAL_CODE], [城市]
+ORDER BY
+    cout DESC
+
+
+-- 计算各医院死亡率
+SELECT
+	HOSPITAL_CODE,
+	[城市],
+	COUNT( DISTINCT PATIENT_NO ) AS cout,
+	SUM ( CASE WHEN [是否死亡]='是' THEN 1 ELSE 0 END ) AS 死亡
+FROM
+	[dbo].[count_beida]
+WHERE
+	 [手术日期NEW]>= '2016-01-01 00:00:00' 
+	AND [手术日期NEW]<= '2016-12-31 00:00:00' 
+GROUP BY HOSPITAL_CODE,[城市]
+ORDER BY cout DESC
