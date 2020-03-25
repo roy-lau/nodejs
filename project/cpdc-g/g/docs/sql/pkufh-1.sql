@@ -135,22 +135,29 @@ FROM
 	LEFT JOIN PAT_VISIT AS v ON g.PATIENT_NO= v.PATIENT_NO 
 WHERE
 	v.HOSPITAL_ID NOT IN (
+		'12b2fd726e2f8a8d',
 		'1a34d2a3ce30b28d',
 		'1fbe389e78048f17',
 		'274903c59a9d2997',
 		'37127accb1918a8d',
 		'3ab92297efa9aa8d',
+		'3e162c637ca88a8d',
 		'53aefd7b76452a8d',
+		'54bc034b46af0a8d',
+		'82825591ac959a8d',
 		'9a9d9e15796b3a8d',
 		'9c858253f9558a8d',
 		'9f22aa32f45eaa8d',
 		'b075c4f2812acf17',
+		'b307cc95cd9f8a8d',
 		'bab4d93b58698a8d',
 		'c44d727c86454a8d',
 		'd261d191ae048f17',
+		'db5833cd8d848f17',
 		'df49613a52d18a8d',
 		'e42df8e2237b8a8d',
-	'ea681bb64dc3cf17' 
+		'ea681bb64dc3cf17',
+		'f21af45b9bdc8f17'
 	)
 
 

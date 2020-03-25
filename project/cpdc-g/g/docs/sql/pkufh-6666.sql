@@ -3,7 +3,7 @@
 
 -- 查询围手术期(30天内)死亡的患者
 SELECT
-	die.PATIENT_NO INTO #tmp_die 
+	die.PATIENT_NO INTO #perioperative_period 
 FROM
 	(-- 院内死亡
 	SELECT DISTINCT
@@ -58,7 +58,7 @@ FROM
 				ITEM.SD_ITEM_CODE= 'YXA_O_151' 
 				AND ITEM.SD_ITEM_VALUE IN ( '1', '2', '3', '4', '5', '12', '6', '7', '9', '15' )
 				AND ITEM.PATIENT_NO NOT IN (
-					SELECT * FROM #tmp_die 
+					SELECT * FROM #perioperative_period 
 				)
 		)
 
