@@ -95,3 +95,6 @@ exports.get_3year_in_group = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT]
 
 // 查询北大 胡同学的入组患者
 exports.pkufh_hu = `SELECT PATIENT_NO FROM [dbo].[pkufh_hu]`
+
+// 查询所有有糖尿病史的患者
+exports.tnb = `SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_020' AND SD_ITEM_VALUE='1'`

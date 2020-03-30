@@ -277,18 +277,18 @@ async function saveXlsx (fileName, numberArr) {
     try {
         const
             PAT_VISIT = await query_PAT_VISIT(numberArr),
-            // PAT_DRAINAGE_TUBE = await query_PAT_DRAINAGE_TUBE(numberArr),
-            PAT_FOLLOW_UP_RESULT = await query_PAT_FOLLOW_UP_RESULT(numberArr)
-            // PAT_FOLLOW_UP_TREAT = await query_PAT_FOLLOW_UP_TREAT(numberArr)
+            PAT_DRAINAGE_TUBE = await query_PAT_DRAINAGE_TUBE(numberArr),
+            PAT_FOLLOW_UP_RESULT = await query_PAT_FOLLOW_UP_RESULT(numberArr),
+            PAT_FOLLOW_UP_TREAT = await query_PAT_FOLLOW_UP_TREAT(numberArr)
 
         // 构建 workbook 对象
         let wb = {
             SheetNames: ['基本信息', '引流管', '随访', '化疗'],
             Sheets: {
                 '基本信息': XLSX.utils.json_to_sheet(PAT_VISIT),
-                // '引流管': XLSX.utils.json_to_sheet(PAT_DRAINAGE_TUBE),
+                '引流管': XLSX.utils.json_to_sheet(PAT_DRAINAGE_TUBE),
                 '随访': XLSX.utils.json_to_sheet(PAT_FOLLOW_UP_RESULT),
-                // '化疗': XLSX.utils.json_to_sheet(PAT_FOLLOW_UP_TREAT),
+                '化疗': XLSX.utils.json_to_sheet(PAT_FOLLOW_UP_TREAT),
             }
             // Styles:workbook['Styles']
         }
@@ -305,10 +305,10 @@ async function saveXlsx (fileName, numberArr) {
 
 async function main () {
     try {
-        const fileName = 'pkufh_hu-' + Date.now() // 文件名
+        const fileName = '有糖尿病史-' + Date.now() // 文件名
         const SQL = require("./const-sql.js")
 
-        const listBySelect = await sql.query(SQL.pkufh_hu)
+        const listBySelect = await sql.query(SQL.tnb)
 
         // console.log(listBySelect)
         await saveXlsx(fileName, listBySelect.map(item => `'${item.PATIENT_NO}'`).join())
