@@ -11,7 +11,6 @@ const sql = require('../dbs/sqlServer-t.js'),
 async function query_PAT_VISIT (patient_no) {
     console.time('处理患者基本信息表')
     try {
-
         // 查询患者基本信息
         const list_PAT_VISIT = await sql.query(`SELECT
                 a.PATIENT_NO,
@@ -34,6 +33,7 @@ async function query_PAT_VISIT (patient_no) {
 
         let retPatVisit = list_PAT_VISIT
 
+        const itemListSql = require('./filter-fields.js') // 获取过滤后的字段
         for (let i = 0; i < retPatVisit.length; i++) {
             // 查询数据元 和数据项做对比
             const list_PAT_SD_ITEM_RESULT = await sql.query(`SELECT
@@ -52,7 +52,7 @@ async function query_PAT_VISIT (patient_no) {
             WHERE
                 result.PATIENT_NO='${retPatVisit[i].PATIENT_NO}'
                 AND result.SD_CODE= 'YXA_O'
-                AND NOT b.ITEM_CODE IN ('YXA_O_001','YXA_O_004')
+                ${itemListSql}
                 ORDER BY b.DISPLAY_ORDER`)
 
 
@@ -80,7 +80,6 @@ async function query_PAT_VISIT (patient_no) {
                         // 拆分后的数组长度大于 0
                         if (_valLen > 1) {
                             result.ret_value = await handleMultipleValue(valueArr, _valLen, result.ITEM_CV_CODE)
-                            // console.log(result.ret_value)
                         }
                     }
 
@@ -292,9 +291,9 @@ async function saveXlsx (fileName, numberArr) {
             }
             // Styles:workbook['Styles']
         }
-
+        
         // 导出 Excel
-        XLSX.writeFile(wb, './out/my/' + fileName + '.xlsx');
+        XLSX.writeFile(wb, './out/' + fileName + '.xlsx');
         console.log(fileName, '-OK ', Date.now())
     } catch (e) {
         console.error('saveXlsx ERR： ', e)
@@ -306,11 +305,10 @@ async function saveXlsx (fileName, numberArr) {
 async function main () {
     try {
         const fileName = '有糖尿病史-' + Date.now() // 文件名
-        const SQL = require("./const-sql.js")
+        const constSQL = require("./const-sql.js")
 
-        const listBySelect = await sql.query(SQL.tnb)
+        const listBySelect = await sql.query(constSQL)
 
-        // console.log(listBySelect)
         await saveXlsx(fileName, listBySelect.map(item => `'${item.PATIENT_NO}'`).join())
 
     } catch (err) {
