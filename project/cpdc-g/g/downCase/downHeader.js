@@ -5,7 +5,7 @@
 const sql = require('mssql'),
     config = require("../config.js"),
     XLSX = require("xlsx"),
-    { saveFileSync} = require('./utils')
+    fs = require('fs-extra')
 
 async function queryParent() {
     console.log('-下载父项')
@@ -80,11 +80,10 @@ async function queryParent() {
 
 
         // console.log(parentArr)
-        // await saveFileSync('./out/parentArr.json', JSON.stringify(parentArr, null, 2))
+        fs.writeJsonSync('./out/parentArr.json', JSON.stringify(parentArr, null, 2))
         // console.log(childArr)
-        // await saveFileSync('./out/childArr.json', JSON.stringify(childArr, null, 2))
-        console.log(parentArr)
-        // await saveFileSync('./out/retParent.json', JSON.stringify(parentArr, null, 2))
+        fs.writeJsonSync('./out/childArr.json', JSON.stringify(childArr, null, 2))
+
 
     } catch (err) {
         console.error(err)
@@ -115,7 +114,7 @@ async function test() {
         }
 
         // console.log(parentArr)
-        // await saveFileSync('./out/parentArr.json', JSON.stringify(parentArr, null, 2))
+        fs.writeJsonSync('./out/parentArr.json', parentArr )
 
 
     } catch (err) {

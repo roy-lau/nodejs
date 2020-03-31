@@ -1,4 +1,4 @@
-const fs = require('fs')
+
 /**
  * 脱敏函数
  * @param  {String} str      需要脱敏的字符串
@@ -35,34 +35,6 @@ exports.desensitization = function(str, beginStr, endStr,showEnd) {
     }
 }
 
-/**
- * 写入文件
- * @param  {String} fileName 文件名
- * @param  {String} data     要保存的数据，需是字符串
- * @return {[type]}          [description]
- */
-exports.saveFileSync = function(fileName, data) {
-    return new Promise((resolve, reject) => {
-        fs.writeFile(fileName, data, function(err) {
-            if (err) {
-                console.log(fileName, "数据写入失败！");
-                reject(err)
-            }
-            resolve()
-            console.log(fileName, "数据写入成功！");
-        });
-    });
-}
-
-exports.saveFile = function(fileName, data) {
-    fs.writeFile(fileName, data, function(err) {
-        if (err) {
-            console.log(fileName, "数据写入失败！");
-            return console.error(err);
-        }
-        console.log(fileName, "数据写入成功！");
-    });
-}
 
 // module. exports={
 // find:function(){},

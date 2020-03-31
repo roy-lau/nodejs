@@ -1,5 +1,5 @@
 /**
- * 下载病历
+ * 探索下载病历新的写法
  */
 'use strict';
 const sql = require('../dbs/sqlServer-t.js'),
