@@ -1,5 +1,6 @@
 /**
  * 探索下载病历新的写法
+ * TODO 多级表头
  */
 'use strict';
 const sql = require('../dbs/sqlServer-t.js'),
@@ -41,6 +42,7 @@ class DownCase {
                 PAT_DRAINAGE_TUBE = await this.query_PAT_DRAINAGE_TUBE(numberArr),
                 PAT_FOLLOW_UP_RESULT = await this.query_PAT_FOLLOW_UP_RESULT(numberArr),
                 PAT_FOLLOW_UP_TREAT = await this.query_PAT_FOLLOW_UP_TREAT(numberArr)
+            console.log(XLSX.utils.json_to_sheet(PAT_VISIT))
 
             // 构建 workbook 对象
             let wb = {
@@ -51,11 +53,11 @@ class DownCase {
                     '随访': XLSX.utils.json_to_sheet(PAT_FOLLOW_UP_RESULT),
                     '化疗': XLSX.utils.json_to_sheet(PAT_FOLLOW_UP_TREAT),
                 }
-                // Styles:workbook['Styles']
+                // Styles:wb['Styles']
             }
 
             // 导出 Excel
-            XLSX.writeFile(wb, './out/' + fileName + '.xlsx');
+            // XLSX.writeFile(wb, './out/' + fileName + '.xlsx');
             console.log(fileName,' 下载成功！')
         } catch (e) {
             console.error('saveXlsx ERR： ', e)

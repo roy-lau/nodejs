@@ -407,8 +407,16 @@ async function queryTest() {
     console.info('获取查询患者pNO')
     try {
 
-        const listPatientNo = await sql.query(`SELECT PATIENT_NO FROM [dbo].[PAT_VISIT]
-                WHERE PATIENT_NO IN ('802c621a0d478d81','ffbc4406e37a7c57')`),
+        const listPatientNo = await sql.query(`SELECT
+        PATIENT_NO
+    FROM
+        [dbo].[PAT_SD_ITEM_RESULT] 
+    WHERE
+        SD_ITEM_CODE = 'YXA_O_152' 
+        AND SD_ITEM_VALUE IN ( '1', '2', '3' ) 
+        AND PATIENT_NO IN ( 
+        SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] 
+        WHERE SD_ITEM_CODE = 'YXA_O_161' AND SD_ITEM_VALUE >= '2016-01-01 00:00:00' AND SD_ITEM_VALUE <= '2016-12-31 00:00:00' )`),
             retPatientNo = listPatientNo.recordset,
             len = retPatientNo.length
 
@@ -579,22 +587,21 @@ async function query1() {
     }
 }
 
-async function main() {
+async function startup() {
 
     console.time("共用时")
 
-    // await queryTest()
-    await queryTotal()
+    await queryTest()
     await handlePatVist()
-    // await handlePatItemResult()
+    await handlePatItemResult()
     await handlePatDrainageTube()
 
-    // await handlePatFollowUp()
-    // await handlePatFollowUpTreat()
-    // await handlePatFollowUpResult()
+    await handlePatFollowUp()
+    await handlePatFollowUpTreat()
+    await handlePatFollowUpResult()
 
-    await saveCalcResult('三年入组')
+    await saveCalcResult('16年胰头')
     console.timeEnd("共用时")
     process.exit(0)
 }
-main()
+startup()

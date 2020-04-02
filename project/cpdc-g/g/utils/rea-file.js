@@ -50,5 +50,5 @@ function decryptFile (fileName) {
 
 const fileName = 'demo.txt'
 
-// encryptFile(fileName)
+encryptFile(fileName)
 // decryptFile(fileName)

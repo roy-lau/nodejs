@@ -492,9 +492,8 @@ module.exports = class CALC {
     async handlePatVisit() {
         console.time('计算患者基本信息')
         try {
-            // const pool = await new sql.ConnectionPool(config.db_addr).connect();
-            await sql.connect(config.db_addr)
-            const listPatVisit = await sql.query `SELECT
+            const sql = require('../dbs/sqlServer-t.js')
+            const retPatVisit = await sql.query(`SELECT
                     PATIENT_NO,
                     PATIENT_ID,
                     INP_NO,
@@ -509,8 +508,7 @@ module.exports = class CALC {
                     [dbo].[PAT_VISIT]
                 WHERE
                     SD_CODE = 'YXA_O'
-                    AND PATIENT_NO IN(${this.patientNo})`,
-                retPatVisit = listPatVisit.recordset
+                    AND PATIENT_NO IN(${this.patientNo})`)
 
             for (let index = 0; index < retPatVisit.length; index++) {
                 const element = retPatVisit[index],

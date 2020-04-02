@@ -3,8 +3,30 @@ const sql = require('mssql'),
     config = require("../config.js")
 
 
+// 查询16年做过胰头手术的患者
+module.exports.jin = async function() {
+    console.info('查询16年做过胰头手术的患者')
+    try {
+        const pool = await new sql.ConnectionPool(config.db_addr).connect();
+        const listJin = await pool.query `SELECT
+                PATIENT_NO
+            FROM
+                [dbo].[PAT_SD_ITEM_RESULT] 
+            WHERE
+                SD_ITEM_CODE = 'YXA_O_152' 
+                AND SD_ITEM_VALUE IN ( '1', '2', '3' ) 
+                AND PATIENT_NO IN ( 
+                SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] 
+                WHERE SD_ITEM_CODE = 'YXA_O_161' AND SD_ITEM_VALUE >= '2016-01-01 00:00:00' AND SD_ITEM_VALUE <= '2016-12-31 00:00:00' )`,
+            retJin = listJin.recordset
+
+        return retJin.map(item => item.PATIENT_NO)
+    } catch (err) {
+        console.error('SQL ERR ', err)
+    }
+}
 // 根据38家医院id查询患者id
-module.exports.getHospitalIdByPatientNo = async function(hospitalName) {
+async function getHospitalSomeOne(hospitalName) {
     console.info('根据38家医院id查询患者id')
     try {
         const pool = await new sql.ConnectionPool(config.db_addr).connect();
