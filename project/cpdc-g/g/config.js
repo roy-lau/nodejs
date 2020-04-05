@@ -4,9 +4,7 @@ module.exports = {
         password: 'sa@123',
         // server: 'localhost',
         server: '192.168.1.253',
-        // database: 'RYCPDC_C20200310',
-        // database: 'RYCPDC_C20191111',
-        database: 'RYCPDC_C20191111new',
+        // database: 'RYCPDC_C20191111new',
         port: 1433,
         pool: {
             min: 0, //连接池最小连接数，默认0
@@ -20,6 +18,7 @@ module.exports = {
     },
     // tedious 包的 SQL 配置
     tdb_addr:{
+        // 'server': 'localhost',
         'server': '192.168.1.253',
         authentication: {
             type: 'default',
@@ -29,6 +28,7 @@ module.exports = {
             }
         },
         options: {
+            // database: 'sdr',
             database: 'RYCPDC_C20191111new',
             encrypt: false
         }
