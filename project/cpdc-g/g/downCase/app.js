@@ -15,7 +15,7 @@ class DownCase {
      */
     async init () {
         try {
-            const fileName = '有糖尿病史-' + Date.now() // 文件名
+            const fileName = 'hu-' + Date.now() // 文件名
             const constSQL = require("./const-sql.js")
 
             const listBySelect = await sql.query(constSQL)

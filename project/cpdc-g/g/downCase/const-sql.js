@@ -103,5 +103,26 @@ const pkufh_hu = `SELECT PATIENT_NO FROM [dbo].[pkufh_hu]`
 
 // 查询所有有糖尿病史的患者
 const tnb = `SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_020' AND SD_ITEM_VALUE='1'`
+// 长海17年至少一次随访
+const ch17OneFU = `SELECT DISTINCT
+        PATIENT_NO 
+        FROM
+        PAT_FOLLOW_UP AS fu 
+        WHERE
+        PATIENT_NO IN (
 
-module.exports = test
+        SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE
+        SD_ITEM_CODE='YXA_O_161'
+        AND SD_ITEM_VALUE>='2017/01/01 13:00:00'
+        AND SD_ITEM_VALUE<'2018/01/01 13:00:00'
+        AND PATIENT_NO IN (
+        SELECT
+            pat.PATIENT_NO 
+        FROM
+            [dbo].[PAT_VISIT] AS pat
+            LEFT JOIN [dbo].[HOSPITAL_DICT] AS h ON pat.HOSPITAL_ID= h.HOSPITAL_ID 
+        WHERE
+        h.HOSPITAL_CODE= 'H015' )
+        )`
+
+module.exports = ch17OneFU
