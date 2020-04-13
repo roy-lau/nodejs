@@ -42,7 +42,7 @@ BEGIN
 	
 
     PRINT('ALTER TABLE [dbo].[rowToCol] ADD ['+ @table_title +'] VARCHAR ( 100 )')
-		EXEC('ALTER TABLE [dbo].[rowToCol] ADD ['+ @table_title +'] VARCHAR ( 100 )')
+	EXEC('ALTER TABLE [dbo].[rowToCol] ADD ['+ @table_title +'] VARCHAR ( 100 )')
 END
 
 

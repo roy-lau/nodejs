@@ -55,14 +55,14 @@ module.exports = function filterKeys(fileData, code) {
 function pattern_sheet_PAT_VISIT(value) {
     return {
         PATIENT_NO: value.PATIENT_NO, // GUID
-        PATIENT_ID: value['病案号'] || null, // 患者id
-        INP_NO: value['病案号'] || null, // 病案号
+        PATIENT_ID: value['病案号'] || value['病人ID号'] || null, // 患者id
+        INP_NO: value['住院号'] || null, // 病案号
         NAME: value['患者姓名'] || value['病人姓名'] || null, // 患者姓名
-        SEX: value['病人性别'] || null, // 性别
-        AGE: value['病人年龄'] || null, // 年龄
+        SEX: value['病人性别'] ||value['性别'] || null, // 性别
+        AGE: value['病人年龄'] ||value['年龄'] || null, // 年龄
         ADMISSION_DATE: value['入院日期'] || null, // 入院日期
         DISCHARGE_DATE: value['出院日期'] || null, // 出院日期
-        OUT_STATUS: '医嘱离院', // 离院方式，默认 医嘱离院
+        OUT_STATUS: value['离院方式'] || '医嘱离院', // 离院方式，默认 医嘱离院
         SD_CODE: 'YXA_O', // 默认：YXA_O
         VERSION_NUM: '1.0', // 版本号，默认 1.0
         IS_ICF: '1', // 患者知情同意书

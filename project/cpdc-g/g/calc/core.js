@@ -2,9 +2,8 @@
  *  计算患者数据字段
  */
 'use strict';
-const sql = require('mssql'),
+ const sql = require('../dbs/sqlServer-t.js'),
     XLSX = require("xlsx"),
-    config = require("../config.js"),
     _ = require("lodash"),
     OBJ_CALC = Object.create(null)
 
@@ -37,7 +36,7 @@ module.exports = class CALC {
             }
 
             // 导出 Excel
-            XLSX.writeFile(wb, './out/' + fileName + '.xlsx');
+            XLSX.writeFile(wb, './out/' + fileName +Date.now()+ '.xlsx');
             console.log(fileName, '-OK ', Date.now())
         } catch (e) {
             console.error('处理数据出错： ', e)
@@ -76,9 +75,8 @@ module.exports = class CALC {
     async handlePatFollowUpTreat() {
         console.info('计算 随访治疗信息')
         try {
-            const pool = await new sql.ConnectionPool(config.db_addr).connect();
             for (const key in OBJ_CALC) {
-                const listPatFollowUpTreat = await pool.query `SELECT
+                const retPatFollowUpTreat = await sql.query(`SELECT
                             PATIENT_NO,
                             FU_TIMES,
                             TREAT_NAME AS '治疗方式',
@@ -100,8 +98,7 @@ module.exports = class CALC {
                         FROM
                             [dbo].[PAT_FOLLOW_UP_TREAT]
                         WHERE
-                        PATIENT_NO=${key}`,
-                    retPatFollowUpTreat = listPatFollowUpTreat.recordset
+                        PATIENT_NO='${key}'`)
 
                 // console.log(retPatFollowUpTreat)
                 OBJ_CALC[key].patFollowUpTreat_num = 0
@@ -126,7 +123,6 @@ module.exports = class CALC {
     async handlePatFollowUpResult() {
         console.info('计算 随访结果表')
         try {
-            const pool = await new sql.ConnectionPool(config.db_addr).connect();
 
             for (const key in OBJ_CALC) {
                 /*
@@ -134,7 +130,7 @@ module.exports = class CALC {
                     1，根据一个患者id查询 （key：患者id）
                     2，根据数据项字典对比数据项结果
                  */
-                const listPatFollowUpResult = await pool.query `SELECT
+                const retPatFollowUpResult = await sql.query(`SELECT
                         result.PATIENT_NO,
                         dist.ITEM_CODE,
                         dist.ITEM_NAME,
@@ -143,8 +139,7 @@ module.exports = class CALC {
                     FROM
                         [dbo].[FU_SD_ITEM_DICT] AS dist
                         LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS result ON dist.ITEM_CODE= result.SD_ITEM_CODE
-                        AND result.PATIENT_NO= ${key}`,
-                    retPatFollowUpResult = listPatFollowUpResult.recordset
+                        AND result.PATIENT_NO='${key}'`)
 
                 // console.log(retPatFollowUpResult.length)
                 OBJ_CALC[key].patFollowUpResult_num = 0
@@ -253,18 +248,15 @@ module.exports = class CALC {
         // PAT_FOLLOW_UP_RESULT     YXA_O_256 是否死亡
         // PAT_FOLLOW_UP_RESULT     YXA_O_257 死亡日期
         try {
-            const pool = await new sql.ConnectionPool(config.db_addr).connect();
+           
             // 查询 是否院内死亡 和 手术日期
-            const listIsDeadAndDateOfSurgery = await pool.query `SELECT
+            const retIsDeadAndDateOfSurgery = await sql.query(`SELECT
                             *
                         FROM
-                            [dbo].[PAT_SD_ITEM_RESULT] AS a
+                            [dbo].[PAT_SD_ITEM_RESULT]
                         WHERE
-                            PATIENT_NO = ${key}
-                            AND (
-                            a.SD_ITEM_CODE= 'YXA_O_209'
-                            OR a.SD_ITEM_CODE= 'YXA_O_161')`,
-                retIsDeadAndDateOfSurgery = listIsDeadAndDateOfSurgery.recordset,
+                            PATIENT_NO ='${key}'
+                            AND SD_ITEM_CODE IN ('YXA_O_209','YXA_O_161')`),
                 _dateOfSurgery = retIsDeadAndDateOfSurgery[0],
                 _isDead = retIsDeadAndDateOfSurgery[1],
                 dateOfSurgery = _dateOfSurgery.SD_ITEM_VALUE, // 手术日期
@@ -278,25 +270,23 @@ module.exports = class CALC {
 
             }
         } catch (err) {
-            console.error('handle ERR ', err)
+            console.error('handle _needFollowCount ERR ', err)
         }
     }
     // 计算 随访时间 3
     async handlePatFollowUp() {
         console.info('计算 随访时间')
         try {
-            const pool = await new sql.ConnectionPool(config.db_addr).connect();
             for (const key in OBJ_CALC) {
-                const needFollowCount = await this._needFollowCount(key)
-                const listPatFollowUp = await pool.query `SELECT
+                // const needFollowCount = await this._needFollowCount(key)
+                const retPatFollowUp = await sql.query(`SELECT
                             PATIENT_NO,
                             FOLLOW_UP_DATE,
                             FOLLOW_UP_MONTHS
                         FROM
                             [dbo].[PAT_FOLLOW_UP]
                         WHERE
-                        PATIENT_NO=${key}`,
-                    retPatFollowUp = listPatFollowUp.recordset
+                        PATIENT_NO='${key}'`)
 
                 OBJ_CALC[key].patFollowUp_num = 0
                 OBJ_CALC[key].patFollowUp_total = 0
@@ -320,9 +310,8 @@ module.exports = class CALC {
     async handleDrainageTube() {
         console.log('计算引流管字段')
         try {
-            const pool = await new sql.ConnectionPool(config.db_addr).connect();
             for (const key in OBJ_CALC) {
-                const listDrainageTube = await pool.query `SELECT
+                const retDrainageTube = await sql.query(`SELECT
                         PATIENT_NO,
                         TUBE_NAME AS '引流管部位',
                         RETENTION_DAYS AS '留置天数',
@@ -336,8 +325,7 @@ module.exports = class CALC {
                     FROM
                         [dbo].[PAT_DRAINAGE_TUBE]
                     WHERE
-                    PATIENT_NO=${key}`,
-                    retDrainageTube = listDrainageTube.recordset
+                    PATIENT_NO='${key}'`)
 
                 OBJ_CALC[key].drainageTube_num = 0
                 OBJ_CALC[key].drainageTube_total = 0
@@ -355,7 +343,7 @@ module.exports = class CALC {
                 OBJ_CALC[key].num += OBJ_CALC[key].drainageTube_num
                 OBJ_CALC[key].total += OBJ_CALC[key].drainageTube_total
             }
-            console.log(OBJ_CALC)
+            // console.log(OBJ_CALC)
         } catch (err) {
             console.error('handle ERR ', err)
         }
@@ -365,14 +353,13 @@ module.exports = class CALC {
     async handlePatItemResult() {
         console.time('计算数据项结果')
         try {
-            const pool = await new sql.ConnectionPool(config.db_addr).connect();
             for (const key in OBJ_CALC) {
                 /*
                     查询条件如下：
                     1，根据一个患者id查询 （key：患者id）
                     2，根据数据项字典对比数据项结果
                  */
-                const listPatItemResult = await pool.query `SELECT
+                const retPatItemResult = await sql.query(`SELECT
                         result.PATIENT_NO,
                         dist.ITEM_CODE,
                         dist.ITEM_NAME,
@@ -382,10 +369,9 @@ module.exports = class CALC {
                         [dbo].[SD_ITEM_DICT] AS dist
                         LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS result
                         ON dist.ITEM_CODE= result.SD_ITEM_CODE
-                        AND result.PATIENT_NO= ${key}
+                        AND result.PATIENT_NO='${key}'
                     WHERE
-                        dist.SD_CODE= 'YXA_O'`,
-                    retPatItemResult = listPatItemResult.recordset
+                        dist.SD_CODE= 'YXA_O'`)
 
                 // console.log(retPatItemResult.length)
                 OBJ_CALC[key].itemValue_num = 0
@@ -492,7 +478,6 @@ module.exports = class CALC {
     async handlePatVisit() {
         console.time('计算患者基本信息')
         try {
-            const sql = require('../dbs/sqlServer-t.js')
             const retPatVisit = await sql.query(`SELECT
                     PATIENT_NO,
                     PATIENT_ID,
@@ -508,7 +493,7 @@ module.exports = class CALC {
                     [dbo].[PAT_VISIT]
                 WHERE
                     SD_CODE = 'YXA_O'
-                    AND PATIENT_NO IN(${this.patientNo})`)
+                    AND PATIENT_NO IN (${this.patientNo})`)
 
             for (let index = 0; index < retPatVisit.length; index++) {
                 const element = retPatVisit[index],
@@ -542,7 +527,7 @@ module.exports = class CALC {
 }
 
 /**
- * 获取 json对象里，值为空的 key
+ * 获取 json 对象里值为空的 key
  * @param  {[type]} e [description]
  * @return {[type]}   [description]
  */

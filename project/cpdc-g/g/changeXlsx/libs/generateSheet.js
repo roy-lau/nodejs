@@ -2,7 +2,7 @@
 
 const XLSX = require("xlsx")
 const moment = require('moment')
-const fs = require('fs')
+const fs = require('fs-extra')
 const Check = require("./checkData.js")
 const filterKeys = require("./filterKeys.js")
 
@@ -14,70 +14,7 @@ module.exports = class GenerateSheet {
         this.fileData = []
 
     }
-    /**
-     * 读取文件
-     * @param  {String} fileName 文件名
-     * @return {Buffer} fileData        文件内容
-     */
-    readFile(fileName = "tmp.json") {
-
-        let _data = ""
-        // 创建一个可以写入的流，写入到文件 out.txt 中
-        const readerStream = fs.createReadStream(fileName);
-
-        // 设置编码为 utf8。
-        readerStream.setEncoding('UTF8');
-
-        // 处理流事件 --> data, end, and error
-        readerStream.on('data', function(chunk) {
-            _data += chunk;
-        });
-
-        readerStream.on('end', function() {
-            console.log(fileName, "读取完成。");
-            return _data
-        });
-
-        readerStream.on('error', function(err) {
-            console.log(err.stack);
-        });
-    }
-
-    /**
-     * 读取文件 Promise
-     * @param  {String} fileName 文件名
-     * @return {Buffer} fileData        文件内容
-     */
-    readFilePromise(fileName = "tmp.json") {
-        return new Promise((resolve, reject) => {
-
-            let _data = ""
-            // 创建一个可以写入的流，写入到文件 out.txt 中
-            const readerStream = fs.createReadStream(fileName);
-
-            // 设置编码为 utf8。
-            readerStream.setEncoding('UTF8');
-
-            // 处理流事件 --> data, end, and error
-            readerStream.on('data', function(chunk) {
-                _data += chunk;
-            });
-
-            readerStream.on('end', function() {
-                this.fileData = _data
-                resolve({
-                    source: _data
-                })
-                console.log(fileName, "读取完成。");
-            });
-
-            readerStream.on('error', function(err) {
-                reject(err)
-                console.log(err.stack);
-            });
-        })
-    }
-
+    
     /**
      * 保存表格
      * @param {Object } json
@@ -201,8 +138,6 @@ module.exports = class GenerateSheet {
     async xlsxToJson(tableData) {
         let insertdData = await Check.insertPATIENT_NO(tableData) // 插入GUID
 
-        // saveFile(JSON.stringify(insertdData, null, 2), "out/2.xlsx-source.json")
-
         return {
             source: insertdData
         }
@@ -222,9 +157,7 @@ module.exports = class GenerateSheet {
                     }), // 获取表格数据
                     sheetNames = workbook.SheetNames, // 获取表格里的每个 sheet
                     worksheet = workbook.Sheets[sheetNames[0]]; // 获取第一个 sheet
-                let json = XLSX.utils.sheet_to_json(worksheet, {
-                    raw: false
-                }) // 处理为 json 格式
+                let json = XLSX.utils.sheet_to_json(worksheet, { raw: false }) // 处理为 json 格式
                 /*
                  * 通过对比字典，返回相应的code
                  */

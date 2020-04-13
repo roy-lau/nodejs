@@ -4,9 +4,10 @@
  */
 
 'use strict';
-const sql = require('../dbs/sqlServer.js'),
+const sql = require('../dbs/sqlServer-t.js'),
     XLSX = require("xlsx"),
     _ = require("lodash"),
+    // fs = require("fs-extra"),
     OBJ_CALC = Object.create(null)
 
 
@@ -48,7 +49,7 @@ async function handlePatFollowUpResult() {
 
         for (let index = 0; index < OBJ_CALC._ids.length; index++) {
             const key = OBJ_CALC._ids[index]
-            const listPatFollowUpResult = await sql.query(`SELECT
+            const retPatFollowUpResult = await sql.query(`SELECT
 					dict.ITEM_CODE,
                     dict.ITEM_PARENT_CODE,
 					dict.ITEM_NAME,
@@ -58,8 +59,8 @@ async function handlePatFollowUpResult() {
 					LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS result
 					ON dict.ITEM_CODE=result.SD_ITEM_CODE
 					AND result.PATIENT_NO='${key}'
-					ORDER BY dict.DISPLAY_ORDER`),
-                retPatFollowUpResult = listPatFollowUpResult.recordset
+                    ORDER BY dict.DISPLAY_ORDER`)
+                    
             // console.log(retPatFollowUpResult)
             for (let i = 0; i < retPatFollowUpResult.length; i++) {
                 const _items = retPatFollowUpResult[i],
@@ -83,13 +84,12 @@ async function initFollowDist() {
     console.info('初始化 随访结果表')
     try {
 
-        const listPatFollowDist = await sql.query(`SELECT
-						dist.ITEM_CODE,
-						dist.ITEM_NAME
-					FROM
-						[dbo].[FU_SD_ITEM_DICT] AS dist
-						ORDER BY dist.DISPLAY_ORDER`),
-            retPatFollowDist = listPatFollowDist.recordset
+        const retPatFollowDist = await sql.query(`SELECT
+                    dist.ITEM_CODE,
+                    dist.ITEM_NAME
+                FROM
+                    [dbo].[FU_SD_ITEM_DICT] AS dist
+                    ORDER BY dist.DISPLAY_ORDER`)
         // console.log(retPatFollowDist)
         let followDist = {}
         for (let i = 0; i < retPatFollowDist.length; i++) {
@@ -112,7 +112,7 @@ async function handlePatFollowUpTreat() {
 
         for (let index = 0; index < OBJ_CALC._ids.length; index++) {
             const key = OBJ_CALC._ids[index]
-        const listPatFollowUpTreat = await sql.query(`SELECT
+        const retPatFollowUpTreat = await sql.query(`SELECT
             TREAT_NAME AS '治疗方式',
             DRUG_NAME AS '药品名称(通用名)',
             DRUG_NAME_TRADE AS '药品名称(商品名)',
@@ -133,8 +133,8 @@ async function handlePatFollowUpTreat() {
 			[dbo].[PAT_FOLLOW_UP_TREAT]
 		WHERE
 			PATIENT_NO= '${key}'`),
-            retPatFollowUpTreat = listPatFollowUpTreat.recordset,
             _followUpTreatTotal = retPatFollowUpTreat.length
+            
 		// console.log(key,index,_followUpTreatTotal)
         if (index == 0) { // 第一次，初始化（如果第一个为空，将会报错 query2）
             const _keys = ['治疗方式','药品名称(通用名)','药品名称(商品名)','剂量','疗程/周期','化疗方法','是否好转','化疗费用','治疗前CA199','治疗前CEA','治疗前CA125','治疗前CT评价','治疗后CA199','治疗后CEA','治疗后CA125','治疗后CT评价']
@@ -173,7 +173,7 @@ async function handlePatFollowUp() {
 
         for (let index = 0; index < OBJ_CALC._ids.length; index++) {
             const key = OBJ_CALC._ids[index]
-            const listPatFollowUp = await sql.query(`SELECT
+            const retPatFollowUp = await sql.query(`SELECT
 				PATIENT_NO,
 				FOLLOW_UP_DATE,
 				FOLLOW_UP_MONTHS
@@ -181,7 +181,6 @@ async function handlePatFollowUp() {
 				[dbo].[PAT_FOLLOW_UP]
 			WHERE
 				PATIENT_NO= '${key}'`),
-                retPatFollowUp = listPatFollowUp.recordset,
                 _followTotal = retPatFollowUp.length
 
             // console.log(retPatFollowUp)
@@ -211,7 +210,7 @@ async function handlePatDrainageTube() {
 
         for (let index = 0; index < OBJ_CALC._ids.length; index++) {
             const key = OBJ_CALC._ids[index]
-        const listPatDrainageTube = await sql.query(`SELECT
+        const retPatDrainageTube = await sql.query(`SELECT
                 -- PATIENT_NO,
                 TUBE_NAME AS '引流管部位',
                 RETENTION_DAYS AS '留置天数',
@@ -226,8 +225,8 @@ async function handlePatDrainageTube() {
                 [dbo].[PAT_DRAINAGE_TUBE]
             WHERE
                 PATIENT_NO= '${key}'`),
-            retPatDrainageTube = listPatDrainageTube.recordset,
             _DrainageTubeTotal = retPatDrainageTube.length
+
         // console.log(key,index,_followUpTreatTotal)
         if (index == 0) { // 第一次，初始化（如果第一个为空，将会报错 query2）
             const _keys = ['引流管部位','留置天数','POD1','POD3','POD7','AMY_POD1','AMY_POD3','AMY_POD7','拔管前AMY']
@@ -274,7 +273,7 @@ async function handlePatItemResult(){
 
         for (let index = 0; index < OBJ_CALC._ids.length; index++) {
             const key = OBJ_CALC._ids[index]
-            const listPatItemResult = await sql.query(`SELECT
+            const retPatItemResult = await sql.query(`SELECT
                     ret.PATIENT_NO,
                     dict.ITEM_NAME,
                     dict.ITEM_CODE,
@@ -289,8 +288,8 @@ async function handlePatItemResult(){
                     dict.SD_CODE = 'YXA_O'
                 ORDER BY
                     DISPLAY_ORDER`),
-                retPatItemResult = listPatItemResult.recordset,
                 _lenPatItemResult = retPatItemResult.length
+
                 // console.log(key,index,retPatItemResult)
                 for(let _item = 0; _item < _lenPatItemResult; _item++){
                     const _items = retPatItemResult[_item],
@@ -335,8 +334,8 @@ async function initItemDist() {
     console.info('初始化 数据项结果表')
     try {
 
-        const listPatItemDist = await sql.query(`SELECT ITEM_CODE,ITEM_NAME FROM [dbo].[SD_ITEM_DICT] WHERE SD_CODE = 'YXA_O' ORDER BY DISPLAY_ORDER`),
-            retPatItemDist = listPatItemDist.recordset
+        const retPatItemDist = await sql.query(`SELECT ITEM_CODE,ITEM_NAME FROM [dbo].[SD_ITEM_DICT] WHERE SD_CODE = 'YXA_O' ORDER BY DISPLAY_ORDER`)
+        
         // console.log(retItemDist)
         let patItemDist = {}
         for (let i = 0; i < retPatItemDist.length; i++) {
@@ -359,7 +358,7 @@ async function handlePatVist(){
 
         for (let index = 0; index < OBJ_CALC._ids.length; index++) {
             const key = OBJ_CALC._ids[index]
-            const listPatVist = await sql.query(`SELECT
+            const retPatVist = await sql.query(`SELECT
                         PATIENT_NO,
                         PATIENT_ID AS '住院ID',
                         INP_NO AS '住院流水号',
@@ -373,7 +372,6 @@ async function handlePatVist(){
                         [dbo].[PAT_VISIT]
                     WHERE
                         PATIENT_NO= '${key}'`),
-                retPatVist = listPatVist.recordset,
                 _firstvistData = retPatVist[0]
                 // console.log(key,index,_firstvistData)
 
@@ -403,173 +401,11 @@ async function handlePatVist(){
 }
 
 // 查询条件函数
-async function queryTest() {
+async function query() {
     console.info('获取查询患者pNO')
     try {
-
-        const listPatientNo = await sql.query(`SELECT
-        PATIENT_NO
-    FROM
-        [dbo].[PAT_SD_ITEM_RESULT] 
-    WHERE
-        SD_ITEM_CODE = 'YXA_O_152' 
-        AND SD_ITEM_VALUE IN ( '1', '2', '3' ) 
-        AND PATIENT_NO IN ( 
-        SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] 
-        WHERE SD_ITEM_CODE = 'YXA_O_161' AND SD_ITEM_VALUE >= '2016-01-01 00:00:00' AND SD_ITEM_VALUE <= '2016-12-31 00:00:00' )`),
-            retPatientNo = listPatientNo.recordset,
-            len = retPatientNo.length
-
-        OBJ_CALC._ids = new Array(len) // 创建个空数组
-
-        for (let index = 0; index < len; index++) {
-            const element = retPatientNo[index],
-                _id = element.PATIENT_NO;
-
-            OBJ_CALC._ids[index] = _id
-        }
-        // console.log(OBJ_CALC)
-        return OBJ_CALC
-    } catch (err) {
-        console.error('handle ERR ', err)
-    }
-}
-async function queryDie() {
-    console.info('获取查询患者pNO')
-    try {
-
-        const listPatientNo = await sql.query(`SELECT
-                            DISTINCT a.PATIENT_NO
-                        FROM
-                            [dbo].[PAT_SD_ITEM_RESULT] AS a
-                            LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS b ON b.SD_ITEM_CODE = 'YXA_O_257' -- 随访死亡日期
-
-                            AND b.SD_ITEM_VALUE != ''
-                        WHERE
-                            a.SD_ITEM_CODE= 'YXA_O_161' -- 手术日期
-
-                            AND a.SD_ITEM_CODE!= ''
-                            AND b.PATIENT_NO= a.PATIENT_NO
-                            AND a.PATIENT_NO IN (
-                            SELECT
-                                PATIENT_NO
-                            FROM
-                                [dbo].[PAT_SD_ITEM_RESULT]
-                            WHERE
-                                SD_ITEM_CODE = 'YXA_O_151'
-                                AND ( SD_ITEM_VALUE = '1' OR SD_ITEM_VALUE = '2' OR SD_ITEM_VALUE = '3' OR SD_ITEM_VALUE = '12' )
-                                AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )
-                            )
-                            AND DATEDIFF(
-                                mm,
-                                CONVERT ( VARCHAR ( 100 ), a.SD_ITEM_VALUE, 120 ),
-                                CONVERT ( VARCHAR ( 100 ), b.SD_ITEM_VALUE, 120 )
-                            ) <= '12'
-                            AND DATEDIFF(
-                                mm,
-                                CONVERT ( VARCHAR ( 100 ), a.SD_ITEM_VALUE, 120 ),
-                            CONVERT ( VARCHAR ( 100 ), b.SD_ITEM_VALUE, 120 )
-                            ) >= '0'
-                            ORDER BY a.PATIENT_NO`),
-            retPatientNo = listPatientNo.recordset,
-            len = retPatientNo.length
-
-        OBJ_CALC._ids = new Array(len) // 创建个空数组
-
-        for (let index = 0; index < len; index++) {
-            const element = retPatientNo[index],
-                _id = element.PATIENT_NO;
-
-            OBJ_CALC._ids[index] = _id
-        }
-        // console.log(OBJ_CALC)
-        return OBJ_CALC
-    } catch (err) {
-        console.error('handle ERR ', err)
-    }
-}
-async function queryTotal() {
-    console.info('获取 入组 患者pNO')
-    try {
-
-        const listPatientNo = await sql.query(`SELECT
-                TOP 5000
-                PATIENT_NO
-            FROM
-                [dbo].[PAT_VISIT]
-            WHERE
-                SD_GROUP = '1'
-                AND SD_CODE = 'YXA_O'
-                AND DISCHARGE_DATE >= '2016-01-01 00:00:00.000'
-                AND DISCHARGE_DATE <= '2018-12-31 00:00:00.000'`),
-            retPatientNo = listPatientNo.recordset,
-            len = retPatientNo.length
-
-        OBJ_CALC._ids = new Array(len) // 创建个空数组
-
-        for (let index = 0; index < len; index++) {
-            const element = retPatientNo[index],
-                _id = element.PATIENT_NO;
-
-            OBJ_CALC._ids[index] = _id
-        }
-        // console.log(OBJ_CALC)
-        return OBJ_CALC
-    } catch (err) {
-        console.error('handle ERR ', err)
-    }
-}
-async function query2() {
-    console.info('获取 一年内随访的患者 + 有死亡时间的患者 的患者pNO')
-    try {
-        const listPatientNo = await sql.query(`SELECT
-					DISTINCT PATIENT_NO
-				FROM
-					[dbo].[PAT_FOLLOW_UP_RESULT]
-				WHERE
-					SD_ITEM_CODE = 'YXA_O_257'
-					AND SD_ITEM_VALUE != ''
-					AND PATIENT_NO IN (SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O')
-
-					UNION
-				SELECT
-					DISTINCT PATIENT_NO
-				FROM
-					[dbo].[PAT_FOLLOW_UP]
-				WHERE
-					FOLLOW_UP_DATE != '1900-01-01 00:00:00.000'
-					AND FOLLOW_UP_MONTHS!=''
-					AND FOLLOW_UP_MONTHS > 12
-					AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )`),
-            retPatientNo = listPatientNo.recordset,
-            len = retPatientNo.length
-
-        OBJ_CALC._ids = new Array(len) // 创建个空数组
-
-        for (let index = 0; index < len; index++) {
-            const element = retPatientNo[index],
-                _id = element.PATIENT_NO;
-
-            OBJ_CALC._ids[index] = _id
-        }
-        // console.log(OBJ_CALC)
-        return OBJ_CALC
-    } catch (err) {
-        console.error('handle ERR ', err)
-    }
-}
-async function query1() {
-    console.info('获取 入组的患者中有随访记录的 患者pNO')
-    try {
-        const listPatientNo = await sql.query(`SELECT
-					DISTINCT PATIENT_NO
-				FROM
-					[dbo].[PAT_FOLLOW_UP]
-				WHERE
-					FOLLOW_UP_DATE != '1900-01-01 00:00:00.000'
-					AND FOLLOW_UP_MONTHS!=''
-					AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )`),
-            retPatientNo = listPatientNo.recordset,
+        const querySql = require("./querySql.js")
+        const retPatientNo = await sql.query(querySql),
             len = retPatientNo.length
 
         OBJ_CALC._ids = new Array(len) // 创建个空数组
@@ -591,7 +427,8 @@ async function startup() {
 
     console.time("共用时")
 
-    await queryTest()
+    await query()
+
     await handlePatVist()
     await handlePatItemResult()
     await handlePatDrainageTube()
@@ -600,7 +437,7 @@ async function startup() {
     await handlePatFollowUpTreat()
     await handlePatFollowUpResult()
 
-    await saveCalcResult('16年胰头')
+    await saveCalcResult('金薇薇')
     console.timeEnd("共用时")
     process.exit(0)
 }

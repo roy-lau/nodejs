@@ -113,8 +113,8 @@ const ch17OneFU = `SELECT DISTINCT
 
         SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE
         SD_ITEM_CODE='YXA_O_161'
-        AND SD_ITEM_VALUE>='2017/01/01 13:00:00'
-        AND SD_ITEM_VALUE<'2018/01/01 13:00:00'
+        AND SD_ITEM_VALUE>='2017/01/01 00:00:00'
+        AND SD_ITEM_VALUE<'2018/01/01 00:00:00'
         AND PATIENT_NO IN (
         SELECT
             pat.PATIENT_NO 
@@ -123,6 +123,6 @@ const ch17OneFU = `SELECT DISTINCT
             LEFT JOIN [dbo].[HOSPITAL_DICT] AS h ON pat.HOSPITAL_ID= h.HOSPITAL_ID 
         WHERE
         h.HOSPITAL_CODE= 'H015' )
-        )`
+    )`
 
 module.exports = ch17OneFU
