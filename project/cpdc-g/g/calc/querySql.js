@@ -67,7 +67,7 @@ const yitou16 = `SELECT
     SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] 
     WHERE SD_ITEM_CODE = 'YXA_O_161' AND SD_ITEM_VALUE >= '2016-01-01 00:00:00' AND SD_ITEM_VALUE <= '2016-12-31 00:00:00' )`
 
-// 金薇薇
+// 金巍巍
 const jinWeiWei = `SELECT 
     DISTINCT PATIENT_NO 
     FROM
@@ -117,5 +117,16 @@ const threeYearInGroup = `SELECT
     AND DISCHARGE_DATE >= '2016-01-01 00:00:00.000'
     AND DISCHARGE_DATE <= '2018-12-31 00:00:00.000'`
 
+// 三年内入组的患者
+const test = `SELECT
+    TOP 10
+    PATIENT_NO
+    FROM
+    [dbo].[PAT_VISIT]
+    WHERE
+    SD_GROUP = '1'
+    AND SD_CODE = 'YXA_O'
+    AND DISCHARGE_DATE >= '2016-01-01 00:00:00.000'
+    AND DISCHARGE_DATE <= '2018-12-31 00:00:00.000'`
 
 module.exports = jinWeiWei
