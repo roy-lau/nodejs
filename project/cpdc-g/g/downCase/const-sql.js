@@ -100,6 +100,7 @@ const tmp_beida = `SELECT PATIENT_NO FROM [dbo].[tmp_beida]`
 
 // 查询北大 胡同学的入组患者
 const pkufh_hu = `SELECT PATIENT_NO FROM [dbo].[pkufh_hu]`
+const pkufh_hu_diff = `SELECT PATIENT_NO FROM [dbo].[pkufh_hu_diff_number]`
 
 // 查询所有有糖尿病史的患者
 const tnb = `SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_020' AND SD_ITEM_VALUE='1'`
@@ -125,4 +126,4 @@ const ch17OneFU = `SELECT DISTINCT
         h.HOSPITAL_CODE= 'H015' )
     )`
 
-module.exports = ch17OneFU
+module.exports = pkufh_hu_diff

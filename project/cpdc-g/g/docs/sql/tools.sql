@@ -53,3 +53,15 @@ FROM
 	PRINT ( @SQL )
 	
 	EXEC ( @SQL )
+
+-- ----------------------------
+-- 合并多选
+-- ----------------------------
+
+SELECT
+	stuff(
+		( SELECT '+' + [CV_VALUE_TEXT] FROM [dbo].[SD_ITEM_CV_DICT] WHERE CV_CODE = 'HLYWTYM' AND CV_VALUE IN ( '2', '10' ) FOR xml path ( '' ) ),
+		1,
+		1,
+	'' 
+	);

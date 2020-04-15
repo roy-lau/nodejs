@@ -153,7 +153,7 @@ module.exports = class GenerateSheet {
             try {
                 const workbook = XLSX.readFile(xlsxFileName, {
                         cellDates: true,
-                        dateNF: 'YYYY/MM/dd'
+                        dateNF: 'YYYY-MM-dd'
                     }), // 获取表格数据
                     sheetNames = workbook.SheetNames, // 获取表格里的每个 sheet
                     worksheet = workbook.Sheets[sheetNames[0]]; // 获取第一个 sheet
