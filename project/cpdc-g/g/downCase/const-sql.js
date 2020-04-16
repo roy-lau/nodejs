@@ -126,4 +126,6 @@ const ch17OneFU = `SELECT DISTINCT
         h.HOSPITAL_CODE= 'H015' )
     )`
 
-module.exports = pkufh_hu_diff
+const id = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE PATIENT_NO='d276f2dd3e00b487'`
+
+module.exports = id

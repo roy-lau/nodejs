@@ -15,7 +15,7 @@ class DownCase {
      */
     async init () {
         try {
-            const fileName = 'pkufh_hu_diff' + Date.now() // 文件名
+            const fileName = 'test-id' + Date.now() // 文件名
             const constSQL = require("./const-sql.js")
 
             const listBySelect = await sql.query(constSQL)
@@ -107,7 +107,7 @@ class DownCase {
                     result.PATIENT_NO='${retPatVisit[i].PATIENT_NO}'
                     AND result.SD_CODE= 'YXA_O'
                     ${itemListSql}
-                    ORDER BY b.DISPLAY_ORDER`)
+                    ORDER BY RIGHT(REPLICATE(N' ', 50) + b.DISPLAY_ORDER, 50)`)
 
 
                 for (let k = 0; k < list_PAT_SD_ITEM_RESULT.length; k++) {
@@ -145,16 +145,7 @@ class DownCase {
             console.timeEnd('处理患者基本信息表')
             return retPatVisit
                 // 排序
-                .sort((a, b) => a['患者住址#YXA_O_003'] > b['患者住址#YXA_O_003'] ? 1 : -1)
-                // 脱敏
-                .map(item => {
-
-                    item['姓名'] = desensitization(item['姓名'], 1, 3)
-                    item['患者住址#YXA_O_003'] = desensitization(item['患者住址#YXA_O_003'], 3, 25)
-                    // item['主刀医师#YXA_O_005'] = item['主刀医师#YXA_O_005'] && desensitization(item['主刀医师#YXA_O_005'], 1, 3).substr(0, 2)
-
-                    return item
-                })
+                // .sort((a, b) => a['患者住址#YXA_O_003'] > b['患者住址#YXA_O_003'] ? 1 : -1)
 
         } catch (err) {
             console.error(err)
