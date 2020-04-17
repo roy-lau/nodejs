@@ -4,7 +4,7 @@
 
 'use strict';
 
-const sql = require('../dbs/sqlServer.js'),
+const sql = require('../dbs/sqlServer-t.js'),
  _ = require("lodash")
 
 
@@ -13,8 +13,7 @@ const sql = require('../dbs/sqlServer.js'),
 async function wash_YCWHFS () {
     console.info('清洗 胰肠吻合方式#YXA_O_159')
     try {
-        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_159'`),
-            rets = lists.recordset
+        const rets = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_159'`)
 
         for (let i = rets.length - 1; i >= 0; i--) {
             const element = rets[i],
@@ -52,8 +51,7 @@ async function wash_QTJWS () {
     console.info('清洗 其他既往史#YXA_O_024')
     try {
 
-        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_024'`),
-            rets = lists.recordset
+        const rets = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_024'`)
 
         for (let i = rets.length - 1; i >= 0; i--) {
             const element = rets[i],
@@ -97,8 +95,7 @@ async function wash_QTBFZ () {
     console.info('清洗 其他并发症#YXA_O_195')
     try {
 
-        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_195'`),
-            rets = lists.recordset
+        const rets = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_195'`)
 
         for (let i = rets.length - 1; i >= 0; i--) {
             const element = rets[i],
@@ -146,8 +143,7 @@ async function wash_QTHXZLFA () {
     console.info('清洗 其他后续计划治疗方案#YXA_O_314')
     try {
 
-        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_314'`),
-            rets = lists.recordset
+        const rets = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_314'`)
 
         for (let i = rets.length - 1; i >= 0; i--) {
             const element = rets[i],
@@ -182,8 +178,7 @@ async function wash_DRUG_DOSE () {
     console.info('清洗 术前化疗药物剂量#YXA_O_119 && 其他后续计划治疗药物剂量#YXA_O_303 && 是否更改治疗方案药物剂量 #YXA_O_136')
     try {
 
-        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE IN ('YXA_O_119','YXA_O_303','YXA_O_136')`),
-            rets = lists.recordset
+        const rets = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE IN ('YXA_O_119','YXA_O_303','YXA_O_136')`)
 
         for (let i = rets.length - 1; i >= 0; i--) {
             const element = rets[i],
@@ -226,8 +221,7 @@ async function wash_SWYY () {
     console.info('清洗 死亡原因#YXA_O_258')
     try {
 
-        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_FOLLOW_UP_RESULT] WHERE SD_ITEM_CODE='YXA_O_258'`),
-            rets = lists.recordset
+        const rets = await sql.query(`SELECT * FROM [dbo].[PAT_FOLLOW_UP_RESULT] WHERE SD_ITEM_CODE='YXA_O_258'`)
 
         for (let i = rets.length - 1; i >= 0; i--) {
             const element = rets[i],
@@ -267,8 +261,7 @@ async function wash_SWYY () {
 async function washFuByCT () {
     console.info('清洗 治疗前CT评价 AND 治疗后CT评价')
     try {
-        const lists = await sql.query(`SELECT FU_TIMES,TREAT_EVALUTE_FRONT,TREAT_EVALUTE_AFTER FROM [dbo].[PAT_FOLLOW_UP_TREAT]`),
-            rets = lists.recordset
+        const rets = await sql.query(`SELECT FU_TIMES,TREAT_EVALUTE_FRONT,TREAT_EVALUTE_AFTER FROM [dbo].[PAT_FOLLOW_UP_TREAT]`)
 
         for (let i = rets.length - 1; i >= 0; i--) {
             const element = rets[i],
@@ -323,8 +316,7 @@ async function washFuByCT () {
 async function washFuByDrug () {
     console.info('清洗 随访化疗药物（商品名和通用名）')
     try {
-        const lists = await sql.query(`SELECT FU_TIMES,DRUG_NAME,DRUG_NAME_TRADE FROM [dbo].[PAT_FOLLOW_UP_TREAT] WHERE TREAT_NAME='化疗'`),
-            rets = lists.recordset
+        const rets = await sql.query(`SELECT FU_TIMES,DRUG_NAME,DRUG_NAME_TRADE FROM [dbo].[PAT_FOLLOW_UP_TREAT] WHERE TREAT_NAME='化疗'`)
 
         for (let i = rets.length - 1; i >= 0; i--) {
             const element = rets[i],
@@ -373,9 +365,7 @@ async function washFuByDrug () {
 async function wash_drug_general () {
     console.info('清洗 术前术后化疗药物（通用名）')
     try {
-
-        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE IN ('YXA_O_118','YXA_O_301','YXA_O_135') AND SD_ITEM_VALUE!=''`),
-            rets = lists.recordset
+        const rets = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT_src] WHERE SD_ITEM_CODE IN ('YXA_O_118','YXA_O_301','YXA_O_135') AND SD_ITEM_VALUE!=''`)
 
         for (let i = rets.length - 1; i >= 0; i--) {
             const element = rets[i],
@@ -385,7 +375,7 @@ async function wash_drug_general () {
             console.log(delHashtag(ret), '-->', _value)
 
             // console.log(element.PATIENT_NO)
-            // await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT]  SET SD_ITEM_VALUE='${delHashtag(ret)}' WHERE PATIENT_NO='${element.PATIENT_NO}' AND SD_ITEM_CODE='${element.SD_ITEM_CODE}'`)
+            await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT]  SET SD_ITEM_VALUE='${delHashtag(ret)}' WHERE PATIENT_NO='${element.PATIENT_NO}' AND SD_ITEM_CODE='${element.SD_ITEM_CODE}'`)
 
         }
 
@@ -398,8 +388,7 @@ async function wash_drug_trade () {
     console.info('清洗 术前术后化疗药物（商品名）')
     try {
 
-        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE IN ('YXA_O_905','YXA_O_302','YXA_O_906') AND SD_ITEM_VALUE!=''`),
-            rets = lists.recordset
+        const rets = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE IN ('YXA_O_905','YXA_O_302','YXA_O_906') AND SD_ITEM_VALUE!=''`)
 
         for (let i = rets.length - 1; i >= 0; i--) {
             const element = rets[i],
@@ -422,8 +411,7 @@ async function addFolfoxFront () {
     console.info('添加术前化疗方案#YXA_O_918')
     try {
 
-        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_118' AND SD_ITEM_VALUE!=''`),
-            rets = lists.recordset
+        const rets = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_118' AND SD_ITEM_VALUE!=''`)
 
         for (let i = rets.length - 1; i >= 0; i--) {
             const element = rets[i],
@@ -445,8 +433,7 @@ async function addFolfoxAfter () {
     console.info('添加后续计划化疗方案#YXA_O_919')
     try {
 
-        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_301' AND SD_ITEM_VALUE!=''`),
-            rets = lists.recordset
+        const rets = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_301' AND SD_ITEM_VALUE!=''`)
 
         for (let i = rets.length - 1; i >= 0; i--) {
             const element = rets[i],
@@ -468,8 +455,7 @@ async function addFolfoxChange () {
     console.info('添加更改治疗方案#YXA_O_920')
     try {
 
-        const lists = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_135' AND SD_ITEM_VALUE!=''`),
-            rets = lists.recordset
+        const rets = await sql.query(`SELECT * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_135' AND SD_ITEM_VALUE!=''`)
 
         for (let i = rets.length - 1; i >= 0; i--) {
             const element = rets[i],
@@ -505,7 +491,7 @@ async function common_drug_general (_value) {
     if (/阿帕替尼|艾坦/.test(_value)) ret += '7#'
     if (/卡培他滨|希罗达|卓伦/.test(_value)) ret += '8#'
     if (/多西他赛|艾素|泰索帝/.test(_value)) ret += '9#'
-    if (/GEM|Gemcitabine|吉他西滨|吉丁他滨|吉西他|吉他滨|西他滨|择菲|泽菲|泽非|健择|健泽/i.test(_value)) ret += '10#'
+    if (/GEM|Gemcitabine|吉他西滨|吉西他滨|吉丁他滨|吉西他|吉他滨|西他滨|择菲|泽菲|泽非|健择|健泽/i.test(_value)) ret += '10#'
     if (/泰素|力扑素/.test(_value)) ret += '11#'
     if (/奥曲肽|善龙/.test(_value)) ret += '12#'
     if (/Ramucirumab|雷莫芦单抗/i.test(_value)) ret += '13#'
