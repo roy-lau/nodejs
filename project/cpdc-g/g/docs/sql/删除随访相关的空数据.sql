@@ -9,7 +9,7 @@ WHERE
 	
 -- 删除随访相关的空数据
 DELETE 
-a
+	a
 FROM
 	[dbo].[PAT_FOLLOW_UP] AS a
 	LEFT JOIN [dbo].[PAT_FOLLOW_UP_TREAT] AS b ON a.FU_TIMES= b.FU_TIMES
