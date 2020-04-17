@@ -1,6 +1,6 @@
 
 // 默认除了身份证号和患者联系方式，其他都导出
-module.exports = `AND NOT b.ITEM_CODE IN ('YXA_O_001','YXA_O_004')`
+module.exports = `AND NOT dist.ITEM_CODE IN ('YXA_O_001','YXA_O_004')`
 
 // 过滤字段
 // module.exports = `AND NOT b.ITEM_CODE IN ('YXA_O_001','YXA_O_004') AND b.ITEM_CODE IN (${fields_item_yang})`

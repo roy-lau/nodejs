@@ -11,7 +11,7 @@ const startDate16 = '2016-01-01 00:00:00.000',
     address = '上海%'
 
 
-const test = `SELECT top 1 PATIENT_NO FROM [dbo].[PAT_VISIT]`
+const test = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O'`
 
 // 查询有死亡时间的患者
 const in_die = `SELECT DISTINCT TOP 2080
@@ -131,4 +131,4 @@ const liang = `SELECT PATIENT_NO FROM [dbo].[tmp_liang]`
 
 const id = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE PATIENT_NO='d276f2dd3e00b487'`
 
-module.exports = liang
+module.exports = id
