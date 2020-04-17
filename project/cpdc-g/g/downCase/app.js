@@ -8,25 +8,13 @@ const sql = require('../dbs/sqlServer-t.js'),
 
 class DownCase {
     constructor() {
-        this.init()
-    }
-    /**
-     * 初始化 DownCase 类
-     */
-    async init () {
-        try {
-            const fileName = 'test-id' + Date.now() // 文件名
-            const constSQL = require("./const-sql.js")
-
-            const listBySelect = await sql.query(constSQL)
-
-            await this.saveXlsx(fileName, listBySelect.map(item => `'${item.PATIENT_NO}'`).join())
-
-        } catch (err) {
-            console.error(err)
-        }
-        process.exit('退出……')
-
+        
+        const constSQL = require("./const-sql.js")
+        
+        sql.query(constSQL).then(listBySelect=>{
+            const fileName = '梁总' // 文件名
+            this.saveXlsx(fileName, listBySelect.map(item => `'${item.PATIENT_NO}'`).join())
+        })
     }
     /**
      * 保存表格
@@ -55,7 +43,7 @@ class DownCase {
             }
 
             // 导出 Excel
-            XLSX.writeFile(wb, './out/' + fileName + '.xlsx');
+            XLSX.writeFile(wb, './out/' + fileName +'_'+Date.now()+ '.xlsx');
             console.log(fileName,' 下载成功！')
         } catch (e) {
             console.error('saveXlsx ERR： ', e)
@@ -107,7 +95,7 @@ class DownCase {
                     result.PATIENT_NO='${retPatVisit[i].PATIENT_NO}'
                     AND result.SD_CODE= 'YXA_O'
                     ${itemListSql}
-                    ORDER BY RIGHT(REPLICATE(N' ', 50) + b.DISPLAY_ORDER, 50)`)
+                    ORDER BY RIGHT(REPLICATE(N' ', 10) + b.DISPLAY_ORDER, 10)`)
 
 
                 for (let k = 0; k < list_PAT_SD_ITEM_RESULT.length; k++) {
