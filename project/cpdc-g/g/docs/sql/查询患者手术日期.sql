@@ -1,6 +1,0 @@
-SELECT
-	* 
-FROM
-	[dbo].[PAT_SD_ITEM_RESULT] AS a
-WHERE
-	a.SD_ITEM_CODE = 'YXA_O_161'
