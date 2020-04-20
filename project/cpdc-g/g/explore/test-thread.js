@@ -13,10 +13,10 @@ function firstTest() {
 if (isMainThread) {
     const now = Date.now();
 
-    const worker1 = new Worker(__filename, { workerData: { say: '我是 1' } })
+    const worker1 = new Worker(__filename, { workerData: { say: '我是 1'+now } })
     worker1.on("message", (links) => { console.log(links) });
 
-    const worker2 = new Worker(__filename, { workerData: { say: '我是 2' } })
+    const worker2 = new Worker(__filename, { workerData: { say: '我是 2'+now } })
     worker2.on("message", (links) => { console.log(links) });
 
     const worker3 = new Worker(__filename, { workerData: { say: '我是 3' } })
@@ -36,5 +36,6 @@ if (isMainThread) {
     console.log('---', number)
 
     parentPort.postMessage('联系主线程')
+    console.log("结束了")
 
 }
