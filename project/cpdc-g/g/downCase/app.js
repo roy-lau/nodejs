@@ -3,53 +3,36 @@
  */
 'use strict';
 const sql = require('../dbs/sqlServer-t.js'),
-    XLSX = require("xlsx")
+    XLSX = require("xlsx"),
+    X_utils = XLSX.utils
 // { desensitization } = require('./utils')
 
+// 创建一个 workbook 工作薄(Excel)
+const workBook = X_utils.book_new()
 
 function startup () {
     process.title = '下载病历'
     const constSQL = require("./const-sql.js")
 
-    sql.query(constSQL).then(listBySelect => {
+    sql.query(constSQL).then(async listBySelect => {
         const fileName = 'dev_test' // 文件名
-        saveXlsx(fileName, listBySelect.map(item => `'${item.PATIENT_NO}'`).join())
+        const patList = listBySelect.map(item => `'${item.PATIENT_NO}'`).join()
+
+        await query_PAT_VISIT(patList)
+        await query_PAT_DRAINAGE_TUBE(patList)
+        await query_PAT_FOLLOW_UP_RESULT(patList)
+        await query_PAT_FOLLOW_UP_TREAT(patList)
+
+
+        // 导出 Excel
+        XLSX.writeFile(workBook, './out/' + fileName + '_' + Date.now() + '.xlsx');
+        console.log(fileName, ' 下载成功！')
+        // process.exit('退出……')
+    }).catch(err=>{
+        console.error("query or save ERR: ",err)
     })
 }
-/**
- * 保存表格
- * @param  {String} fileName  文件名
- * @param  {Array}  numberArr 患者 数组
- * @return {[type]}           [description]
- */
-async function saveXlsx (fileName, numberArr) {
-    try {
-        const
-            PAT_VISIT = await query_PAT_VISIT(numberArr),
-            patJsonSheet = XLSX.utils.json_to_sheet(PAT_VISIT),
-            PAT_DRAINAGE_TUBE = await query_PAT_DRAINAGE_TUBE(numberArr),
-            PAT_FOLLOW_UP_RESULT = await query_PAT_FOLLOW_UP_RESULT(numberArr),
-            PAT_FOLLOW_UP_TREAT = await query_PAT_FOLLOW_UP_TREAT(numberArr)
 
-        // 构建 workbook 对象
-        let wb = {
-            SheetNames: ['基本信息', '引流管', '随访', '化疗'],
-            Sheets: {
-                '基本信息': await patAddComment(patJsonSheet),
-                '引流管': XLSX.utils.json_to_sheet(PAT_DRAINAGE_TUBE),
-                '随访': XLSX.utils.json_to_sheet(PAT_FOLLOW_UP_RESULT),
-                '化疗': XLSX.utils.json_to_sheet(PAT_FOLLOW_UP_TREAT)
-            }
-            // Styles:workbook['Styles']
-        }
-        // 导出 Excel
-        XLSX.writeFile(wb, './out/' + fileName + '_' + Date.now() + '.xlsx');
-        console.log(fileName, ' 下载成功！')
-        process.exit('退出……')
-    } catch (e) {
-        console.error('saveXlsx ERR： ', e)
-    }
-}
 /**
  * 给患者基本信息加备注
  * 
@@ -60,7 +43,7 @@ async function patAddComment (patJsonSheet) {
     for (const key in patJsonSheet) {
         if (patJsonSheet.hasOwnProperty(key)) {
             const element = patJsonSheet[key];
-            if (key.endsWith(1)) { // 找出第一行（表头）
+            if (Array.isArray(X_utils.split_cell(key)) && X_utils.split_cell(key)[1] == '1') { // 找出第一行（表头）
                 const itemCode = element.v.split('#')[1]
                 if (itemCode) {
                     const ret = await sql.query(`SELECT
@@ -87,7 +70,10 @@ async function patAddComment (patJsonSheet) {
     console.timeEnd('基本信息表头添加备注')
     return patJsonSheet
 }
-// 下载基本信息表
+/**
+ * 下载基本信息表
+ * @param {Sting} patient_no 患者id
+ */
 async function query_PAT_VISIT (patient_no) {
     console.time('处理患者基本信息表')
     try {
@@ -120,17 +106,16 @@ async function query_PAT_VISIT (patient_no) {
                     result.PATIENT_NO,
                     dist.ITEM_NAME+ isnull( '(' + dist.ITEM_UNIT+ ')', '' ) + '#' + dist.ITEM_CODE AS 'name',
                     dist.ITEM_CODE,
-                    'ret_value' = ( CASE result.SD_ITEM_VALUE WHEN c.CV_VALUE THEN c.CV_VALUE_TEXT ELSE result.SD_ITEM_VALUE END ),
+                    'item_value' = ( CASE result.SD_ITEM_VALUE WHEN c.CV_VALUE THEN c.CV_VALUE_TEXT ELSE result.SD_ITEM_VALUE END ),
                     dist.ITEM_FORMAT,
                     dist.ITEM_CV_CODE
                 FROM
                     [dbo].[PAT_SD_ITEM_RESULT] AS result
-                    LEFT JOIN [dbo].[SD_ITEM_DICT] AS dist ON result.SD_ITEM_CODE= dist.ITEM_CODE
+                    LEFT JOIN [dbo].[SD_ITEM_DICT] AS dist ON result.SD_ITEM_CODE= dist.ITEM_CODE AND result.PATIENT_NO='${retPatVisit[i].PATIENT_NO}'
                     LEFT JOIN [dbo].[SD_ITEM_CV_DICT] AS c ON dist.ITEM_CV_CODE= c.CV_CODE
                     AND result.SD_ITEM_VALUE= c.CV_VALUE
                 WHERE
-                    result.PATIENT_NO='${retPatVisit[i].PATIENT_NO}'
-                    AND result.SD_CODE= 'YXA_O'
+                    result.SD_CODE= 'YXA_O'
                     ${itemListSql}
                     ORDER BY RIGHT(REPLICATE(N' ', 10) + dist.DISPLAY_ORDER, 10)`)
 
@@ -146,23 +131,24 @@ async function query_PAT_VISIT (patient_no) {
                     if (result.ITEM_FORMAT == 6) {
                         // console.log(result)
                         // 将多选值 已井号拆分
-                        const valueArr = result.ret_value.split('#'),
+                        const valueArr = result.item_value.split('#'),
                             _valLen = valueArr.length
                         // 拆分后的数组长度大于 0
                         if (_valLen > 1) {
-                            result.ret_value = await handleMultipleValue(valueArr, _valLen, result.ITEM_CV_CODE)
+                            result.item_value = await handleMultipleValue(valueArr, _valLen, result.ITEM_CV_CODE)
                         }
                     }
 
-                    retPatVisit[i][result.name] = result.ret_value
+                    retPatVisit[i][result.name] = result.item_value
                 }
             }
         }
+        // 排序
+        // retPatVisit.sort((a, b) => a['患者住址#YXA_O_003'] > b['患者住址#YXA_O_003'] ? 1 : -1)
 
         console.timeEnd('处理患者基本信息表')
-        return retPatVisit
-        // 排序
-        // .sort((a, b) => a['患者住址#YXA_O_003'] > b['患者住址#YXA_O_003'] ? 1 : -1)
+        const RetPatVisit = await patAddComment(X_utils.json_to_sheet(retPatVisit))
+        X_utils.book_append_sheet(workBook, RetPatVisit, "基本信息");
 
     } catch (err) {
         console.error(err)
@@ -190,7 +176,10 @@ async function handleMultipleValue (multipleValue, len, cv_code) {
     })
     return str
 }
-// 下载引流管信息表
+/**
+ * 下载引流管信息表
+ * @param {Sting} patient_no 患者id
+ */
 async function query_PAT_DRAINAGE_TUBE (patient_no) {
     console.time('处理引流管表')
     try {
@@ -211,14 +200,16 @@ async function query_PAT_DRAINAGE_TUBE (patient_no) {
                 WHERE PATIENT_NO IN (${patient_no})`)
 
         console.timeEnd('处理引流管表')
-        return list_PAT_DRAINAGE_TUBE
+        X_utils.book_append_sheet(workBook, X_utils.json_to_sheet(list_PAT_DRAINAGE_TUBE), "引流管");
 
     } catch (err) {
         console.error(err)
     }
 }
-
-// 下载随访信息
+/**
+ * 下载随访信息
+ * @param {Sting} patient_no 患者id
+ */
 async function query_PAT_FOLLOW_UP_RESULT (patient_no) {
     console.time('处理随访表')
     try {
@@ -285,13 +276,17 @@ async function query_PAT_FOLLOW_UP_RESULT (patient_no) {
         }
 
         console.timeEnd('处理随访表')
-        return retPatFollowUP
+        X_utils.book_append_sheet(workBook, X_utils.json_to_sheet(retPatFollowUP), "随访");
 
     } catch (err) {
         console.error(err)
     }
 }
-// 下载随访化疗信息
+
+/**
+ * 下载随访化疗信息
+ * @param {Sting} patient_no 患者id
+ */
 async function query_PAT_FOLLOW_UP_TREAT (patient_no) {
     console.time('处理化疗信息表')
     try {
@@ -319,7 +314,7 @@ async function query_PAT_FOLLOW_UP_TREAT (patient_no) {
                 WHERE PATIENT_NO IN (${patient_no})`)
 
         console.timeEnd('处理化疗信息表')
-        return ret_PAT_FOLLOW_UP_TREAT
+        X_utils.book_append_sheet(workBook, X_utils.json_to_sheet(ret_PAT_FOLLOW_UP_TREAT), "随访化疗");
 
     } catch (err) {
         console.error(err)
