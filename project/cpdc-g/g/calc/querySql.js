@@ -105,6 +105,7 @@ const groupInFolluw = `SELECT
     AND FOLLOW_UP_MONTHS!=''
     AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )`
 
+const guangdong = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE HOSPITAL_ID='54bc034b46af0a8d' AND SD_CODE='YXA_O'`
 // 三年内入组的患者
 const threeYearInGroup = `SELECT
     TOP 5000
@@ -117,16 +118,4 @@ const threeYearInGroup = `SELECT
     AND DISCHARGE_DATE >= '2016-01-01 00:00:00.000'
     AND DISCHARGE_DATE <= '2018-12-31 00:00:00.000'`
 
-// 三年内入组的患者
-const test = `SELECT
-    TOP 10
-    PATIENT_NO
-    FROM
-    [dbo].[PAT_VISIT]
-    WHERE
-    SD_GROUP = '1'
-    AND SD_CODE = 'YXA_O'
-    AND DISCHARGE_DATE >= '2016-01-01 00:00:00.000'
-    AND DISCHARGE_DATE <= '2018-12-31 00:00:00.000'`
-
-module.exports = jinWeiWei
+module.exports = guangdong

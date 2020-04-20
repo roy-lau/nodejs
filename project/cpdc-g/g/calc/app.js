@@ -21,7 +21,6 @@ async function saveCalcResult (fileName) {
 
         _.forEach(OBJ_CALC, (value, key) => {
             data.push({ '数据项': key, '完整率': value })
-            _num += Number(value.replace("%", ""))
         });
         // TODO： 计算有误，后期处理
         // const totalPercent = ((data.length * 10000) / _num ).toFixed(2) + '%'
@@ -65,7 +64,7 @@ async function handlePatFollowUpResult (index, patNo) {
 					LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS result
 					ON dict.ITEM_CODE=result.SD_ITEM_CODE
 					AND result.PATIENT_NO='${patNo}'
-                    ORDER BY dict.DISPLAY_ORDER`)
+                    ORDER BY dict.DISPLAY_ORDER+0`)
 
         // console.log(retPatFollowUpResult)
         for (let i = 0; i < retPatFollowUpResult.length; i++) {
@@ -92,7 +91,7 @@ async function initFollowDist () {
                     dist.ITEM_NAME
                 FROM
                     [dbo].[FU_SD_ITEM_DICT] AS dist
-                    ORDER BY dist.DISPLAY_ORDER`)
+                    ORDER BY dist.DISPLAY_ORDER+0`)
         // console.log(retPatFollowDist)
         let followDist = {}
         for (let i = 0; i < retPatFollowDist.length; i++) {
@@ -293,7 +292,7 @@ async function handlePatItemResult (index, patNo) {
                 WHERE
                     dict.SD_CODE = 'YXA_O'
                 ORDER BY
-                    DISPLAY_ORDER`),
+                    DISPLAY_ORDER+0`),
             _lenPatItemResult = retPatItemResult.length
 
         // console.log(key,index,retPatItemResult)
@@ -342,7 +341,7 @@ async function initItemDist () {
     console.info('初始化 数据项结果表')
     try {
 
-        const retPatItemDist = await sql.query(`SELECT ITEM_CODE,ITEM_NAME FROM [dbo].[SD_ITEM_DICT] WHERE SD_CODE = 'YXA_O' ORDER BY DISPLAY_ORDER`)
+        const retPatItemDist = await sql.query(`SELECT ITEM_CODE,ITEM_NAME FROM [dbo].[SD_ITEM_DICT] WHERE SD_CODE = 'YXA_O' ORDER BY DISPLAY_ORDER+0`)
 
         // console.log(retItemDist)
         let patItemDist = {}
@@ -413,14 +412,14 @@ function startup () {
 
     sql.query(querySql).then(async retPatientNo => {
         const len = retPatientNo.length
-        if(len<1) throw "sql.query 查询结果小于 0"
+        if (len < 1) throw "sql.query 查询结果小于 0"
         let bar = new ProgressBar('  进度 [:bar] :current/:total :percent :etas', {
             complete: '=', // 完成
             incomplete: ' ', // 未完成
             width: 50, // 宽度
             total: len // 总数
-          });
-          
+        });
+
         for (let index = 0; index < len; index++) {
             const element = retPatientNo[index],
                 patNo = element.PATIENT_NO;
@@ -437,7 +436,7 @@ function startup () {
 
         }
 
-        await saveCalcResult('金巍巍')
+        await saveCalcResult('广东省人民')
         console.timeEnd("共用时")
     })
 }
