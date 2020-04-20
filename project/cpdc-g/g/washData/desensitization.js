@@ -1,10 +1,9 @@
 /**
- * 下载病例 -- 百济
- * 修改最大堆栈 node --max-old-space-size=4096 app-baiji.js
+ * 患者信息脱敏
+ * 修改最大堆栈 node --max-old-space-size=4096 desensitization.js
  */
 'use strict';
 const sql = require('../dbs/SqlServer-t.js')
-// const sql = require('../dbs/sqlServer.js')
 
 
 /**
@@ -24,7 +23,7 @@ const sql = require('../dbs/SqlServer-t.js')
  *
  */
 
-function desensitization(str, beginStr, endStr,showEnd) {
+function desensitization (str, beginStr, endStr, showEnd) {
     if (!str) return
     try {
 
@@ -36,7 +35,7 @@ function desensitization(str, beginStr, endStr,showEnd) {
         for (let i = 0; i < endStr - beginStr; i++) {
             _str = _str + '*';
         }
-        _str = leftStr + _str + (showEnd?rightStr:'');
+        _str = leftStr + _str + (showEnd ? rightStr : '');
         return _str;
 
     } catch (error) {
@@ -45,77 +44,36 @@ function desensitization(str, beginStr, endStr,showEnd) {
 }
 const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
-
 /**
- * 清洗 需要脱敏的数据
- * @return {[type]} [description]
+ * 脱敏 SQL
  */
-async function desensitization_PAT_VISIT() {
-    console.info('脱敏 患者患者姓名')
+async function desensitizationSQL () {
     try {
-        const lists = await sql.query(`SELECT TOP 2 PATIENT_NO,NAME FROM [dbo].[PAT_VISIT]`)
-console.info(lists)
-        for (let i = lists.length - 1; i >= 0; i--) {
-            const element = lists
-            [i]
-            // await sleep(500) // 每次循环休息 50ms
-            // console.log(element.NAME)
-            // await sql.query(`UPDATE [dbo].[PAT_VISIT] SET NAME='${desensitization(element.NAME,1, 3)}' WHERE PATIENT_NO='${element.PATIENT_NO}'`)
-
-        }
+        console.time()
+        // 脱敏患者姓名
+        await sql.query(`UPDATE [dbo].[PAT_VISIT] SET NAME = REPLACE( NAME, SUBSTRING ( NAME, 2, 3 ), '**' ) WHERE NAME != ''`)
+        // 脱敏身份证
+        await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT] 
+                            SET SD_ITEM_VALUE = REPLACE( SD_ITEM_VALUE, SUBSTRING ( SD_ITEM_VALUE, 4, LEN( SD_ITEM_VALUE ) -1 ), '**************' ) 
+                        WHERE SD_ITEM_CODE = 'YXA_O_001' AND SD_ITEM_VALUE != ''`)
+        // 脱敏地址
+        await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT] 
+                            SET SD_ITEM_VALUE = REPLACE( SD_ITEM_VALUE, SUBSTRING ( SD_ITEM_VALUE, 4, LEN( SD_ITEM_VALUE ) ), '**********' ) 
+                        WHERE SD_ITEM_CODE = 'YXA_O_003' AND SD_ITEM_VALUE != '' `)
+        // 脱敏手机号
+        await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT] 
+                            SET SD_ITEM_VALUE = REPLACE( SD_ITEM_VALUE, SUBSTRING ( SD_ITEM_VALUE, 4, 4 ), '****' ) 
+                        WHERE SD_ITEM_CODE = 'YXA_O_004' AND SD_ITEM_VALUE != '' `)
+        // 脱敏主刀医师        
+        await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT] 
+                            SET SD_ITEM_VALUE = REPLACE( SD_ITEM_VALUE, SUBSTRING ( SD_ITEM_VALUE, 2, LEN( SD_ITEM_VALUE ) ), '**' ) 
+                        WHERE SD_ITEM_CODE = 'YXA_O_005' AND SD_ITEM_VALUE != ''`)
+        console.timeEnd()
 
     } catch (err) {
-        console.error('脱敏 患者患者姓名 ERR ', err)
+        console.error('脱敏 ERR ', err)
     }
 }
 
-async function desensitization_PAT_SD_ITEM_RESULT() {
-    console.info('脱敏 患者患者基本数据项表')
-    try {
-    	// YXA_O_001 身份证号
-    	// YXA_O_003 地址
-    	// YXA_O_004 联系方式
-    	// YXA_O_005 主刀医师
-
-        const lists = await sql.query(`SELECT PATIENT_NO,SD_ITEM_CODE,SD_ITEM_VALUE FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE IN ('YXA_O_001','YXA_O_003','YXA_O_004','YXA_O_005')`),
-            rets = lists.recordset
-
-        for (let i = rets.length - 1; i >= 0; i--) {
-            const element = rets[i]
-
-            await sleep(500) // 每次循环休息 50ms
-            console.log(i)
-            switch(element.SD_ITEM_CODE){
-            	case 'YXA_O_001':
-		            await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT] SET SD_ITEM_VALUE='${desensitization(element.SD_ITEM_VALUE,4,18)}' WHERE PATIENT_NO='${element.PATIENT_NO}' AND SD_ITEM_CODE='${element.SD_ITEM_CODE}'`)
-					break;
-				case 'YXA_O_003':
-		            await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT] SET SD_ITEM_VALUE='${desensitization(element.SD_ITEM_VALUE,3,15)}' WHERE PATIENT_NO='${element.PATIENT_NO}' AND SD_ITEM_CODE='${element.SD_ITEM_CODE}'`)
-					break;
-				case 'YXA_O_004':
-		            await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT] SET SD_ITEM_VALUE='${desensitization(element.SD_ITEM_VALUE,3,11)}' WHERE PATIENT_NO='${element.PATIENT_NO}' AND SD_ITEM_CODE='${element.SD_ITEM_CODE}'`)
-					break;
-				case 'YXA_O_005':
-		            await sql.query(`UPDATE [dbo].[PAT_SD_ITEM_RESULT] SET SD_ITEM_VALUE='${desensitization(element.SD_ITEM_VALUE,1,3)}' WHERE PATIENT_NO='${element.PATIENT_NO}' AND SD_ITEM_CODE='${element.SD_ITEM_CODE}'`)
-					break;
-				default:
-					console.error(" 没有CODE！！！")
-            }
-
-        }
-
-    } catch (err) {
-        console.error('脱敏 患者患者基本数据项表 ERR ', err)
-    }
-}
-
-async function main() {
-    console.time("共用时")
-    await desensitization_PAT_VISIT()
-    // await desensitization_PAT_SD_ITEM_RESULT()
-    console.timeEnd("共用时")
-
-    process.exit('退出……')
-}
-
-main()
+desensitizationSQL()
+process.exit('退出……')
