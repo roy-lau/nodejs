@@ -25,7 +25,7 @@ function startup () {
 
 
         // 导出 Excel
-        XLSX.writeFile(workBook, './out/' + fileName + '_' + Date.now() + '.xlsx');
+        XLSX.writeFile(workBook, './out/' + fileName + '_' + Date.now() + '.xlsx',{compression:true});
         console.log(fileName, ' 下载成功！')
         // process.exit('退出……')
     }).catch(err=>{
