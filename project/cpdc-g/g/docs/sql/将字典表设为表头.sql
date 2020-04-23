@@ -76,7 +76,7 @@ DECLARE @id AS NVARCHAR ( 50 ),
 @val AS NVARCHAR ( 50 ),
 @name AS NVARCHAR ( 50 );
 WHILE
-		EXISTS ( SELECT ret_v FROM # ret ) BEGIN-- 也可以使用top 1
+		EXISTS ( SELECT ret_v FROM #ret ) BEGIN-- 也可以使用top 1
 			
 		SET ROWCOUNT 1 
 		SELECT
