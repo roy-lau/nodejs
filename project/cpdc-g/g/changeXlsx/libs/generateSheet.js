@@ -51,7 +51,6 @@ module.exports = class GenerateSheet {
         console.info("sheet5 随访日期时长！")
         let filtertableData = filterKeys(tableData.source, 3)
 
-        // saveFile(JSON.stringify(filtertableData, null, 2), "out/2-1.filtertableData.json")
         tableData.sheet_PAT_FOLLOW_UP = filtertableData.map(item => {
             return {
                 "SD_CODE": "YXA_O",
@@ -75,7 +74,6 @@ module.exports = class GenerateSheet {
         console.info("sheet3 处理引流管！")
         let filtertableData = filterKeys(tableData.source, 2)
 
-        // saveFile(JSON.stringify(filtertableData, null, 2), "out/2-1.filtertableData.json")
         tableData.sheet_PAT_DRAINAGE_TUBE = filtertableData.map(item => {
             return {
                 "SD_CODE": "YXA_O",
@@ -182,34 +180,4 @@ module.exports = class GenerateSheet {
     }
 
 
-}
-
-
-
-
-
-/**
- * 保存文件
- * @param  {[type]} data     文件内容
- * @param  {String} fileName 文件名
- * @return {[type]}          [description]
- */
-function saveFile(data, fileName = "tmp.json") {
-    // 创建一个可以写入的流，写入到文件 out.txt 中
-    const writerStream = fs.createWriteStream(fileName);
-    // 使用 utf8 编码写入数据
-    writerStream.write(data, 'UTF8');
-
-    // 标记文件末尾
-    writerStream.end();
-
-    // 处理流事件 --> data, end, and error
-    writerStream.on('finish', function() {
-        console.log(fileName, "写入完成。");
-        process.exit()
-    });
-
-    writerStream.on('error', function(err) {
-        console.log(err.stack);
-    });
 }
