@@ -5,10 +5,7 @@ const GenerateSheet = require('./libs/generateSheet.js')
 
 
 // const filterFile = path.join(__dirname, './input/demo.xlsx')
-// const filterFile = path.join(__dirname,'./input/瑞金_补录_含随访_2016——整理.xlsx')
-// const filterFile = path.join(__dirname, './input/瑞金_补录_含随访_2017-2018.6——整理.xlsx')
-const filterFile = path.join(__dirname, './input/CPDC_上海长海医院_2019年胰腺癌数据——整理.xlsx')
-// const filterFile = path.join(__dirname, './input/胰腺癌单病种数据元2019.5-12.xlsx')
+const filterFile = path.join(__dirname, './input/胰腺癌单病种数据元2020.1-3——整理.xlsx')
 const generateSheet = new GenerateSheet()
 
 

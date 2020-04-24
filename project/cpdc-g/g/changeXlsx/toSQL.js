@@ -5,7 +5,7 @@
 const XLSX = require("xlsx")
 const fs = require('fs-extra')
 
-const FILE_NAME = "./out/长海19年诊治"
+const FILE_NAME = "./out/瑞金20年1-3月——完成"
 const workbook = XLSX.readFile(FILE_NAME+'.xlsx',{ cellDates: true,dateNF:'YYYY-MM-dd'});
 
 // 获取 Excel 中所有表名
