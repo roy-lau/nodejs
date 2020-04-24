@@ -1,4 +1,5 @@
 
+
 -- 计算各医院的患者分期
 SELECT
     [HOSPITAL_CODE],
