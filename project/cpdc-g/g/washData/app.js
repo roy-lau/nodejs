@@ -446,7 +446,7 @@ async function addFolfoxAfter () {
         }
 
     } catch (err) {
-        console.error('添加后续计划化疗方案#YXA_O_918 ERR ', err)
+        console.error('添加后续计划化疗方案#YXA_O_919 ERR ', err)
     }
 }
 

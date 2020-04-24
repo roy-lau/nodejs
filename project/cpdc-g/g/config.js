@@ -29,6 +29,7 @@ module.exports = {
         },
         options: {
             // database: 'sdr',
+            // database: 'RYCPDC_C20200424',
             database: 'RYCPDC_C20191111new',
             encrypt: false
         }
