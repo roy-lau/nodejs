@@ -130,14 +130,16 @@ class PatternData {
      */
     async addPatNo (item) {
         try {
+            if(item.PATIENT_NO) return // 如果已经有 PATIENT_NO，万事皆休
+
             let patId = item['病案号'] || item['患者ID']
             if (!patId) {
                 console.error("病案号为空，无法辨别如何增加 PATIENT_NO");
                 return;
             }
 
-            if (item.PATIENT_NO) { // PATIENT_NO 能从数据库中查到（修改）
-                const list = await sql.query(`SELECT * FROM [dbo].[PAT_VISIT] WHERE PATIENT_ID=${patId} AND SD_CODE='YXA_O'`)
+            const list = await sql.query(`SELECT * FROM [dbo].[PAT_VISIT] WHERE PATIENT_ID='${patId}' AND SD_CODE='YXA_O'`)
+            if (list.length>0) { // PATIENT_NO 能从数据库中查到（修改）
                 item.PATIENT_NO = list[0].PATIENT_NO
             } else {// PATIENT_NO 不能从数据库中查到（新增）
                 let _uuid4 = uuid.v4().replace(/-/g, '')

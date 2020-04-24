@@ -5,7 +5,7 @@
 const XLSX = require("xlsx")
 const fs = require('fs-extra')
 
-const FILE_NAME = "./out/瑞金20年1-3月——完成"
+const FILE_NAME = "./out/OK_1587721609741"
 const workbook = XLSX.readFile(FILE_NAME+'.xlsx',{ cellDates: true,dateNF:'YYYY-MM-dd'});
 
 // 获取 Excel 中所有表名
@@ -129,34 +129,6 @@ function generate_PAT_FOLLOW_UP_TREAT() {
         SQL += `INSERT INTO PAT_FOLLOW_UP_TREAT(SD_CODE,PATIENT_NO,FU_TIMES,TREAT_NAME,DRUG_DOSE,TREAT_EFFECT,TREAT_COST,CA199_FRONT,CEA_FRONT,CA125_FRONT,TREAT_EVALUTE_FRONT,CA199_AFTER,CEA_AFTER,CA125_AFTER,TREAT_EVALUTE_AFTER,CREATE_DATE_TIME,TREAT_CYCLE,DRUG_NAME_TRADE) VALUES ('${item.SD_CODE}','${item.PATIENT_NO}','${item.FU_TIMES}','${item.TREAT_NAME}','${item.DRUG_NAME}','${item.DRUG_DOSE}','${item.TREAT_METHOD}','${item.TREAT_EFFECT}','${item.TREAT_COST}','${item.CA199_FRONT}','${item.CEA_FRONT}','${item.CA125_FRONT}','${item.TREAT_EVALUTE_FRONT}','${item.CA199_AFTER}','${item.CEA_AFTER}','${item.TREAT_EVALUTE_AFTER}','${item.CREATE_DATE_TIME}','${item.TREAT_CYCLE}','${item.DRUG_NAME_TRADE}');\n`
         // }
     })
-}
-
-
-
-/**
- * 保存文件
- * @param  {[type]} data     [description]
- * @param  {String} fileName [description]
- * @return {[type]}          [description]
- */
-function saveFile(data, fileName = 'db') {
-    // 创建一个可以写入的流，写入到文件中
-    let writerStream = fs.createWriteStream(fileName+'.sql');
-
-    // 使用 utf8 编码写入数据
-    writerStream.write(data, 'UTF8');
-
-    // 标记文件末尾
-    writerStream.end();
-
-    // 处理流事件 --> data, end, and error
-    writerStream.on('finish', function() {
-        console.log(fileName+"写入完成。");
-    });
-
-    writerStream.on('error', function(err) {
-        console.log(err.stack);
-    });
 }
 
 generate_PAT_VISIT()
