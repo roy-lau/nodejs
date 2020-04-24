@@ -7,7 +7,7 @@ const path = require('path'),
     ProgressBar = require('progress'),
     uuid = require("uuid");
 
-const filePath = path.join(__dirname, './input/demo.xlsx')
+const filePath = path.join(__dirname, './input/2019年01月-4月.xlsx')
 
 class PatternData {
     constructor(filePath) {
@@ -54,8 +54,8 @@ class PatternData {
         });
         let patVistArr = [],
             patItemArr = [],
-            gDraingaeTube,
-            gfollowUp
+            draingaeTubeArr = [{}],
+            followUpArr = [{}]
         for (let i = 0; i < lists.length; i++) {
             const items = lists[i]
             await this.addPatNo(items)
@@ -90,7 +90,7 @@ class PatternData {
                     } else if (len === 3) { // 两个 # 号(引流管)
                         // 表头ID（只有引流管有）
                         const titleId = keys[2]
-                        gDraingaeTube = this.generateDraingaeTube(items, cellData, titleCode, titleId)
+                        draingaeTubeArr = this.generateDraingaeTube(items, cellData, titleCode, titleId)
                     }
 
                 } else if (title.indexOf("@") > -1) { // 随访相关
@@ -100,7 +100,7 @@ class PatternData {
                         titleCode = keys[1], // 表头 code （对应数据项code）
                         titleId = keys[2] // 表头ID
                     let cellData = items[title] // 单元格数据
-                    gfollowUp = this.generatFollowUp(items, cellData, titleCode, titleId)
+                    followUpArr = this.generatFollowUp(items, cellData, titleCode, titleId)
 
                 } else { // 没有 井号 (基本信息和特殊情况)
 
@@ -111,14 +111,15 @@ class PatternData {
         // 插入 sheet
         X_utils.book_append_sheet(this.wb, XLSX.utils.json_to_sheet(patVistArr), "PAT_VISIT")
         X_utils.book_append_sheet(this.wb, XLSX.utils.json_to_sheet(patItemArr), "PAT_SD_ITEM_RESULT")
-        X_utils.book_append_sheet(this.wb, [{
-            'HOSPITAL_CODE': null,
-            'HOSPITAL_NAME': null
-        }], "HOSPITAL_INFO")
-        X_utils.book_append_sheet(this.wb, XLSX.utils.json_to_sheet(this.endDraingaeTubeSheet(gDraingaeTube)), "PAT_DRAINAGE_TUBE")
-        X_utils.book_append_sheet(this.wb, XLSX.utils.json_to_sheet(this.endFollowUp(gfollowUp)), "PAT_FOLLOW_UP")
+        X_utils.book_append_sheet(this.wb, XLSX.utils.json_to_sheet([{
+            'HOSPITAL_CODE': '',
+            'HOSPITAL_NAME': ''
+        }]), "HOSPITAL_INFO")
+        X_utils.book_append_sheet(this.wb, XLSX.utils.json_to_sheet(this.endDraingaeTubeSheet(draingaeTubeArr)), "PAT_DRAINAGE_TUBE")
+        X_utils.book_append_sheet(this.wb, XLSX.utils.json_to_sheet(this.endFollowUp(followUpArr)), "PAT_FOLLOW_UP")
+
         // 保存表格
-        XLSX.writeFile(this.wb, path.join(__dirname, './out/OK_'+Date.now()+'.xlsx'), { compression: true });
+        XLSX.writeFile(this.wb, path.join(__dirname, './out/OK_' + Date.now() + '.xlsx'), { compression: true });
     }
 
     /**
@@ -129,13 +130,14 @@ class PatternData {
      */
     async addPatNo (item) {
         try {
-            if (!item['病案号']) {
+            let patId = item['病案号'] || item['患者ID']
+            if (!patId) {
                 console.error("病案号为空，无法辨别如何增加 PATIENT_NO");
                 return;
             }
 
             if (item.PATIENT_NO) { // PATIENT_NO 能从数据库中查到（修改）
-                const list = await sql.query(`SELECT * FROM [dbo].[PAT_VISIT] WHERE PATIENT_ID=${item['病案号']} AND SD_CODE='YXA_O'`)
+                const list = await sql.query(`SELECT * FROM [dbo].[PAT_VISIT] WHERE PATIENT_ID=${patId} AND SD_CODE='YXA_O'`)
                 item.PATIENT_NO = list[0].PATIENT_NO
             } else {// PATIENT_NO 不能从数据库中查到（新增）
                 let _uuid4 = uuid.v4().replace(/-/g, '')
@@ -290,7 +292,7 @@ class PatternData {
         }
         return this.fu_objArr
     }
-    
+
     /**
      * 整合随访时间数据(只在最后一次触发)
      * @param  {[type]} tableData [description]
