@@ -213,26 +213,29 @@ async function handlePatFollowUp (index, patNo) {
     try {
 
         const retPatFollowUp = await sql.query(`SELECT
-				-- PATIENT_NO,
-				FOLLOW_UP_DATE,
-				FOLLOW_UP_MONTHS
-			FROM
-				[dbo].[PAT_FOLLOW_UP]
-			WHERE
-				PATIENT_NO= '${patNo}'`),
-            _followTotal = retPatFollowUp.length
+                -- a.PATIENT_NO,
+                DATEDIFF(
+                    YY,
+                    CONVERT (DATE, a.SD_ITEM_VALUE ),
+                    CONVERT (DATE, ISNULL(b.SD_ITEM_VALUE, GETDATE()) )
+                    )  AS 'fu_counted',
+                    (SELECT COUNT(PATIENT_NO) FROM [dbo].[PAT_FOLLOW_UP] WHERE PATIENT_NO= a.PATIENT_NO AND FOLLOW_UP_DATE!='') AS 'fu_date_count',
+                    (SELECT COUNT(PATIENT_NO) FROM [dbo].[PAT_FOLLOW_UP] WHERE PATIENT_NO= a.PATIENT_NO AND FOLLOW_UP_MONTHS!='') AS 'fu_month_count'
+                FROM
+                    [dbo].[PAT_SD_ITEM_RESULT] AS a
+                    LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS b ON b.SD_ITEM_CODE = 'YXA_O_257' 
+                    AND b.SD_ITEM_VALUE != '' 
+                    AND a.PATIENT_NO= b.PATIENT_NO 
+                WHERE
+                    a.SD_ITEM_CODE = 'YXA_O_161' 
+                    AND a.SD_ITEM_VALUE != '' 
+                    AND a.PATIENT_NO='${patNo}'`),
+            _followTotal = retPatFollowUp[0]
 
-        // console.log(retPatFollowUp)
-        for (let i = 0; i < _followTotal; i++) {
-            const _item = retPatFollowUp[i]
-            follow_total += 1
-            if (_item.FOLLOW_UP_DATE) {
-                followDate_num += 1
-            }
-            if (_item.FOLLOW_UP_MONTHS) {
-                followMonths_num += 1
-            }
-        }
+        if(_followTotal.fu_date_count>_followTotal.fu_counted)_followTotal.fu_counted=_followTotal.fu_date_count
+        follow_total += _followTotal.fu_counted
+        followDate_num += _followTotal.fu_date_count
+        followMonths_num += _followTotal.fu_month_count
         /**
          * 待优化，（参与计算次数过多，可以只在最后一次进行计算。但是写法不够优雅）
          */
@@ -471,7 +474,7 @@ function startup () {
 
         }
 
-        await saveCalcResult('test')
+        await saveCalcResult('陈汝福')
         console.timeEnd("共用时")
     })
 }
