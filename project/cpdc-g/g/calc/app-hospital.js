@@ -1,7 +1,7 @@
 
 /**
- * 计算字段的完整度
- * 修改最大堆栈 node --max-old-space-size=4096 calc-fild.js
+ * 计算各个医院的完整度
+ * 修改最大堆栈 node --max-old-space-size=4096 app-hospital.js
  */
 'use strict';
 const sql = require('../dbs/sqlServer-t.js'),
@@ -9,62 +9,55 @@ const sql = require('../dbs/sqlServer-t.js'),
     X_utils = XLSX.utils,
     _ = require("lodash"),
     // fs = require("fs-extra"),
-    ProgressBar = require('progress'),
-    OBJ_CALC = Object.create(null)
+    ProgressBar = require('progress')
+
+
+let OBJ_CALC = Object.create(null)
 
 
 // 保存计算结果
 async function saveCalcResult (fileName) {
     try {
-        const data = await getCalcData()
         // 创建表格
         const wb = X_utils.book_new()
         // 插入 sheet
-        X_utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), "统计字段完整率")
+        X_utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(tableArr), "统计字段完整率")
         // 保存 Excel 文件
-        XLSX.writeFile(wb, './out/字段完整度_' + fileName + Date.now() + '.xlsx',{compression:true});
+        XLSX.writeFile(wb, './out/字段完整度_' + fileName + Date.now() + '.xlsx', { compression: true });
 
         console.log(fileName, '-OK ', Date.now())
     } catch (e) {
         console.error('处理表格数据出错： ', e)
     }
 }
-
-async function getCalcData () {
-    const allDict = await sql.query(`SELECT
-            isnull( title.ITEM_TYPE_NAME, '' ) + isnull( '_' + title1.ITEM_TYPE_NAME, '' )  AS 'typeName',
-            isnull( dist.ITEM_CODE, fu_dist.ITEM_CODE ) AS 'itemCode'
-        FROM
-            [dbo].[SD_ITEM_TYPE_DICT] AS title 
-            LEFT JOIN [dbo].[SD_ITEM_TYPE_DICT] AS title1 ON title.ITEM_TYPE_CODE=title1.PARENT_TYPE_CODE AND title1.PARENT_TYPE_CODE IS NOT NULL AND title.SD_CODE='YXA_O' 
-            LEFT JOIN [dbo].[SD_ITEM_DICT] AS dist ON dist.ITEM_TYPE_CODE=title.ITEM_TYPE_CODE OR dist.ITEM_TYPE_CODE=title1.ITEM_TYPE_CODE AND dist.SD_CODE='YXA_O'
-            LEFT JOIN [dbo].[FU_SD_ITEM_DICT] AS fu_dist ON fu_dist.ITEM_TYPE_CODE=title.ITEM_TYPE_CODE
-        WHERE
-            title.PARENT_TYPE_CODE IS NULL 
-            AND title.SD_CODE= 'YXA_O'`)
-    let data = [], _num = 0
+const tableArr = []
+async function getCalcData (hName) {
+    let
+        pat_len = 0, fu_len = 0, count_len = 0,
+        pat_num = 0, fu_num = 0, count_num = 0
     delete OBJ_CALC._ids
     for (const key in OBJ_CALC) {
         const value = OBJ_CALC[key];
-        const itemCode = key.split('#')[1]
-        if (itemCode) {
-            const [cutItem] = allDict.filter(dict => dict.itemCode == itemCode)
-            if (cutItem) {
-                data.push({ '类别': cutItem.typeName, '数据项': key, '完整率': value + '%' })
-            }
+        const [typeName, itemName] = key.split('_')
+        if (typeName == '随访') {
+            fu_len += 1
+            fu_num += Number(value)
         } else {
-            const [typeName,itemName] = key.split('_')
-            data.push({ '类别': typeName, '数据项': itemName, '完整率': value + '%' })
+            pat_len += 1
+            pat_num += Number(value)
         }
-        _num += Number(value)
+        count_len += 1
+        count_num += Number(value)
     }
-    // push 总完整率
-    const totalPercent = (_num / data.length).toFixed(2) + '%'
-    data.push({ '数据项': '总完整率', '完整率': totalPercent })
-    return data
+    const pat_Percent = (pat_num / pat_len).toFixed(2) + '%'
+    const fu_Percent = (fu_num / fu_len).toFixed(2) + '%'
+    const count_Percent = (count_num / count_len).toFixed(2) + '%'
+    tableArr.push({ '医院': hName, '诊治': pat_Percent, '随访': fu_Percent, '总完整率': count_Percent })
+    return tableArr
 }
+
 /**
- * 计算 随访结果表 ---  验证通过
+ * 计算 随访结果表 ---  验证通过(需要根据应随访次数计算)
  * 
  * @param {Number} index id
  * @param {String} patNo 患者id
@@ -96,7 +89,7 @@ async function handlePatFollowUpResult (index, patNo) {
             if (_items.SD_ITEM_VALUE || needExits(retPatFollowUpResult, _items)) {
                 followDist[joinKey + '_num'] += 1
             }
-            OBJ_CALC[joinKey] = (followDist[joinKey + '_num'] / followDist[joinKey + '_total'] * 100).toFixed(2)
+            OBJ_CALC['随访_' + joinKey] = (followDist[joinKey + '_num'] / followDist[joinKey + '_total'] * 100).toFixed(2)
         }
     } catch (err) {
         console.error('handlePatFollowUpResult ERR ', err)
@@ -104,8 +97,8 @@ async function handlePatFollowUpResult (index, patNo) {
 }
 
 async function initFollowDist () {
-    console.info('初始化 随访结果表')
     try {
+        // console.info('初始化 随访结果表')
 
         const retPatFollowDist = await sql.query(`SELECT
                     dist.ITEM_CODE,
@@ -129,12 +122,12 @@ async function initFollowDist () {
 }
 
 /**
- * 计算 随访治疗信息 ---  验证通过
+ * 计算 随访治疗信息 ---  验证通过(需要根据应随访次数计算)
  * 
  * @param {Number} index id
  * @param {String} patNo 患者id
  */
-const initFollowTreat = Object.create(null)
+let initFollowTreat = Object.create(null)
 async function handlePatFollowUpTreat (index, patNo) {
     try {
         const retPatFollowUpTreat = await sql.query(`SELECT
@@ -163,21 +156,21 @@ async function handlePatFollowUpTreat (index, patNo) {
         // console.log(key,index,_followUpTreatTotal)
         if (index == 0) { // 第一次，初始化（如果第一个为空，将会报错 query2）
             const _keys = ['随访_治疗方式',
-                            '随访_药品名称(通用名)',
-                            '随访_药品名称(商品名)',
-                            '随访_剂量',
-                            '随访_疗程/周期',
-                            '随访_化疗方法',
-                            '随访_是否好转',
-                            '随访_化疗费用',
-                            '随访_治疗前CA199',
-                            '随访_治疗前CEA',
-                            '随访_治疗前CA125',
-                            '随访_治疗前CT评价',
-                            '随访_治疗后CA199',
-                            '随访_治疗后CEA',
-                            '随访_治疗后CA125',
-                            '随访_治疗后CT评价']
+                '随访_药品名称(通用名)',
+                '随访_药品名称(商品名)',
+                '随访_剂量',
+                '随访_疗程/周期',
+                '随访_化疗方法',
+                '随访_是否好转',
+                '随访_化疗费用',
+                '随访_治疗前CA199',
+                '随访_治疗前CEA',
+                '随访_治疗前CA125',
+                '随访_治疗前CT评价',
+                '随访_治疗后CA199',
+                '随访_治疗后CEA',
+                '随访_治疗后CA125',
+                '随访_治疗后CT评价']
             for (let k = 0; k < _keys.length; k++) {
 
                 initFollowTreat[_keys[k] + '_total'] = 0
@@ -200,25 +193,28 @@ async function handlePatFollowUpTreat (index, patNo) {
         console.error('handlePatFollowUpTreat ERR ', err)
     }
 }
-
-
 /**
- * 计算 随访时间和时长 ---  验证通过（未考虑患者应随访次数）
+ * 计算 随访时间和时长 ---  验证通过
  * 
  * @param {Number} index id
  * @param {String} patNo 患者id
+ * @description （死亡时间或者当前时间 - 手术时间 = 应随访次数）/ 随访时间的次数
  */
 let follow_total = 0, followDate_num = 0, followMonths_num = 0
 async function handlePatFollowUp (index, patNo) {
     try {
-
-        const retPatFollowUp = await sql.query(`SELECT
-                -- a.PATIENT_NO,
-                DATEDIFF(
-                    YY,
-                    CONVERT (DATE, a.SD_ITEM_VALUE ),
-                    CONVERT (DATE, ISNULL(b.SD_ITEM_VALUE, GETDATE()) )
-                    )  AS 'fu_counted',
+        /**
+         * fu_counted 应随访次数
+         * fu_date_count 随访时间 个数
+         * fu_month_count 随访时长 个数 
+         */
+        let [{ fu_counted, fu_date_count, fu_month_count }] = await sql.query(`SELECT
+                    -- a.PATIENT_NO,
+                    DATEDIFF(
+                        MM,
+                        CONVERT (DATE, a.SD_ITEM_VALUE ),
+                        CONVERT (DATE, ISNULL(b.SD_ITEM_VALUE, GETDATE()) )
+                        ) / 12  AS 'fu_counted',
                     (SELECT COUNT(PATIENT_NO) FROM [dbo].[PAT_FOLLOW_UP] WHERE PATIENT_NO= a.PATIENT_NO AND FOLLOW_UP_DATE!='') AS 'fu_date_count',
                     (SELECT COUNT(PATIENT_NO) FROM [dbo].[PAT_FOLLOW_UP] WHERE PATIENT_NO= a.PATIENT_NO AND FOLLOW_UP_MONTHS!='') AS 'fu_month_count'
                 FROM
@@ -229,13 +225,22 @@ async function handlePatFollowUp (index, patNo) {
                 WHERE
                     a.SD_ITEM_CODE = 'YXA_O_161' 
                     AND a.SD_ITEM_VALUE != '' 
-                    AND a.PATIENT_NO='${patNo}'`),
-            _followTotal = retPatFollowUp[0]
+                    AND a.PATIENT_NO='${patNo}'`)
+        // 如果 fu_counted 为空（该患者没有手术时间），无法计算应随访次 return
+        if (fu_counted == null && fu_counted == undefined) return
 
-        if(_followTotal.fu_date_count>_followTotal.fu_counted)_followTotal.fu_counted=_followTotal.fu_date_count
-        follow_total += _followTotal.fu_counted
-        followDate_num += _followTotal.fu_date_count
-        followMonths_num += _followTotal.fu_month_count
+        // 如果 fu_counted 为0 (未到随访时间),将 应随访次数(fu_counted)随访时间个数(fu_date_count)随访时长个数(fu_month_count) ，所以完整率应为 100%
+        if (fu_counted == 0) fu_counted = fu_date_count = fu_month_count = 1
+
+        // 应随访次数最大为 5 次
+        if (fu_counted > 5) fu_counted = 5
+
+        // 随访时间次数 大于 应随访次数, 将随访时间次数 设为 应随访次数
+        if (fu_date_count > fu_counted) fu_counted = fu_date_count
+
+        follow_total += fu_counted
+        followDate_num += fu_date_count
+        followMonths_num += fu_month_count
         /**
          * 待优化，（参与计算次数过多，可以只在最后一次进行计算。但是写法不够优雅）
          */
@@ -246,63 +251,19 @@ async function handlePatFollowUp (index, patNo) {
     }
 }
 
-/**
- * 计算 引流管信息(有一个引流管信息就算100%，一个也没有就算0%) -- 未验证通过
- * 
- * @param {Number} index id
- * @param {String} patNo 患者id
- */
-const initDrainageTube = Object.create(null)
-async function handlePatDrainageTube (index, patNo) {
+
+async function handlePatFollowUpT (count, patArr) {
     try {
-        const retPatDrainageTube = await sql.query(`SELECT
-                -- PATIENT_NO,
-                TUBE_NAME AS '引流管_引流管部位',
-                RETENTION_DAYS AS '引流管_留置天数',
-                POD1 AS '引流管_POD1',
-                POD3 AS '引流管_POD3',
-                POD7 AS '引流管_POD7',
-                AMY_POD1 AS '引流管_AMYPOD1',
-                AMY_POD3 AS '引流管_AMYPOD3',
-                AMY_POD7 AS '引流管_AMYPOD7',
-                AMY_POD_DRAW AS '引流管_拔管前AMY'
-            FROM
-                [dbo].[PAT_DRAINAGE_TUBE]
-            WHERE
-                PATIENT_NO= '${patNo}'`),
-            _DrainageTubeTotal = retPatDrainageTube.length
-
-        // console.log(key,index,_followUpTreatTotal)
-        if (index == 0) { // 第一次，初始化（如果第一个为空，将会报错 query）
-            const _keys = ['引流管_引流管部位','引流管_留置天数','引流管_POD1','引流管_POD3','引流管_POD7','引流管_AMYPOD1','引流管_AMYPOD3','引流管_AMYPOD7','引流管_拔管前AMY']
-            for (let k = 0; k < _keys.length; k++) {
-
-                initDrainageTube[_keys[k] + '_total'] = 0
-                initDrainageTube[_keys[k] + '_num'] = 0
-                OBJ_CALC[_keys[k]] = 0
-            }
-        }
-
-        for (let i = 0; i < _DrainageTubeTotal; i++) {
-            const _items = retPatDrainageTube[i]
-
-            _.forEach(_items, (value, key) => {
-                // console.log(value, key)
-                if (value) {
-                    initDrainageTube[key + '_total'] += 1
-                    initDrainageTube[key + '_num'] += 1
-
-                } else {
-                    initDrainageTube[key + '_total'] += 1
-                    initDrainageTube[key + '_num'] += 0
-                }
-                OBJ_CALC[key] = (initDrainageTube[key + '_num'] / initDrainageTube[key + '_total'] * 100).toFixed(2)
-            });
-        }
+        console.info("计算 PAT_FOLLOW_UP")
+        const [{ fu_date_count, fu_month_count }] = await sql.query(`SELECT COUNT ( FOLLOW_UP_DATE ) AS 'fu_date_count',COUNT ( FOLLOW_UP_MONTHS ) AS 'fu_month_count' FROM [dbo].[PAT_FOLLOW_UP] WHERE PATIENT_NO IN ( ${patArr} )`)
+        // console.log(count,fu_date_count,fu_month_count)
+        OBJ_CALC['随访_随访时间'] = (fu_date_count / count * 100).toFixed(2)
+        OBJ_CALC['随访_随访时长'] = (fu_month_count / count * 100).toFixed(2)
     } catch (err) {
-        console.error('handlePatDrainageTube ERR ', err)
+        console.error('handlePatFollowUp ERR ', err)
     }
 }
+
 /**
  * 计算 数据项结果 --- 验证通过
  * @param {Number} index 
@@ -376,8 +337,8 @@ function needExits (data, items) {
  * return patItemDist 数据项字典
  */
 async function initItemDist () {
-    console.info('初始化 数据项结果表')
     try {
+        // console.info('初始化 数据项结果表')
 
         const retPatItemDist = await sql.query(`SELECT ITEM_CODE,ITEM_NAME FROM [dbo].[SD_ITEM_DICT] WHERE SD_CODE = 'YXA_O' ORDER BY DISPLAY_ORDER+0`)
 
@@ -401,7 +362,7 @@ async function initItemDist () {
  * @param {Number} index 
  * @param {String} patNo 患者id
  */
-const initPatVist = Object.create(null)
+let initPatVist = Object.create(null)
 async function handlePatVist (index, patNo) {
     try {
         const retPatVist = await sql.query(`SELECT
@@ -442,39 +403,58 @@ async function handlePatVist (index, patNo) {
     }
 }
 
+async function run (retPatientNo, hName) {
+    const len = retPatientNo.length
+    let bar = new ProgressBar('  进度 [:bar] :current/:total :percent :etas', {
+        complete: '=', // 完成
+        incomplete: ' ', // 未完成
+        width: 50, // 宽度
+        total: len // 总数
+    });
+    if (len < 1) {
+        tableArr.push({ '医院': hName, '诊治': 0 + '%', '随访': 0 + '%', '总完整率': 0 + '%' })
+        bar.tick();
+        return
+    }
+
+    for (let index = 0; index < len; index++) {
+        const element = retPatientNo[index],
+            patNo = element.PATIENT_NO;
+
+        await handlePatVist(index, patNo)
+        await handlePatItemResult(index, patNo)
+
+        await handlePatFollowUp(index, patNo)
+
+        await handlePatFollowUpTreat(index, patNo)
+        await handlePatFollowUpResult(index, patNo)
+        bar.tick();
+
+    }
+    // const patList = await retPatientNo.map(item => `'${item.PATIENT_NO}'`).join()
+    // await handlePatFollowUpT(len, patList)
+
+    await getCalcData(hName)
+    // 释放&&清空
+    OBJ_CALC = initPatVist = initFollowTreat = Object.create(null)
+    followDist = initPatItemResult = {}
+}
 function startup () {
 
     console.time("共用时")
 
-    const querySql = require("./querySql.js")
-
-    sql.query(querySql).then(async retPatientNo => {
-        const len = retPatientNo.length
-        if (len < 1) throw "sql.query 查询结果小于 0"
-        let bar = new ProgressBar('  进度 [:bar] :current/:total :percent :etas', {
-            complete: '=', // 完成
-            incomplete: ' ', // 未完成
-            width: 50, // 宽度
-            total: len // 总数
-        });
-
+    // sql.query(`SELECT * FROM [dbo].[HOSPITAL_DICT] WHERE HOSPITAL_NAME='中南大学湘雅二医院'`).then(async h => {
+        sql.query(`SELECT * FROM [dbo].[HOSPITAL_DICT] ORDER BY HOSPITAL_CODE`).then(async h => {
+        const len = h.length
         for (let index = 0; index < len; index++) {
-            const element = retPatientNo[index],
-                patNo = element.PATIENT_NO;
-
-            await handlePatVist(index, patNo)
-            await handlePatItemResult(index, patNo)
-            await handlePatDrainageTube(index, patNo)
-
-            await handlePatFollowUp(index, patNo)
-
-            await handlePatFollowUpTreat(index, patNo)
-            await handlePatFollowUpResult(index, patNo)
-            bar.tick();
-
+            const element = h[index],
+                hId = element.HOSPITAL_ID,
+                hName = element.HOSPITAL_NAME;
+            console.info(hName, index + "/" + len)
+            const retPatientNo = await sql.query(`SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE HOSPITAL_ID='${hId}' AND SD_CODE='YXA_O'`)
+            await run(retPatientNo, hName)
         }
-
-        await saveCalcResult('陈汝福')
+        await saveCalcResult("各个总体完整率")
         console.timeEnd("共用时")
     })
 }
