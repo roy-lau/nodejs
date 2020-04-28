@@ -129,14 +129,10 @@ const groupInFolluw = `SELECT
 const guangdong = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE HOSPITAL_ID='54bc034b46af0a8d' AND SD_CODE='YXA_O'`
 
 // 陈汝福入组条件
-const chen = `SELECT
-    PATIENT_NO
-    FROM
-    [dbo].[PAT_SD_ITEM_RESULT] 
-    WHERE
-    SD_ITEM_CODE = 'YXA_O_210' 
-    AND SD_ITEM_VALUE LIKE '%癌%' 
-    AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE = 'YXA_O_020' AND SD_ITEM_VALUE = '1' )`
+const chen = `SELECT PATIENT_NO FROM [dbo].[calc_chen]`
+
+// 王伟入组条件
+const wagnwei = `SELECT PATIENT_NO FROM [dbo].[calc_wagnwei]`
 
 const one = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE PATIENT_NO IN ('42c4ff6470cac2ba','86bb1a938fc08710','5b4f0f0181fac940') AND SD_CODE='YXA_O'`
 // 三年内入组的患者
@@ -151,4 +147,4 @@ const threeYearInGroup = `SELECT
     AND DISCHARGE_DATE >= '2016-01-01 00:00:00.000'
     AND DISCHARGE_DATE <= '2018-12-31 00:00:00.000'`
 
-module.exports = chen
+module.exports = wagnwei

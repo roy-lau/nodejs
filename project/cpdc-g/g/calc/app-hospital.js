@@ -31,9 +31,9 @@ async function saveCalcResult (fileName) {
     }
 }
 const tableArr = []
+let calcFuCount = 0, calcPatCount = 0, calcAllCount = 0
 async function getCalcData (hName) {
-    let
-        pat_len = 0, fu_len = 0, count_len = 0,
+    let pat_len = 0, fu_len = 0, count_len = 0,
         pat_num = 0, fu_num = 0, count_num = 0
     delete OBJ_CALC._ids
     for (const key in OBJ_CALC) {
@@ -49,10 +49,19 @@ async function getCalcData (hName) {
         count_len += 1
         count_num += Number(value)
     }
-    const pat_Percent = (pat_num / pat_len).toFixed(2) + '%'
-    const fu_Percent = (fu_num / fu_len).toFixed(2) + '%'
-    const count_Percent = (count_num / count_len).toFixed(2) + '%'
-    tableArr.push({ '医院': hName, '诊治': pat_Percent, '随访': fu_Percent, '总完整率': count_Percent })
+    const pat_Percent = (pat_num / pat_len)
+    const fu_Percent = (fu_num / fu_len)
+    const count_Percent = (count_num / count_len)
+    // console.log(pat_Percent,fu_Percent,count_Percent)
+    calcFuCount += Number(fu_Percent)
+    calcPatCount += Number(pat_Percent)
+    calcAllCount += Number(count_Percent)
+    tableArr.push({
+        '医院': hName,
+        '诊治': pat_Percent.toFixed(2) + '%',
+        '随访': fu_Percent.toFixed(2) + '%',
+        '总完整率': count_Percent.toFixed(2) + '%'
+    })
     return tableArr
 }
 
@@ -89,7 +98,7 @@ async function handlePatFollowUpResult (index, patNo) {
             if (_items.SD_ITEM_VALUE || needExits(retPatFollowUpResult, _items)) {
                 followDist[joinKey + '_num'] += 1
             }
-            OBJ_CALC['随访_' + joinKey] = (followDist[joinKey + '_num'] / followDist[joinKey + '_total'] * 100).toFixed(2)
+            OBJ_CALC['随访_' + joinKey] = (followDist[joinKey + '_num'] / followDist[joinKey + '_total'] * 100)
         }
     } catch (err) {
         console.error('handlePatFollowUpResult ERR ', err)
@@ -186,7 +195,7 @@ async function handlePatFollowUpTreat (index, patNo) {
                 if (value) {
                     initFollowTreat[key + '_num'] += 1
                 }
-                OBJ_CALC[key] = (initFollowTreat[key + '_num'] / initFollowTreat[key + '_total'] * 100).toFixed(2)
+                OBJ_CALC[key] = (initFollowTreat[key + '_num'] / initFollowTreat[key + '_total'] * 100)
             });
         }
     } catch (err) {
@@ -203,12 +212,7 @@ async function handlePatFollowUpTreat (index, patNo) {
 let follow_total = 0, followDate_num = 0, followMonths_num = 0
 async function handlePatFollowUp (index, patNo) {
     try {
-        /**
-         * fu_counted 应随访次数
-         * fu_date_count 随访时间 个数
-         * fu_month_count 随访时长 个数 
-         */
-        let [{ fu_counted, fu_date_count, fu_month_count }] = await sql.query(`SELECT
+        const ret = await sql.query(`SELECT
                     -- a.PATIENT_NO,
                     DATEDIFF(
                         MM,
@@ -226,8 +230,16 @@ async function handlePatFollowUp (index, patNo) {
                     a.SD_ITEM_CODE = 'YXA_O_161' 
                     AND a.SD_ITEM_VALUE != '' 
                     AND a.PATIENT_NO='${patNo}'`)
-        // 如果 fu_counted 为空（该患者没有手术时间），无法计算应随访次 return
-        if (fu_counted == null && fu_counted == undefined) return
+
+        // 如果 ret.length 为 0（该患者没有手术时间），无法计算应随访次 return
+        if (ret.length === 0) return
+
+        /**
+         * fu_counted 应随访次数
+         * fu_date_count 随访时间 个数
+         * fu_month_count 随访时长 个数 
+         */
+        let [{ fu_counted, fu_date_count, fu_month_count }] = ret
 
         // 如果 fu_counted 为0 (未到随访时间),将 应随访次数(fu_counted)随访时间个数(fu_date_count)随访时长个数(fu_month_count) ，所以完整率应为 100%
         if (fu_counted == 0) fu_counted = fu_date_count = fu_month_count = 1
@@ -235,8 +247,8 @@ async function handlePatFollowUp (index, patNo) {
         // 应随访次数最大为 5 次
         if (fu_counted > 5) fu_counted = 5
 
-        // 随访时间次数 大于 应随访次数, 将随访时间次数 设为 应随访次数
-        if (fu_date_count > fu_counted) fu_counted = fu_date_count
+        // 随访时间次数 大于 应随访次数, 将随访时间次数和随访时长次数 设为 应随访次数
+        if (fu_date_count > fu_counted) fu_date_count = fu_counted, fu_month_count = fu_counted
 
         follow_total += fu_counted
         followDate_num += fu_date_count
@@ -244,21 +256,29 @@ async function handlePatFollowUp (index, patNo) {
         /**
          * 待优化，（参与计算次数过多，可以只在最后一次进行计算。但是写法不够优雅）
          */
-        OBJ_CALC['随访_随访时间'] = (followDate_num / follow_total * 100).toFixed(2)
-        OBJ_CALC['随访_随访时长'] = (followMonths_num / follow_total * 100).toFixed(2)
+        OBJ_CALC['随访_随访时间'] = (followDate_num / follow_total * 100)
+        OBJ_CALC['随访_随访时长'] = (followMonths_num / follow_total * 100)
     } catch (err) {
         console.error('handlePatFollowUp ERR ', err)
     }
 }
 
 
+/**
+ * 计算 随访时间和时长 ---  验证通过
+ * 
+ * @param {Number} count 总人数
+ * @param {String} patNo 患者id
+ * @description 总人数 / 随访时间个数 = 随访时间完整率
+ * @description 总人数 / 随访时长个数 = 随访时长完整率
+ */
 async function handlePatFollowUpT (count, patArr) {
     try {
         console.info("计算 PAT_FOLLOW_UP")
         const [{ fu_date_count, fu_month_count }] = await sql.query(`SELECT COUNT ( FOLLOW_UP_DATE ) AS 'fu_date_count',COUNT ( FOLLOW_UP_MONTHS ) AS 'fu_month_count' FROM [dbo].[PAT_FOLLOW_UP] WHERE PATIENT_NO IN ( ${patArr} )`)
         // console.log(count,fu_date_count,fu_month_count)
-        OBJ_CALC['随访_随访时间'] = (fu_date_count / count * 100).toFixed(2)
-        OBJ_CALC['随访_随访时长'] = (fu_month_count / count * 100).toFixed(2)
+        OBJ_CALC['随访_随访时间'] = (fu_date_count / count * 100)
+        OBJ_CALC['随访_随访时长'] = (fu_month_count / count * 100)
     } catch (err) {
         console.error('handlePatFollowUp ERR ', err)
     }
@@ -304,7 +324,7 @@ async function handlePatItemResult (index, patNo) {
             if (_items.SD_ITEM_VALUE || needExits(retPatItemResult, _items)) {
                 initPatItemResult[joinKey + '_num'] += 1
             }
-            OBJ_CALC[joinKey] = (initPatItemResult[joinKey + '_num'] / initPatItemResult[joinKey + '_total'] * 100).toFixed(2)
+            OBJ_CALC[joinKey] = (initPatItemResult[joinKey + '_num'] / initPatItemResult[joinKey + '_total'] * 100)
         }
 
     } catch (err) {
@@ -396,7 +416,7 @@ async function handlePatVist (index, patNo) {
             if (value) {
                 initPatVist[key + '_num'] += 1
             }
-            OBJ_CALC[key] = (initPatVist[key + '_num'] / initPatVist[key + '_total'] * 100).toFixed(2)
+            OBJ_CALC[key] = (initPatVist[key + '_num'] / initPatVist[key + '_total'] * 100)
         });
     } catch (err) {
         console.error('handlePatVist ERR ', err)
@@ -437,14 +457,17 @@ async function run (retPatientNo, hName) {
     await getCalcData(hName)
     // 释放&&清空
     OBJ_CALC = initPatVist = initFollowTreat = Object.create(null)
+    follow_total = followDate_num = followMonths_num = 0
     followDist = initPatItemResult = {}
 }
 function startup () {
-
+    process.title = "计算各医院完整率"
     console.time("共用时")
 
-    // sql.query(`SELECT * FROM [dbo].[HOSPITAL_DICT] WHERE HOSPITAL_NAME='中南大学湘雅二医院'`).then(async h => {
-        sql.query(`SELECT * FROM [dbo].[HOSPITAL_DICT] ORDER BY HOSPITAL_CODE`).then(async h => {
+    const querySql = `SELECT * FROM [dbo].[HOSPITAL_DICT] WHERE HOSPITAL_NAME='上海交通大学医学院附属瑞金医院'`
+    // const querySql = `SELECT  * FROM [dbo].[HOSPITAL_DICT] ORDER BY HOSPITAL_CODE`
+
+    sql.query(querySql).then(async h => {
         const len = h.length
         for (let index = 0; index < len; index++) {
             const element = h[index],
@@ -454,7 +477,14 @@ function startup () {
             const retPatientNo = await sql.query(`SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE HOSPITAL_ID='${hId}' AND SD_CODE='YXA_O'`)
             await run(retPatientNo, hName)
         }
-        await saveCalcResult("各个总体完整率")
+        tableArr.push({
+            '医院': '总体',
+            '诊治': (calcPatCount / len).toFixed(2) + '%',
+            '随访': (calcFuCount / len).toFixed(2) + '%',
+            '总完整率': (calcAllCount / len).toFixed(2) + '%'
+        })
+
+        await saveCalcResult("各医院完整率")
         console.timeEnd("共用时")
     })
 }

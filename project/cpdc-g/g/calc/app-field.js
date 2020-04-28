@@ -50,11 +50,11 @@ async function getCalcData () {
         if (itemCode) {
             const [cutItem] = allDict.filter(dict => dict.itemCode == itemCode)
             if (cutItem) {
-                data.push({ '类别': cutItem.typeName, '数据项': key, '完整率': value + '%' })
+                data.push({ '类别': cutItem.typeName, '数据项': key, '完整率': value.toFixed(2) + '%' })
             }
         } else {
             const [typeName,itemName] = key.split('_')
-            data.push({ '类别': typeName, '数据项': itemName, '完整率': value + '%' })
+            data.push({ '类别': typeName, '数据项': itemName, '完整率': value.toFixed(2) + '%' })
         }
         _num += Number(value)
     }
@@ -96,7 +96,7 @@ async function handlePatFollowUpResult (index, patNo) {
             if (_items.SD_ITEM_VALUE || needExits(retPatFollowUpResult, _items)) {
                 followDist[joinKey + '_num'] += 1
             }
-            OBJ_CALC[joinKey] = (followDist[joinKey + '_num'] / followDist[joinKey + '_total'] * 100).toFixed(2)
+            OBJ_CALC[joinKey] = (followDist[joinKey + '_num'] / followDist[joinKey + '_total'] * 100)
         }
     } catch (err) {
         console.error('handlePatFollowUpResult ERR ', err)
@@ -193,7 +193,7 @@ async function handlePatFollowUpTreat (index, patNo) {
                 if (value) {
                     initFollowTreat[key + '_num'] += 1
                 }
-                OBJ_CALC[key] = (initFollowTreat[key + '_num'] / initFollowTreat[key + '_total'] * 100).toFixed(2)
+                OBJ_CALC[key] = (initFollowTreat[key + '_num'] / initFollowTreat[key + '_total'] * 100)
             });
         }
     } catch (err) {
@@ -205,56 +205,18 @@ async function handlePatFollowUpTreat (index, patNo) {
 /**
  * 计算 随访时间和时长 ---  验证通过
  * 
- * @param {Number} index id
+ * @param {Number} count 总人数
  * @param {String} patNo 患者id
- * @description （死亡时间或者当前时间 - 手术时间 = 应随访次数）/ 随访时间的次数
+ * @description 总人数 / 随访时间个数 = 随访时间完整率
+ * @description 总人数 / 随访时长个数 = 随访时长完整率
  */
-// let follow_total = 0, followDate_num = 0, followMonths_num = 0
-// async function handlePatFollowUp (index, patNo) {
-//     try {
-
-//         const retPatFollowUp = await sql.query(`SELECT
-//                 -- a.PATIENT_NO,
-//                 DATEDIFF(
-//                     YY,
-//                     CONVERT (DATE, a.SD_ITEM_VALUE ),
-//                     CONVERT (DATE, ISNULL(b.SD_ITEM_VALUE, GETDATE()) )
-//                     )  AS 'fu_counted',
-//                     (SELECT COUNT(PATIENT_NO) FROM [dbo].[PAT_FOLLOW_UP] WHERE PATIENT_NO= a.PATIENT_NO AND FOLLOW_UP_DATE!='') AS 'fu_date_count',
-//                     (SELECT COUNT(PATIENT_NO) FROM [dbo].[PAT_FOLLOW_UP] WHERE PATIENT_NO= a.PATIENT_NO AND FOLLOW_UP_MONTHS!='') AS 'fu_month_count'
-//                 FROM
-//                     [dbo].[PAT_SD_ITEM_RESULT] AS a
-//                     LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS b ON b.SD_ITEM_CODE = 'YXA_O_257' 
-//                     AND b.SD_ITEM_VALUE != '' 
-//                     AND a.PATIENT_NO= b.PATIENT_NO 
-//                 WHERE
-//                     a.SD_ITEM_CODE = 'YXA_O_161' 
-//                     AND a.SD_ITEM_VALUE != '' 
-//                     AND a.PATIENT_NO='${patNo}'`),
-//             _followTotal = retPatFollowUp[0]
-
-//         if(_followTotal.fu_counted>5)_followTotal.fu_counted=5
-//         if(_followTotal.fu_date_count>_followTotal.fu_counted)_followTotal.fu_counted=_followTotal.fu_date_count
-//         follow_total += _followTotal.fu_counted
-//         followDate_num += _followTotal.fu_date_count
-//         followMonths_num += _followTotal.fu_month_count
-//         /**
-//          * 待优化，（参与计算次数过多，可以只在最后一次进行计算。但是写法不够优雅）
-//          */
-//         OBJ_CALC['随访_随访时间'] = (followDate_num / follow_total * 100).toFixed(2)
-//         OBJ_CALC['随访_随访时长'] = (followMonths_num / follow_total * 100).toFixed(2)
-//     } catch (err) {
-//         console.error('handlePatFollowUp ERR ', err)
-//     }
-// }
-
 async function handlePatFollowUpT (count, patArr) {
     try {
         console.info("计算 PAT_FOLLOW_UP")
         const [{fu_date_count,fu_month_count}] = await sql.query(`SELECT COUNT ( FOLLOW_UP_DATE ) AS 'fu_date_count',COUNT ( FOLLOW_UP_MONTHS ) AS 'fu_month_count' FROM [dbo].[PAT_FOLLOW_UP] WHERE PATIENT_NO IN ( ${patArr} )`)
         // console.log(count,fu_date_count,fu_month_count)
-        OBJ_CALC['随访_随访时间'] = (fu_date_count / count * 100).toFixed(2)
-        OBJ_CALC['随访_随访时长'] = (fu_month_count / count * 100).toFixed(2)
+        OBJ_CALC['随访_随访时间'] = (fu_date_count / count * 100)
+        OBJ_CALC['随访_随访时长'] = (fu_month_count / count * 100)
     } catch (err) {
         console.error('handlePatFollowUp ERR ', err)
     }
@@ -309,7 +271,7 @@ async function handlePatDrainageTube (index, patNo) {
                     initDrainageTube[key + '_total'] += 1
                     initDrainageTube[key + '_num'] += 0
                 }
-                OBJ_CALC[key] = (initDrainageTube[key + '_num'] / initDrainageTube[key + '_total'] * 100).toFixed(2)
+                OBJ_CALC[key] = (initDrainageTube[key + '_num'] / initDrainageTube[key + '_total'] * 100)
             });
         }
     } catch (err) {
@@ -356,7 +318,7 @@ async function handlePatItemResult (index, patNo) {
             if (_items.SD_ITEM_VALUE || needExits(retPatItemResult, _items)) {
                 initPatItemResult[joinKey + '_num'] += 1
             }
-            OBJ_CALC[joinKey] = (initPatItemResult[joinKey + '_num'] / initPatItemResult[joinKey + '_total'] * 100).toFixed(2)
+            OBJ_CALC[joinKey] = (initPatItemResult[joinKey + '_num'] / initPatItemResult[joinKey + '_total'] * 100)
         }
 
     } catch (err) {
@@ -448,7 +410,7 @@ async function handlePatVist (index, patNo) {
             if (value) {
                 initPatVist[key + '_num'] += 1
             }
-            OBJ_CALC[key] = (initPatVist[key + '_num'] / initPatVist[key + '_total'] * 100).toFixed(2)
+            OBJ_CALC[key] = (initPatVist[key + '_num'] / initPatVist[key + '_total'] * 100)
         });
     } catch (err) {
         console.error('handlePatVist ERR ', err)
