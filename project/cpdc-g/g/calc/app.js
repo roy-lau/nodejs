@@ -49,7 +49,7 @@ class CALC {
             let bar = new ProgressBar('  进度 [:bar] :current/:total :percent :etas', {
                 complete: '=', // 完成
                 incomplete: ' ', // 未完成
-                width: 50, // 宽度
+                width: 60, // 宽度
                 total: len // 总数
             });
 
@@ -83,17 +83,17 @@ class CALC {
         process.title = "计算各医院完整率"
         console.time("共用时")
 
-        const querySql = `SELECT * FROM [dbo].[HOSPITAL_DICT] WHERE HOSPITAL_NAME IN ('上海交通大学医学院附属瑞金医院',
-        '哈尔滨医科大学附属第一医院',
-        '海军军医大学附属长海医院',
-        '上海交通大学医学院附属瑞金医院',
-        '复旦大学附属华东医院',
-        '复旦大学附属肿瘤医院',
-        '山东大学齐鲁医院',
-        '华中科技大学同济医学院附属协和医院',
-        '西安交通大学第一附属医院'
-        )`
-        // const querySql = `SELECT * FROM [dbo].[HOSPITAL_DICT] ORDER BY HOSPITAL_CODE`
+        // const querySql = `SELECT * FROM [dbo].[HOSPITAL_DICT] WHERE HOSPITAL_NAME IN ('上海交通大学医学院附属瑞金医院',
+        // '哈尔滨医科大学附属第一医院',
+        // '海军军医大学附属长海医院',
+        // '上海交通大学医学院附属瑞金医院',
+        // '复旦大学附属华东医院',
+        // '复旦大学附属肿瘤医院',
+        // '山东大学齐鲁医院',
+        // '华中科技大学同济医学院附属协和医院',
+        // '西安交通大学第一附属医院'
+        // )`
+        const querySql = `SELECT * FROM [dbo].[HOSPITAL_DICT] ORDER BY HOSPITAL_CODE`
 
         sql.query(querySql).then(async h => {
             this.initVariables()
@@ -126,7 +126,7 @@ class CALC {
         let bar = new ProgressBar('\t进度 [:bar] :current/:total :percent :etas', {
             complete: '=', // 完成
             incomplete: ' ', // 未完成
-            width: 50, // 宽度
+            width: 60, // 宽度
             total: len // 总数
         });
         if (len < 1) {
@@ -614,5 +614,5 @@ function needExits (data, items) {
 
 const calc = new CALC()
 
-// calc.runEveryHospital()
-calc.runField()
+calc.runEveryHospital()
+// calc.runField()

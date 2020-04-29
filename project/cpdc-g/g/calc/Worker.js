@@ -2,4 +2,4 @@
 const { Worker } = require('worker_threads');
 
 // new Worker('../downCase/app.js')
-new Worker('./dev-hosp.js')
+new Worker('./app.js')
