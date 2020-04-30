@@ -4,9 +4,19 @@
 
 'use strict';
 const XLSX = require("./libs/xlsx"),
-    { utils } = XLSX
+    utils = XLSX.utils
 
 
+
+function encode_col (col) {
+    if (col < 0) throw new Error("invalid column " + col);
+    var s = "";
+    for (++col;
+        col;
+        col = Math.floor((col - 1) / 26)) s = String.fromCharCode(((col - 1) % 26) + 65) + s;
+    return s;
+}
+console.log(encode_col(2))
 /**
  * 读取表格
  * @param  {String} xlsxFileName 读取路径
@@ -64,6 +74,6 @@ function createXlsx (xlsxFileName, outName) {
     //     compression: true // 开启zip压缩
     // });
 }
-createXlsx()
+// createXlsx()
 // readrXlsx('./demo.xlsx', 'out')
 // readrXlsx('./out.xlsx', 'out1')
