@@ -13,7 +13,7 @@ FROM
 	LEFT JOIN [dbo].[HOSPITAL_DICT] AS a  ON log.HOSPITAL_ID=a.HOSPITAL_ID
 WHERE
 	log.UP_DATE > '2019-07-01 00:00:00.000' 
-	AND 	HOSPITAL_NAME IN (
+	AND HOSPITAL_NAME IN (
 		'中国医学科学院北京协和医院',
 		'中国人民解放军总医院',
 		'北京大学第一医院',
