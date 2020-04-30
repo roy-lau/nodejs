@@ -3,6 +3,7 @@
  */
 'use strict';
 const sql = require('../dbs/sqlServer-t.js'),
+    path = require("path"),
     XLSX = require("xlsx"),
     X_utils = XLSX.utils
 // { desensitization } = require('./utils')
@@ -15,7 +16,8 @@ function startup () {
     const constSQL = require("./const-sql.js")
 
     sql.query(constSQL).then(async listBySelect => {
-        const fileName = 'dev_test' // 文件名
+        const fileName = '浙一19年数据' // 文件名
+        const filePath = path.join(__dirname, './out/' + fileName + '_' + Date.now() + '.xlsx')
         const patList = listBySelect.map(item => `'${item.PATIENT_NO}'`).join()
 
         await query_PAT_VISIT(patList)
@@ -25,11 +27,11 @@ function startup () {
 
 
         // 导出 Excel
-        XLSX.writeFile(workBook, './out/' + fileName + '_' + Date.now() + '.xlsx',{compression:true});
+        XLSX.writeFile(workBook, filePath, { compression: true });
         console.log(fileName, ' 下载成功！')
         // process.exit('退出……')
-    }).catch(err=>{
-        console.error("query or save ERR: ",err)
+    }).catch(err => {
+        console.error("query or save ERR: ", err)
     })
 }
 
@@ -88,11 +90,10 @@ async function query_PAT_VISIT (patient_no) {
                     a.ADMISSION_DATE AS '入院日期',
                     a.DISCHARGE_DATE AS '出院日期',
                     a.OUT_STATUS AS '离院方式',
-                    b.HOSPITAL_CODE AS '医院ID',
-                    b.HOSPITAL_CITY AS '医院CITY'
+                    a.HOSPITAL_ID AS '医院ID'
                 FROM
                     [dbo].[PAT_VISIT] AS a
-                    LEFT JOIN [dbo].[HOSPITAL_DICT] AS b ON a.HOSPITAL_ID= b.HOSPITAL_ID
+                    -- LEFT JOIN [dbo].[HOSPITAL_DICT] AS b ON a.HOSPITAL_ID= b.HOSPITAL_ID
                 WHERE
                     a.PATIENT_NO IN ( ${patient_no} )
                     AND a.SD_CODE = 'YXA_O'`)
@@ -104,20 +105,21 @@ async function query_PAT_VISIT (patient_no) {
             // 查询数据元 和数据项做对比
             const list_PAT_SD_ITEM_RESULT = await sql.query(`SELECT
                     result.PATIENT_NO,
-                    dist.ITEM_NAME+ isnull( '(' + dist.ITEM_UNIT+ ')', '' ) + '#' + dist.ITEM_CODE AS 'name',
+                    dist.ITEM_NAME+ ISNULL( '(' + dist.ITEM_UNIT+ ')', '' ) + '#' + dist.ITEM_CODE AS 'name',
                     dist.ITEM_CODE,
-                    'item_value' = ( CASE result.SD_ITEM_VALUE WHEN c.CV_VALUE THEN c.CV_VALUE_TEXT ELSE result.SD_ITEM_VALUE END ),
+                    'item_value' = ( CASE result.SD_ITEM_VALUE WHEN cv.CV_VALUE THEN cv.CV_VALUE_TEXT ELSE result.SD_ITEM_VALUE END ),
                     dist.ITEM_FORMAT,
-                    dist.ITEM_CV_CODE
+                    dist.ITEM_CV_CODE 
                 FROM
-                    [dbo].[PAT_SD_ITEM_RESULT] AS result
-                    LEFT JOIN [dbo].[SD_ITEM_DICT] AS dist ON result.SD_ITEM_CODE= dist.ITEM_CODE AND result.PATIENT_NO='${retPatVisit[i].PATIENT_NO}'
-                    LEFT JOIN [dbo].[SD_ITEM_CV_DICT] AS c ON dist.ITEM_CV_CODE= c.CV_CODE
-                    AND result.SD_ITEM_VALUE= c.CV_VALUE
+                    [dbo].[SD_ITEM_DICT] AS dist
+                    LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS result ON result.SD_ITEM_CODE= dist.ITEM_CODE AND result.PATIENT_NO='${retPatVisit[i].PATIENT_NO}'
+                    LEFT JOIN [dbo].[SD_ITEM_CV_DICT] AS cv ON dist.ITEM_CV_CODE= cv.CV_CODE 
+                    AND result.SD_ITEM_VALUE= cv.CV_VALUE 
                 WHERE
-                    result.SD_CODE= 'YXA_O'
-                    ${itemListSql}
-                    ORDER BY RIGHT(REPLICATE(N' ', 10) + dist.DISPLAY_ORDER, 10)`)
+                    dist.SD_CODE= 'YXA_O' 
+                    
+                ORDER BY
+                    dist.DISPLAY_ORDER+0`)
 
 
             for (let k = 0; k < list_PAT_SD_ITEM_RESULT.length; k++) {

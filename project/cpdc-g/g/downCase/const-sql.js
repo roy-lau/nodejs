@@ -126,9 +126,12 @@ const ch17OneFU = `SELECT DISTINCT
         h.HOSPITAL_CODE= 'H015' )
     )`
 
+// 下载浙一 19年数据
+const zhe1 = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE HOSPITAL_ID='5edc463fa828078d' AND UPDATE_DATE>'2020'`
+
 // 查询梁总的入组字段
 const liang = `SELECT PATIENT_NO FROM [dbo].[tmp_liang]`
 
 const id = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE PATIENT_NO='d276f2dd3e00b487'`
 
-module.exports = id
+module.exports = zhe1
