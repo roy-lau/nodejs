@@ -1,85 +1,22 @@
-SELECT
-	t.tmax AS '肿瘤最大径'
-FROM
-	(
+-- 待处理，肿瘤长宽高不是数值的情况
 	SELECT
 		PATIENT_NO,
-		MAX ( SD_ITEM_VALUE ) AS 'tmax'
+		SD_ITEM_VALUE
 	FROM
-		[dbo].[PAT_SD_ITEM_RESULT]
+		[dbo].[PAT_SD_ITEM_RESULT] 
 	WHERE
-		SD_ITEM_CODE IN ( 'YXA_O_212', 'YXA_O_213', 'YXA_O_214' )
+		SD_ITEM_CODE IN ( 'YXA_O_212', 'YXA_O_213', 'YXA_O_214' ) 
 		AND SD_ITEM_VALUE != ''
-		AND PATIENT_NO IN (
+		AND PATINDEX('%[^0-9|.]%', SD_ITEM_VALUE)>0 -- 大于0 ，说明不是数值类型
+
+-- 查询肿瘤最大径（排出格式不正确的数据）
 	SELECT
-		DISTINCT ids.PATIENT_NO
+		PATIENT_NO,
+		MAX ( CONVERT(FLOAT,SD_ITEM_VALUE) ) AS 'tmax' 
 	FROM
-		[dbo].[tmp_id] AS ids
-		LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS r ON ids.PATIENT_NO=r.PATIENT_NO
+		[dbo].[PAT_SD_ITEM_RESULT] 
 	WHERE
-		r.SD_ITEM_CODE = 'YXA_O_151'
-		AND r.SD_ITEM_VALUE IN ('1','2','3','4','5','6','7','8','12','15')
-		AND ids.PATIENT_NO IN (
-	-- 	至少一次随访
-		SELECT
-			DISTINCT PATIENT_NO
-		FROM
-			[dbo].[PAT_FOLLOW_UP]
-		WHERE
-			FOLLOW_UP_DATE != '1900-01-01 00:00:00.000'
-			AND FOLLOW_UP_MONTHS!=''
-			AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )
-		)
-		AND ids.PATIENT_NO NOT IN (
-			-- 术前新辅助
-			SELECT
-				 r.PATIENT_NO
-			FROM
-				[dbo].[tmp_id] AS ids
-				LEFT JOIN [dbo].[PAT_SD_ITEM_RESULT] AS r ON ids.PATIENT_NO=r.PATIENT_NO
-			WHERE
-				r.SD_ITEM_CODE = 'YXA_O_117'
-				AND r.SD_ITEM_VALUE = '1'
-		)
-		AND ids.PATIENT_NO NOT IN (
-			-- 查询围手术期(30天内)死亡的患者
-			SELECT
-				die.PATIENT_NO
-			FROM (
-				-- 院内死亡
-				SELECT DISTINCT
-					a.PATIENT_NO
-				FROM
-					[dbo].[PAT_SD_ITEM_RESULT] AS a
-				WHERE
-					a.SD_ITEM_CODE = 'YXA_O_209'
-					AND a.SD_ITEM_VALUE= '1'
-					AND a.PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )
-
-					UNION
-
-				-- 死亡日期 减去 手术日期 小于等于30天
-				SELECT DISTINCT
-					a.PATIENT_NO
-				FROM
-					[dbo].[PAT_SD_ITEM_RESULT] AS a
-					LEFT JOIN [dbo].[PAT_FOLLOW_UP_RESULT] AS b ON b.SD_ITEM_CODE = 'YXA_O_257' -- 随访死亡日期
-
-					AND b.SD_ITEM_VALUE != ''
-				WHERE
-					a.SD_ITEM_CODE= 'YXA_O_161' -- 手术日期
-
-					AND a.SD_ITEM_CODE!= ''
-					AND b.PATIENT_NO= a.PATIENT_NO
-					AND a.PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )
-					AND DATEDIFF(
-						mm,
-						CONVERT ( VARCHAR ( 100 ), a.SD_ITEM_VALUE, 120 ),
-						CONVERT ( VARCHAR ( 100 ), b.SD_ITEM_VALUE, 120 )
-					) <= '1'
-			) AS die
-		)
-
-		)
+		SD_ITEM_CODE IN ( 'YXA_O_212', 'YXA_O_213', 'YXA_O_214' ) 
+		AND SD_ITEM_VALUE != ''
+		AND PATINDEX('%[^0-9|.]%', SD_ITEM_VALUE)=0 -- 等于0 ，说明是数值类型
 		GROUP BY PATIENT_NO
-	) AS t
