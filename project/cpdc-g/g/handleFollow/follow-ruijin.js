@@ -7,7 +7,7 @@ const XLSX = require("xlsx"),
     _ = require("lodash"),
     fs = require('fs')
 
-const fileName = '瑞金_随访补录_2016-2018汇总—整理.xlsx',
+const fileName = '瑞金_随访补录_2016-2018汇总——整理.xlsx',
     workbook = XLSX.readFile(fileName, { cellDates: true, dateNF: 'YYYY/MM/dd' }),
     // 获取 Excel 中所有表名
     sheetNames = workbook.SheetNames; // 返回 ['sheet1', 'sheet2']

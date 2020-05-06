@@ -134,4 +134,4 @@ const liang = `SELECT PATIENT_NO FROM [dbo].[tmp_liang]`
 
 const id = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE PATIENT_NO='d276f2dd3e00b487'`
 
-module.exports = zhe1
+module.exports = id

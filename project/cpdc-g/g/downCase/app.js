@@ -16,7 +16,7 @@ function startup () {
     const constSQL = require("./const-sql.js")
 
     sql.query(constSQL).then(async listBySelect => {
-        const fileName = '浙一19年数据' // 文件名
+        const fileName = process.argv[2] || '下载病历' // 文件名
         const filePath = path.join(__dirname, './out/' + fileName + '_' + Date.now() + '.xlsx')
         const patList = listBySelect.map(item => `'${item.PATIENT_NO}'`).join()
 
@@ -27,7 +27,7 @@ function startup () {
 
 
         // 导出 Excel
-        XLSX.writeFile(workBook, filePath, { compression: true });
+        // XLSX.writeFile(workBook, filePath, { compression: true });
         console.log(fileName, ' 下载成功！')
         // process.exit('退出……')
     }).catch(err => {
@@ -50,7 +50,16 @@ async function patAddComment (patJsonSheet) {
                 if (itemCode) {
                     const ret = await sql.query(`SELECT
                                 title.ITEM_TYPE_NAME AS 'parentName',
-                                title1.ITEM_TYPE_NAME AS 'childName'
+                                title1.ITEM_TYPE_NAME AS 'childName',
+                                (CASE dist.ITEM_FORMAT
+                                    WHEN 1 THEN '数值'
+                                    WHEN 2 THEN '文本'
+                                    WHEN 3 THEN '日期'
+                                    WHEN 4 THEN '日期时间'
+                                    WHEN 5 THEN '单选'
+                                    WHEN 6 THEN '多选'
+                                    ELSE '其他'
+                                END) AS 'type'
                             FROM
                                 [dbo].[SD_ITEM_TYPE_DICT] AS title 
                                 LEFT JOIN [dbo].[SD_ITEM_TYPE_DICT] AS title1 ON title.ITEM_TYPE_CODE=title1.PARENT_TYPE_CODE AND title1.PARENT_TYPE_CODE IS NOT NULL AND title.SD_CODE='YXA_O' 
@@ -61,7 +70,9 @@ async function patAddComment (patJsonSheet) {
                                 AND dist.ITEM_CODE='${itemCode}'`)
                     const itemType = ret[0]
                     if (itemType) {
-                        XLSX.utils.cell_add_comment(patJsonSheet[key], `父类别: ${itemType.parentName}\n子类别: ${itemType.childName || '无'}`, 'roy')
+                        XLSX.utils.cell_add_comment(patJsonSheet[key], 
+                            `父类别: ${itemType.parentName}\n子类别: ${itemType.childName || '无'}\n类型：${itemType.type}`, 
+                            'roy')
                         patJsonSheet[key].c.hidden = true;
                     }
 
@@ -105,7 +116,7 @@ async function query_PAT_VISIT (patient_no) {
             // 查询数据元 和数据项做对比
             const list_PAT_SD_ITEM_RESULT = await sql.query(`SELECT
                     result.PATIENT_NO,
-                    dist.ITEM_NAME+ ISNULL( '(' + dist.ITEM_UNIT+ ')', '' ) + '#' + dist.ITEM_CODE AS 'name',
+                    dist.ITEM_NAME + (CASE WHEN dist.ITEM_UNIT IS NULL THEN '(' + dist.ITEM_UNIT+ ')' ELSE '' END) + '#' + dist.ITEM_CODE AS 'name',
                     dist.ITEM_CODE,
                     'item_value' = ( CASE result.SD_ITEM_VALUE WHEN cv.CV_VALUE THEN cv.CV_VALUE_TEXT ELSE result.SD_ITEM_VALUE END ),
                     dist.ITEM_FORMAT,
@@ -150,6 +161,7 @@ async function query_PAT_VISIT (patient_no) {
 
         console.timeEnd('处理患者基本信息表')
         const RetPatVisit = await patAddComment(X_utils.json_to_sheet(retPatVisit))
+        console.log(RetPatVisit)
         X_utils.book_append_sheet(workBook, RetPatVisit, "基本信息");
 
     } catch (err) {
