@@ -4,7 +4,8 @@ using namespace std;
 /*#import生成文件 msado15.tlh，默认是有namespace ADODB {}所有内容都包在这个名字空间中。
 用了no_namespace则生成的头文件中没有namespace，所有内容是全局的,否则ADODB.Connection
 rename的意思就是改名了，rename("EOF","adoEOF")将EOF改名为adoEOF，以免和C语言里的EOF重名*/
-#import "C:\\Program Files\\Common Files\\system\\ado\\msado15.dll" no_namespace rename("EOF", "adoEOF")
+#import "C:\\Program Files\\Common Files\\system\\ado\\msado15.dll" 
+no_namespace rename("EOF","adoEOF")rename("BOF","adoBOF")
 
 // void main()
 // {
