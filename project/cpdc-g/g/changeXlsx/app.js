@@ -7,7 +7,7 @@ const path = require('path'),
     ProgressBar = require('progress'),
     uuid = require("uuid");
 
-const filePath = path.join(__dirname, './input/2019年01月-4月.xlsx')
+const filePath = path.join(__dirname, './input/2019年01月-4月(5月11).xlsx')
 
 class PatternData {
     constructor(filePath) {
@@ -46,12 +46,12 @@ class PatternData {
      */
     async splitTableTitle (lists) {
         // fs.writeJsonSync('table.json', lists)
-        const Bar = new ProgressBar('  进度 [:bar] :current/:total :percent :etas', {
-            complete: '=', // 完成
-            incomplete: ' ', // 未完成
-            width: 50, // 宽度
-            total: lists.length // 总数
-        });
+        // const Bar = new ProgressBar('  进度 [:bar] :current/:total :percent :etas', {
+        //     complete: '=', // 完成
+        //     incomplete: ' ', // 未完成
+        //     width: 50, // 宽度
+        //     total: lists.length // 总数
+        // });
         let patVistArr = [],
             patItemArr = [],
             draingaeTubeArr = [{}],
@@ -106,7 +106,7 @@ class PatternData {
 
                 }
             }
-            Bar.tick()
+            // Bar.tick()
         }
         // 插入 sheet
         X_utils.book_append_sheet(this.wb, XLSX.utils.json_to_sheet(patVistArr), "PAT_VISIT")
