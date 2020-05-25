@@ -1,0 +1,103 @@
+SELECT TOP
+	500 PATIENT_NO,
+	COUNT ( PATIENT_NO ) AS num 
+	INTO top500 
+FROM
+	[dbo].[PAT_SD_ITEM_RESULT] 
+WHERE
+	SD_ITEM_VALUE != '' 
+	AND PATIENT_NO IN (
+-- 引流管字段比较多的患者
+SELECT
+	tmp_tube.PATIENT_NO 
+FROM
+	(
+	SELECT TOP
+		1000 PATIENT_NO,
+		COUNT ( PATIENT_NO ) AS num 
+	FROM
+		[dbo].[PAT_DRAINAGE_TUBE] 
+	WHERE
+		TUBE_NAME != '' 
+		AND PATIENT_NO IN (
+		SELECT
+			tmp_fu.PATIENT_NO 
+		FROM
+			(-- 随访字段多的患者
+			SELECT TOP
+				1500 PATIENT_NO,
+				COUNT ( PATIENT_NO ) AS num 
+			FROM
+				[dbo].[PAT_FOLLOW_UP_RESULT] 
+			WHERE
+				SD_ITEM_VALUE != '' 
+				AND PATIENT_NO IN (-- 化疗用药比较多的患者
+				SELECT
+					tmp_treat.PATIENT_NO 
+				FROM
+					( SELECT TOP 2000 PATIENT_NO, COUNT ( PATIENT_NO ) AS num FROM [dbo].[PAT_FOLLOW_UP_TREAT] WHERE TREAT_NAME != '' AND DRUG_NAME!='' AND DRUG_DOSE!=''  GROUP BY PATIENT_NO ORDER BY num DESC ) tmp_treat 
+				) 
+			GROUP BY
+				PATIENT_NO 
+			ORDER BY
+				num DESC 
+			) tmp_fu 
+		) 
+	GROUP BY
+		PATIENT_NO 
+	ORDER BY
+	num DESC 
+	) tmp_tube
+      
+	) 
+GROUP BY
+	PATIENT_NO 
+ORDER BY
+	num DESC
+
+-- 引流管比较多的患者
+SELECT
+	PATIENT_NO,
+	COUNT ( PATIENT_NO ) AS num 
+FROM
+	[dbo].[PAT_DRAINAGE_TUBE] 
+WHERE
+	TUBE_NAME != '' 
+GROUP BY
+	PATIENT_NO 
+ORDER BY
+	num DESC
+
+-- 随访字段多的患者
+
+SELECT
+	PATIENT_NO,
+	COUNT ( PATIENT_NO ) AS num 
+FROM
+	[dbo].[PAT_FOLLOW_UP_RESULT]
+WHERE
+	SD_ITEM_VALUE!= '' 
+GROUP BY
+	PATIENT_NO 
+ORDER BY
+	num DESC
+
+    
+-- 随访用药比较多的患者
+SELECT
+	PATIENT_NO,
+	COUNT ( PATIENT_NO ) AS num 
+FROM
+	[dbo].[PAT_FOLLOW_UP_TREAT]
+WHERE
+	TREAT_NAME!= '' AND DRUG_NAME!='' AND DRUG_DOSE!='' 
+GROUP BY
+	PATIENT_NO 
+ORDER BY
+	num DESC
+
+-- 随访时间是整年的
+SELECT * FROM [dbo].[PAT_FOLLOW_UP] WHERE FOLLOW_UP_MONTHS IN ('12','13','24','25','36')
+
+-- 删除其他患者
+DELETE FROM [dbo].[PAT_VISIT] WHERE PATIENT_NO NOT IN (SELECT PATIENT_NO FROM top500)
