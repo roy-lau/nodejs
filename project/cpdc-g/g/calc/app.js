@@ -23,6 +23,7 @@ class CALC {
         // 释放&&清空
         this.initPatVist = Object.create(null)
         this.initPatItemResult = Object.create(null)
+        this.initDrainageTube = Object.create(null)
         this.initFollowTreat = Object.create(null)
         this.follow_total = 0
         this.followDate_num = 0
@@ -57,13 +58,13 @@ class CALC {
                 const element = retPatientNo[index],
                     patNo = element.PATIENT_NO;
 
-                await this.calcPatVist(index, patNo)
-                await this.calcPatItemResult(index, patNo)
-
+                // await this.calcPatVist(index, patNo)
+                // await this.calcPatItemResult(index, patNo)
+                await this.calcPatDrainageTube(index, patNo)
                 // await this.calcPatFollowUp(index, patNo)
 
-                await this.calcPatFollowUpTreat(index, patNo)
-                await this.calcPatFollowUpResult(index, patNo)
+                // await this.calcPatFollowUpTreat(index, patNo)
+                // await this.calcPatFollowUpResult(index, patNo)
                 bar.tick();
 
             }
@@ -72,7 +73,7 @@ class CALC {
 
             await this.formatCalcData()
             // console.log(this.tableArr)
-            this.saveCalcResult('王伟')
+            this.saveCalcResult('金佳斌')
             console.timeEnd("共用时")
         })
     }
@@ -274,7 +275,62 @@ class CALC {
         }
     }
 
+    /**
+     * 计算 引流管信息(有一个引流管信息就算100%，一个也没有就算0%) -- 未验证通过
+     * 
+     * @param {Number} index id
+     * @param {String} patNo 患者id
+     */
+    async calcPatDrainageTube (index, patNo) {
+        try {
+            const retPatDrainageTube = await sql.query(`SELECT
+                -- PATIENT_NO,
+                TUBE_NAME AS '引流管_引流管部位',
+                RETENTION_DAYS AS '引流管_留置天数',
+                POD1 AS '引流管_POD1',
+                POD3 AS '引流管_POD3',
+                POD7 AS '引流管_POD7',
+                AMY_POD1 AS '引流管_AMYPOD1',
+                AMY_POD3 AS '引流管_AMYPOD3',
+                AMY_POD7 AS '引流管_AMYPOD7',
+                AMY_POD_DRAW AS '引流管_拔管前AMY'
+            FROM
+                [dbo].[PAT_DRAINAGE_TUBE]
+            WHERE
+                PATIENT_NO= '${patNo}'`),
+                _DrainageTubeTotal = retPatDrainageTube.length
 
+            // console.log(key,index,_followUpTreatTotal)
+            if (index == 0) { // 第一次，初始化（如果第一个为空，将会报错 query）
+                const _keys = ['引流管_引流管部位', '引流管_留置天数', '引流管_POD1', '引流管_POD3', '引流管_POD7', '引流管_AMYPOD1', '引流管_AMYPOD3', '引流管_AMYPOD7', '引流管_拔管前AMY']
+                for (let k = 0; k < _keys.length; k++) {
+
+                    this.initDrainageTube[_keys[k] + '_total'] = 0
+                    this.initDrainageTube[_keys[k] + '_num'] = 0
+                    this.OBJ_CALC[_keys[k]] = 0
+                }
+            }
+
+            for (let i = 0; i < _DrainageTubeTotal; i++) {
+                const _items = retPatDrainageTube[i]
+
+                _.forEach(_items, (value, key) => {
+                    // console.log(value, key)
+                    if (value) {
+                        this.initDrainageTube[key + '_total'] += 1
+                        this.initDrainageTube[key + '_num'] += 1
+
+                    } else {
+                        this.initDrainageTube[key + '_total'] += 1
+                        this.initDrainageTube[key + '_num'] += 0
+                    }
+                    this.OBJ_CALC[key] = (this.initDrainageTube[key + '_num'] / this.initDrainageTube[key + '_total'] * 100)
+                });
+            }
+        } catch (err) {
+            console.error('calcPatDrainageTube ERR ', err)
+        }
+    }
     /**
      * 计算 随访时间和时长 ---  验证通过
      * 
@@ -346,8 +402,8 @@ class CALC {
     async handlePatFollowUpT (count, patArr) {
         try {
             console.info("计算 随访时间和时长 完整率")
-            const fu_date_count= await sql.query(`SELECT PATIENT_NO, MAX(FOLLOW_UP_DATE) FROM [dbo].[PAT_FOLLOW_UP] WHERE PATIENT_NO IN ( ${patArr} ) GROUP BY PATIENT_NO`) // OR add FOLLOW_UP_DATE !='1900-01-01 00:00:00.000'
-            const fu_month_count= await sql.query(`SELECT PATIENT_NO, MAX(FOLLOW_UP_MONTHS) FROM [dbo].[PAT_FOLLOW_UP] WHERE PATIENT_NO IN ( ${patArr} ) AND FOLLOW_UP_MONTHS !='' GROUP BY PATIENT_NO`)
+            const fu_date_count = await sql.query(`SELECT PATIENT_NO, MAX(FOLLOW_UP_DATE) FROM [dbo].[PAT_FOLLOW_UP] WHERE PATIENT_NO IN ( ${patArr} ) GROUP BY PATIENT_NO`) // OR add FOLLOW_UP_DATE !='1900-01-01 00:00:00.000'
+            const fu_month_count = await sql.query(`SELECT PATIENT_NO, MAX(FOLLOW_UP_MONTHS) FROM [dbo].[PAT_FOLLOW_UP] WHERE PATIENT_NO IN ( ${patArr} ) AND FOLLOW_UP_MONTHS !='' GROUP BY PATIENT_NO`)
             // console.log(count,fu_date_count,fu_month_count)
             this.OBJ_CALC['随访_随访时间'] = (fu_date_count.length / count * 100)
             this.OBJ_CALC['随访_随访时长'] = (fu_month_count.length / count * 100)
@@ -554,7 +610,7 @@ class CALC {
             if (itemCode) {
                 const [cutItem] = allDict.filter(dict => dict.itemCode == itemCode)
                 if (cutItem) {
-                    this.tableArr.push({ '类别': cutItem.typeName, '数据项': key.replace("随访_",""), '完整率': value.toFixed(2) + '%' })
+                    this.tableArr.push({ '类别': cutItem.typeName, '数据项': key.replace("随访_", ""), '完整率': value.toFixed(2) + '%' })
                 }
             } else {
                 const [typeName, itemName] = key.split('_')
@@ -569,7 +625,7 @@ class CALC {
     }
 
     // 保存计算结果
-    saveCalcResult (fileName="无文件名") {
+    saveCalcResult (fileName = "无文件名") {
         try {
             // 创建表格
             const wb = X_utils.book_new()
@@ -614,5 +670,5 @@ function needExits (data, items) {
 
 const calc = new CALC()
 
-calc.runEveryHospital()
-// calc.runField()
+// calc.runEveryHospital()
+calc.runField()

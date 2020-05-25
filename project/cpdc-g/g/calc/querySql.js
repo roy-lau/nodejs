@@ -105,7 +105,6 @@ const jinWeiWei2 = `SELECT DISTINCT PATIENT_NO  FROM [dbo].[PAT_SD_ITEM_RESULT] 
             AND SD_ITEM_VALUE IN ( '1', '2', '3' ) 
             AND PATIENT_NO IN ( SELECT DISTINCT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE = 'YXA_O_224' AND SD_ITEM_VALUE = '2' ) 
         )
-    
     )`
 // 一期医院
 const firstPhaseOfHospital= `SELECT
@@ -127,6 +126,10 @@ const groupInFolluw = `SELECT
     AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O' )`
 // 广东省人民
 const guangdong = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE HOSPITAL_ID='54bc034b46af0a8d' AND SD_CODE='YXA_O'`
+// 长海
+const changhai = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE HOSPITAL_ID='53aefd7b76452a8d' AND SD_CODE='YXA_O'`
+// 中山肿瘤
+const zszl = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE HOSPITAL_ID='8abc84d3a5601bcd' AND SD_CODE='YXA_O'`
 
 // 陈汝福入组条件
 const chen = `SELECT PATIENT_NO FROM [dbo].[calc_chen]`
@@ -147,4 +150,14 @@ const threeYearInGroup = `SELECT
     AND DISCHARGE_DATE >= '2016-01-01 00:00:00.000'
     AND DISCHARGE_DATE <= '2018-12-31 00:00:00.000'`
 
-module.exports = wagnwei
+const jjb = `SELECT
+    PATIENT_NO 
+    FROM
+    [dbo].[PAT_SD_ITEM_RESULT] 
+    WHERE
+    SD_ITEM_CODE = 'YXA_O_151' 
+    AND SD_ITEM_VALUE IN ( '1', '2', '3' ) 
+    AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE ADMISSION_DATE >= '2016-01-01 00:00:00' AND ADMISSION_DATE <= '2019-12-31 00:00:00' AND SD_CODE = 'YXA_O' ) 
+    AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE = 'YXA_O_215' AND SD_ITEM_VALUE IN ( '1', '5' ) )`
+
+module.exports = jjb
