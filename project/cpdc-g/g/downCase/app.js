@@ -10,13 +10,14 @@ const sql = require('../dbs/sqlServer-t.js'),
 
 // 创建一个 workbook 工作薄(Excel)
 const workBook = X_utils.book_new()
+// 文件名，也用做 title
+const fileName = '下载病历_' + (  process.argv[2] || '') 
 
 function startup () {
-    process.title = '下载病历'
+    process.title = fileName
     const constSQL = require("./const-sql.js")
 
     sql.query(constSQL).then(async listBySelect => {
-        const fileName = process.argv[2] || '下载病历' // 文件名
         const filePath = path.join(__dirname, './out/' + fileName + '_' + Date.now() + '.xlsx')
         const patList = listBySelect.map(item => `'${item.PATIENT_NO}'`).join()
 
@@ -27,7 +28,7 @@ function startup () {
 
 
         // 导出 Excel
-        // XLSX.writeFile(workBook, filePath, { compression: true });
+        XLSX.writeFile(workBook, filePath, { compression: true });
         console.log(fileName, ' 下载成功！')
         // process.exit('退出……')
     }).catch(err => {
@@ -128,7 +129,7 @@ async function query_PAT_VISIT (patient_no) {
                     AND result.SD_ITEM_VALUE= cv.CV_VALUE 
                 WHERE
                     dist.SD_CODE= 'YXA_O' 
-                    
+                    -- ${itemListSql}
                 ORDER BY
                     dist.DISPLAY_ORDER+0`)
 
@@ -161,7 +162,7 @@ async function query_PAT_VISIT (patient_no) {
 
         console.timeEnd('处理患者基本信息表')
         const RetPatVisit = await patAddComment(X_utils.json_to_sheet(retPatVisit))
-        console.log(RetPatVisit)
+        // console.log(RetPatVisit)
         X_utils.book_append_sheet(workBook, RetPatVisit, "基本信息");
 
     } catch (err) {

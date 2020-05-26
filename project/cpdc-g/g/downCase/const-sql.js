@@ -8,6 +8,10 @@ const startDate16 = '2016-01-01 00:00:00.000',
     endDate17 = '2017-12-31 00:00:00.000',
     startDate18 = '2018-01-01 00:00:00.000',
     endDate18 = '2018-12-31 00:00:00.000',
+    startDate19 = '2019-01-01 00:00:00.000',
+    endDate19 = '2019-12-31 00:00:00.000',
+    startDate20 = '2020-01-01 00:00:00.000',
+    endDate20 = '2020-12-31 00:00:00.000',
     address = '上海%'
 
 
@@ -89,11 +93,11 @@ const list_select_year = `SELECT
 const mz_m = `SELECT TOP 1 * FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_172' AND LEN(SD_ITEM_VALUE)>1`
 
 
-// 查询胰腺导管腺癌三年的数据
-const get_3year_in_group = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT]
+// 查询胰腺导管腺癌某年的数据
+const get_year_in_group = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT]
     WHERE SD_GROUP = '1'
     AND SD_CODE = 'YXA_O'
-    AND DISCHARGE_DATE>='${startDate16}' AND DISCHARGE_DATE<='${endDate18}'`
+    AND DISCHARGE_DATE>='${startDate20}' AND DISCHARGE_DATE<='${endDate20}'`
 
 // 查询北大入组6666患者
 const tmp_beida = `SELECT PATIENT_NO FROM [dbo].[tmp_beida]`
@@ -134,4 +138,4 @@ const liang = `SELECT PATIENT_NO FROM [dbo].[tmp_liang]`
 
 const id = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE PATIENT_NO='d276f2dd3e00b487'`
 
-module.exports = id
+module.exports = get_year_in_group
