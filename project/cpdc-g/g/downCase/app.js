@@ -3,7 +3,6 @@
  */
 'use strict';
 const sql = require('../dbs/sqlServer-t.js'),
-    path = require("path"),
     XLSX = require("xlsx"),
     X_utils = XLSX.utils
 // { desensitization } = require('./utils')
@@ -18,7 +17,7 @@ function startup () {
     const constSQL = require("./const-sql.js")
 
     sql.query(constSQL).then(async listBySelect => {
-        const filePath = path.join(__dirname, './out/' + fileName + '_' + Date.now() + '.xlsx')
+        const filePath = './out/' + fileName + '_' + Date.now() + '.xlsx'
         const patList = listBySelect.map(item => `'${item.PATIENT_NO}'`).join()
 
         await query_PAT_VISIT(patList)
