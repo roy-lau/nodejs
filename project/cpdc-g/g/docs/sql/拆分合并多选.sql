@@ -27,3 +27,6 @@ SELECT
 		( SELECT '+' + [CV_VALUE_TEXT] FROM [dbo].[SD_ITEM_CV_DICT] 
             WHERE CV_CODE = 'HLYWTYM' AND CV_VALUE IN ( select * from dbo.split('2#10','#') ) FOR xml path ( '' ) ), 1,1,'' 
         );
+
+-- 用加号合并多行
+SELECT stuff(( SELECT '+' + [CV_VALUE_TEXT] FROM [dbo].[SD_ITEM_CV_DICT] WHERE CV_CODE = 'ZLWZ' FOR xml path ( '' ) ), 1,1,'');
