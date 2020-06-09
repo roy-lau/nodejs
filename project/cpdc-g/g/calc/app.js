@@ -58,13 +58,13 @@ class CALC {
                 const element = retPatientNo[index],
                     patNo = element.PATIENT_NO;
 
-                // await this.calcPatVist(index, patNo)
-                // await this.calcPatItemResult(index, patNo)
+                await this.calcPatVist(index, patNo)
+                await this.calcPatItemResult(index, patNo)
                 await this.calcPatDrainageTube(index, patNo)
                 // await this.calcPatFollowUp(index, patNo)
 
-                // await this.calcPatFollowUpTreat(index, patNo)
-                // await this.calcPatFollowUpResult(index, patNo)
+                await this.calcPatFollowUpTreat(index, patNo)
+                await this.calcPatFollowUpResult(index, patNo)
                 bar.tick();
 
             }
@@ -73,7 +73,7 @@ class CALC {
 
             await this.formatCalcData()
             // console.log(this.tableArr)
-            this.saveCalcResult('金佳斌')
+            this.saveCalcResult('陈汝福')
             console.timeEnd("共用时")
         })
     }
