@@ -10,7 +10,7 @@ const sql = require('../dbs/sqlServer-t.js'),
 // 创建一个 workbook 工作薄(Excel)
 const workBook = X_utils.book_new()
 // 文件名，也用做 title
-const fileName = '下载病历_' + (  process.argv[2] || '') 
+const fileName = '下载病历_' + (process.argv[2] || '')
 
 function startup () {
     process.title = fileName
@@ -36,21 +36,35 @@ function startup () {
 }
 
 /**
- * 给患者基本信息加备注
+ * 调整表头样式
  * 
  * @param {Objer} patJsonSheet 患者基本信息的数据
  */
-async function patAddComment (patJsonSheet) {
-    console.time('基本信息表头添加备注')
+async function adjustHeadStyle (patJsonSheet) {
+    console.time('调整表头样式')
     for (const key in patJsonSheet) {
         if (patJsonSheet.hasOwnProperty(key)) {
-            const element = patJsonSheet[key];
             if (Array.isArray(X_utils.split_cell(key)) && X_utils.split_cell(key)[1] == '1') { // 找出第一行（表头）
-                const itemCode = element.v.split('#')[1]
+                const header = patJsonSheet[key];
+                // console.log(header)
+                // header.s = {
+                //     font: {
+                //         name: '宋体',
+                //         sz: 24,
+                //         bold: true,
+                //         color: { rgb: "FFFFAA00" }
+                //     },
+                //     alignment: { horizontal: "center", vertical: "center", wrap_text: true },
+                //     fill: { bgcolor: { rgb: 'ffff00' } }
+                // };
+
+                const itemCode = header.v.split('#')[1]
                 if (itemCode) {
                     const ret = await sql.query(`SELECT
                                 title.ITEM_TYPE_NAME AS 'parentName',
                                 title1.ITEM_TYPE_NAME AS 'childName',
+                                (SELECT ITEM_TITLE FROM [dbo].[SD_ITEM_DICT] WHERE ITEM_CODE = REPLACE( dist.ITEM_PARENT_CODE, '#1', '' ) AND SD_CODE = 'YXA_O') AS 'parentItem',
+                                (SELECT ITEM_NAME+'#'+ITEM_CODE FROM [dbo].[SD_ITEM_DICT] WHERE ITEM_CODE = REPLACE( dist.ITEM_PARENT_CODE, '#1', '' ) AND SD_CODE = 'YXA_O') AS 'select',
                                 (CASE dist.ITEM_FORMAT
                                     WHEN 1 THEN '数值'
                                     WHEN 2 THEN '文本'
@@ -70,17 +84,21 @@ async function patAddComment (patJsonSheet) {
                                 AND dist.ITEM_CODE='${itemCode}'`)
                     const itemType = ret[0]
                     if (itemType) {
-                        XLSX.utils.cell_add_comment(patJsonSheet[key], 
-                            `父类别: ${itemType.parentName}\n子类别: ${itemType.childName || '无'}\n类型：${itemType.type}`, 
-                            'roy')
-                        patJsonSheet[key].c.hidden = true;
+                        let selectStr = itemType.select ? "\n条件:" + itemType.select + "(为“有”或“是”时此列才应有值)" : '',
+                            commentStr = "父类别: " + itemType.parentName +
+                                "\n子类别:" + (itemType.childName || '无') +
+                                "\n父数据项:" + (itemType.parentItem || '无') +
+                                // selectStr +
+                                "\n类型:" + itemType.type
+                        XLSX.utils.cell_add_comment(header, commentStr, 'roy')
+                        header.c.hidden = true;
                     }
 
                 }
             }
         }
     }
-    console.timeEnd('基本信息表头添加备注')
+    console.timeEnd('调整表头样式')
     return patJsonSheet
 }
 /**
@@ -95,7 +113,7 @@ async function query_PAT_VISIT (patient_no) {
                     a.PATIENT_NO,
                     a.PATIENT_ID AS '住院ID',
                     a.INP_NO AS '住院流水号',
-                    a.NAME AS '姓名',
+                    REPLACE( a.NAME, SUBSTRING ( a.NAME, 2, 3 ), '**' ) AS '姓名',
                     '患者性别' = ( CASE SEX WHEN '0' THEN '男' WHEN '1' THEN '女' END ),
                     a.AGE AS '患者年龄',
                     a.ADMISSION_DATE AS '入院日期',
@@ -160,7 +178,7 @@ async function query_PAT_VISIT (patient_no) {
         // retPatVisit.sort((a, b) => a['患者住址#YXA_O_003'] > b['患者住址#YXA_O_003'] ? 1 : -1)
 
         console.timeEnd('处理患者基本信息表')
-        const RetPatVisit = await patAddComment(X_utils.json_to_sheet(retPatVisit))
+        const RetPatVisit = await adjustHeadStyle(X_utils.json_to_sheet(retPatVisit))
         // console.log(RetPatVisit)
         X_utils.book_append_sheet(workBook, RetPatVisit, "基本信息");
 
