@@ -4,7 +4,7 @@ module.exports = {
         password: 'sa@123',
         // server: 'localhost',
         server: '192.168.1.253',
-        // database: 'RYCPDC_C20191111new',
+        // database: 'RYCPDC_C20200424_calc',
         port: 1433,
         pool: {
             min: 0, //连接池最小连接数，默认0
@@ -28,9 +28,9 @@ module.exports = {
             }
         },
         options: {
-            // database: 'sdr',
+            // database: 'show_cpdc',
             database: 'RYCPDC_C20200424_calc',
-            // database: 'RYCPDC_C20191111new',
+            // database: 'RYCPDC_C20200424_calc',
             encrypt: false
         }
     },
