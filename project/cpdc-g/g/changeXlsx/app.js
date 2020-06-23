@@ -7,7 +7,7 @@ const path = require('path'),
     ProgressBar = require('progress'),
     uuid = require("uuid");
 
-const filePath = path.join(__dirname, './input/2019年01月-4月(5月11).xlsx')
+const filePath = path.join(__dirname, './input/胰腺癌单病种数据元2020.4-5——整理.xlsx')
 
 class PatternData {
     constructor(filePath) {
