@@ -151,6 +151,65 @@ WHERE
     AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_CODE = 'YXA_O' AND SD_ITEM_CODE = 'YXA_O_020' AND SD_ITEM_VALUE != '' ) 
 )`
 
+const chen2 = `SELECT
+    PATIENT_NO 
+    FROM
+    [dbo].[PAT_VISIT] 
+    WHERE
+    SD_CODE = 'YXA_O' 
+    AND SD_GROUP = 1 
+    AND PATIENT_NO IN (
+    -- 糖尿病为否(12618)+糖尿病为是的同时有糖尿病时长(2717)=15007
+    SELECT
+        PATIENT_NO 
+    FROM
+        [dbo].[PAT_SD_ITEM_RESULT] 
+    WHERE
+        SD_ITEM_CODE = 'YXA_O_021' 
+        AND SD_ITEM_VALUE != '' 
+        AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE = 'YXA_O_020' AND SD_ITEM_VALUE = '1' ) UNION
+    SELECT
+        PATIENT_NO 
+    FROM
+        [dbo].[PAT_SD_ITEM_RESULT] 
+    WHERE
+        SD_ITEM_CODE = 'YXA_O_020' 
+        AND SD_ITEM_VALUE = '2' 
+    ) `
+
+const chen3 = `SELECT
+    DISTINCT PATIENT_NO
+    FROM
+        [dbo].[PAT_SD_ITEM_RESULT] 
+    WHERE
+        SD_ITEM_CODE = 'YXA_O_210' 
+        AND ( SD_ITEM_VALUE LIKE '%导管腺癌%' OR SD_ITEM_VALUE LIKE '%PDAC%' OR SD_ITEM_VALUE LIKE '%daoguanxianai%' ) 
+        AND PATIENT_NO IN (
+        SELECT 
+            PATIENT_NO 
+        FROM
+            [dbo].[PAT_VISIT] 
+        WHERE
+            SD_CODE = 'YXA_O' 
+            AND PATIENT_NO IN (
+        -- 糖尿病为否(12618)+糖尿病为是的同时有糖尿病时长(2717)=15007
+            SELECT
+                PATIENT_NO 
+            FROM
+                [dbo].[PAT_SD_ITEM_RESULT] 
+            WHERE
+                SD_ITEM_CODE = 'YXA_O_021' 
+                AND SD_ITEM_VALUE != '' 
+                AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE = 'YXA_O_020' AND SD_ITEM_VALUE = '1' ) UNION
+            SELECT
+                PATIENT_NO 
+            FROM
+                [dbo].[PAT_SD_ITEM_RESULT] 
+            WHERE
+                SD_ITEM_CODE = 'YXA_O_020' 
+                AND SD_ITEM_VALUE = '2' 
+            ) 
+        )`
 // 王伟入组条件
 const wagnwei = `SELECT PATIENT_NO FROM [dbo].[calc_wagnwei]`
 
@@ -177,4 +236,4 @@ const jjb = `SELECT
     AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE ADMISSION_DATE >= '2016-01-01 00:00:00' AND ADMISSION_DATE <= '2019-12-31 00:00:00' AND SD_CODE = 'YXA_O' ) 
     AND PATIENT_NO IN ( SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE = 'YXA_O_215' AND SD_ITEM_VALUE IN ( '1', '5' ) )`
 
-module.exports = chen1
+module.exports = chen3
