@@ -250,7 +250,8 @@ async function query_PAT_FOLLOW_UP_RESULT (patient_no) {
                         PATIENT_NO,
                         FU_TIMES,
                         FOLLOW_UP_DATE AS '随访时间',
-                        FOLLOW_UP_MONTHS AS '随访时长'
+                        FOLLOW_UP_MONTHS AS '随访时长',
+                        FU_REASON AS '备注'
                     FROM
                         [dbo].[PAT_FOLLOW_UP]
                     WHERE

@@ -56,7 +56,19 @@ FROM
 		GROUP BY PATIENT_NO ) AS fu_a
 	LEFT JOIN [dbo].[PAT_FOLLOW_UP] AS fu_b ON fu_a.PATIENT_NO= fu_b.PATIENT_NO AND fu_a.m= fu_b.FOLLOW_UP_DATE
 
+-- ----------------------------
+-- 查询患者末次随访的日期
+-- ----------------------------
+SELECT
+	PATIENT_NO,
+	MAX ( FOLLOW_UP_DATE ) 
+FROM
+	[dbo].[PAT_FOLLOW_UP] 
+-- 	WHERE PATIENT_NO='' -- 查询一个患者末次随访的数据
+GROUP BY
+	PATIENT_NO
 
+	
 -- ------------------------------------------
 --      查询随访结果字典（格式转换）
 -- ------------------------------------------

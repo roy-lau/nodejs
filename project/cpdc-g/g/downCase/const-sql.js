@@ -15,7 +15,7 @@ const startDate16 = '2016-01-01 00:00:00.000',
     address = '上海%'
 
 
-const test = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_GROUP = '1' AND SD_CODE = 'YXA_O'`
+const test = `SELECT PATIENT_NO FROM [dbo].[PAT_SD_ITEM_RESULT] WHERE SD_ITEM_CODE='YXA_O_161' AND SD_ITEM_VALUE='1900-01-01'`
 
 // 查询有死亡时间的患者
 const in_die = `SELECT DISTINCT TOP 2080
@@ -132,9 +132,16 @@ const ch17OneFU = `SELECT DISTINCT
 
 // 下载浙一 19年数据
 const zhe1 = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE HOSPITAL_ID='5edc463fa828078d' AND UPDATE_DATE>'2020'`
+// 复旦中山
+const fdzs = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE HOSPITAL_ID='12b2fd726e2f8a8d'`
 
 // 查询梁总的入组字段
 const liang = `SELECT PATIENT_NO FROM [dbo].[tmp_liang]`
+
+// 王梦一 10363
+const wmy = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE SD_CODE='YXA_O' AND SD_GROUP='1' AND DISCHARGE_DATE>='2016-01-01 00:00:00.000' AND DISCHARGE_DATE<='2018-12-31 00:00:00.000'`
+
+const wmy9985 = `SELECT PATIENT_NO FROM [dbo].[wmy9985]`
 
 const id = `SELECT PATIENT_NO FROM [dbo].[PAT_VISIT] WHERE PATIENT_NO='d276f2dd3e00b487'`
 

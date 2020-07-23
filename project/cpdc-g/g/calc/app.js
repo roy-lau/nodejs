@@ -73,7 +73,7 @@ class CALC {
 
             await this.formatCalcData()
             // console.log(this.tableArr)
-            this.saveCalcResult('陈汝福V4')
+            this.saveCalcResult('北京医院')
             console.timeEnd("共用时")
         })
     }

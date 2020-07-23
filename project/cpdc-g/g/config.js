@@ -29,7 +29,7 @@ module.exports = {
         },
         options: {
             // database: 'show_cpdc',
-            database: 'RYCPDC_C20200424_calc',
+            database: 'RYCPDC_C20200701_calc',
             // database: 'RYCPDC_C20200424_calc',
             encrypt: false
         }
