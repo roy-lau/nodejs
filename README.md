@@ -1,9 +1,5 @@
 # nodejs
 node一小步，前端一大步！
-
-npm是什么
-----------http://www.cnblogs.com/PeunZhang/p/5553574.html------
-
 NPM的全称是Node Package Manager，是随同NodeJS一起安装的包管理和分发工具，它很方便让JavaScript开发者下载、安装、上传以及管理已经安装的包。
 ## npm install 安装模块
     -S, --save 安装包信息将加入到dependencies（生产阶段的依赖）
