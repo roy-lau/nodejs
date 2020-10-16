@@ -1,0 +1,108 @@
+#nav h2,
+.items h2,
+.tetle-item h2 {
+  font-size: 2em;
+  margin-top: -5px;
+  font-weight: 300;
+}
+#nav h2 a,
+.items h2 a,
+.tetle-item h2 a {
+  text-decoration: none;
+  color: #000;
+}
+.clearfix {
+  clear: both;
+}
+a.active {
+  color: #24bf9f !important;
+  border-bottom: 2px solid #24bf9f;
+}
+.Remarks {
+  color: red;
+}
+.container {
+  margin-top: 61px;
+  /* api左侧样式 */
+  /* api右侧样式 */
+}
+.container .api-title-line {
+  height: 60px;
+  border-bottom: 1px solid gray;
+}
+.container .api-title-line ul li {
+  float: left;
+  line-height: 60px;
+  margin-left: 30px;
+  list-style: none;
+}
+.container .api-title-line ul li a {
+  font-size: 1em;
+  font-family: "Microsoft YaHei";
+  color: gray;
+  text-decoration: none;
+}
+.container .api-title-line ul li a:hover {
+  color: #24bf9f;
+}
+.container .api-left {
+  width: 23%;
+  float: left;
+}
+.container .api-left .api-items div {
+  display: none;
+}
+.container .api-left .api-items div > li {
+  width: 175px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  list-style: none;
+  background-color: gray;
+  color: white;
+}
+.container .api-left .api-items div ol li {
+  padding: 6px;
+  font-family: "宋体", "Microsoft YaHei";
+}
+.container .api-left .api-items div ol li a {
+  font-weight: 500;
+  color: #3c3c3c;
+  text-decoration: none;
+}
+.container .api-left .api-items div ol li a:hover {
+  color: #18bd9c;
+}
+.container .api-right {
+  width: 75%;
+  float: left;
+  /* #ACI-communication-model,#ACI-message-format,#ACI-Business-interaction,#ACI-Return-definition,#ACI-attach{
+				display: none; // 默认将ACI的内容全部隐藏
+		} */
+}
+.container .api-right .API-content div[class$="dom"] div {
+  display: none;
+}
+.container .api-right h3 {
+  display: inline-block;
+}
+.container .api-right table.table {
+  width: 100%;
+  border-collapse: collapse;
+  border: none;
+}
+.container .api-right table.table th,
+.container .api-right table.table td {
+  border: 1px solid #d8d8d8;
+  text-align: center;
+  padding: 5px 0;
+}
+.container .api-right table.table tr {
+  transition: all 0.6s linear;
+}
+.container .api-right table.table tr:nth-child(odd) {
+  background-color: #ededed;
+}
+.container .api-right table.table tr:hover {
+  background-color: rgba(8, 180, 180, 0.2);
+}

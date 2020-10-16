@@ -1,0 +1,16 @@
+extends layout 
+
+block content
+  h1= title
+  //- 导航链接
+  include menu
+  p hello #{title}
+  //- 消息
+  include messages
+  form(action='/login', method='post')
+    p 用户名：
+      input(type='text' name='user[name]')
+    p 密码：
+      input(type='password' name='user[pass]')
+    p 
+      input(type='submit' value='Login')

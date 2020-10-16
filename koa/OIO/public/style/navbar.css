@@ -1,0 +1,131 @@
+#Navbar {
+  position: fixed;
+  top: 0;
+  z-index: 99;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid #131e24;
+}
+#Navbar .content {
+  width: 90%;
+  margin: 0 auto;
+}
+#Navbar .content a {
+  line-height: 60px;
+}
+#Navbar .content .lt img {
+  float: left;
+}
+#Navbar .content .lt h2 {
+  float: left;
+  margin: auto 20px;
+  color: #333;
+  font-weight: 500;
+  font-size: 25px;
+}
+#Navbar .content .cent li.tab-item {
+  float: left;
+  margin: 0 48px;
+}
+#Navbar .content .cent li.tab-item > a {
+  font-size: 1.2em;
+  color: #000;
+  text-decoration: none;
+  transition: all 0.5s;
+}
+#Navbar .content .cent li.tab-item > a:hover {
+  color: #00a3f0;
+  border-bottom: 3px solid #00a3f0;
+}
+#Navbar .content .rt {
+  float: right;
+}
+#Navbar .content .rt a {
+  width: 83px;
+  height: 31px;
+  border: 1px solid #18bd9c;
+  border-radius: 10%;
+  font-size: 16px;
+  padding: 5px 25px;
+  cursor: pointer;
+  transition: all 1s;
+}
+#Navbar .content .rt .register {
+  background-color: #18bd9c;
+  color: #fff;
+}
+#Navbar .content .rt .register:hover {
+  color: #fff;
+  background-color: #8dc;
+}
+#Navbar .content .rt .login {
+  color: #18bd9c;
+  margin-right: 5px;
+}
+#Navbar .content .rt .login:hover {
+  color: #fff;
+  background-color: #8dc;
+}
+#product_menu {
+  position: absolute;
+  z-index: 66;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  padding: 30px 0;
+  background-color: #131e24;
+}
+#product_menu .product-content {
+  margin: 0 auto;
+  width: 80%;
+}
+#product_menu .product-content .left-menu {
+  float: left;
+  width: 40%;
+  color: #18bd9c;
+  margin-top: 50px;
+}
+#product_menu .product-content .left-menu h1 {
+  font-size: 2em;
+}
+#product_menu .product-content .left-menu ul > li > a:hover {
+  color: #00a3f0;
+  border-bottom: 3px solid #00a3f0;
+  cursor: pointer;
+}
+#product_menu .product-content .voice-menu,
+#product_menu .product-content .sms-menu {
+  float: left;
+  width: 30%;
+  line-height: 38px;
+}
+#product_menu .product-content .voice-menu .title,
+#product_menu .product-content .sms-menu .title {
+  font-size: 18px;
+  color: #7395a6;
+}
+#product_menu .product-content .voice-menu .menu-item,
+#product_menu .product-content .sms-menu .menu-item {
+  line-height: 10px;
+}
+#product_menu .product-content .voice-menu .menu-item .dot,
+#product_menu .product-content .sms-menu .menu-item .dot {
+  font-size: 16px;
+  color: #fff;
+  width: 10px;
+}
+#product_menu .product-content .voice-menu .menu-item a,
+#product_menu .product-content .sms-menu .menu-item a {
+  font-size: 16px;
+  color: #e6e7e9;
+  transition: all 0.5s;
+}
+#product_menu .product-content .voice-menu .menu-item a:hover,
+#product_menu .product-content .sms-menu .menu-item a:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+#product_menu .product-content .voice-menu .menu-item a:hover:after,
+#product_menu .product-content .sms-menu .menu-item a:hover:after {
+  content: " >";
+}

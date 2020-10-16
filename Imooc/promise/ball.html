@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Peomise animation</title>
+  <style>
+    .ball {
+      width: 40px;
+      height: 40px;
+      border-radius: 20px;
+    }
+
+    .ball1 {
+      background: red;
+    }
+
+    .ball2 {
+      background: yellow;
+    }
+
+    .ball3 {
+      background: green;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="ball ball1" style="margin-left: 0px"></div>
+  <div class="ball ball2" style="margin-left: 0px"></div>
+  <div class="ball ball3" style="margin-left: 0px"></div>
+</body>
+<script>
+  var ball1 = document.querySelector(".ball1");
+  var ball2 = document.querySelector(".ball2");
+  var ball3 = document.querySelector(".ball3");
+
+  function animation(ball, distance, cb) {
+    //ball:球，distance:位置,cb:回调，
+    var marginLeft = parseInt(ball.style.marginLeft, 10);
+    setTimeout(function () {
+      if (marginLeft === distance) {
+        cb && cb();
+      } else {
+        if (marginLeft < distance) {
+          marginLeft++;
+        } else {
+          marginLeft--;
+        }
+        ball.style.marginLeft = marginLeft + 'px';
+
+        animation(ball, distance, cb);
+      }
+    }, 13); // 一帧约为 13ms
+  }
+  /**
+   * 1. 第一个球从起始位置(0px)滑动到 100px 位置
+   * 2. 第二个球从起始位置(0px)滑动到 200px 位置
+   * 3. 第三个球从起始位置(0px)滑动到 300px 位置
+   * 
+   * 4. 第三个球从 300px 回到 150px
+   * 5. 第二个球从 200px 回到 150px
+   * 6. 第一个球从 100px 回到 150px
+   */
+  animation(ball1, 100, function () {
+    animation(ball2, 200, function () {
+      animation(ball3, 300, function () {
+        animation(ball3, 150, function () {
+          animation(ball2, 150, function () {
+            animation(ball1, 150, function () {
+              //
+            });
+          });
+        });
+      });
+    });
+  });
+</script>
+
+</html>

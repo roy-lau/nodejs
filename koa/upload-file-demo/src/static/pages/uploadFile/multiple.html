@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>上传文件-多文件无刷新上传(XMLHttpRequest)</title>
+    <style>
+      body {
+        width: 600px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>上传文件之多文件无刷新上传</h2>
+    <div>
+      <label for="f1">选择文件(可多选):</label><br />
+      <input type="file" id="f1" name="f1" multiple />
+      <input type="text" id="text" />
+      <button type="button" id="btn-submit">上 传</button>
+    </div>
+    <p>
+      无刷新上传文件肯定要用到XMLHttpRequest,在 ie 时代也有这个对象，单只
+      支持文本数据的传输，无法用来读取和上传二进制数据。<br />
+      现在已然升级到了XMLHttpRequest2，较1版本有非常大的升级，首先就是可以读取和上传二进制数据，可以使用·FormData·对象管理表单数据。
+    </p>
+  </body>
+  <script>
+    function submitUpload() {
+      //获得文件列表，注意这里不是数组，而是对象
+      var fileList = document.getElementById("f1").files;
+      if (!fileList.length) {
+        alert("请选择文件");
+        return;
+      }
+      var fd = new FormData(); //构造FormData对象
+      fd.append("text", document.getElementById("text").value);
+
+      //多文件上传需要遍历添加到 fromdata 对象
+      for (var i = 0; i < fileList.length; i++) {
+        fd.append("f1", fileList[i]); //支持多文件上传
+      }
+
+      var xhr = new XMLHttpRequest(); //创建对象
+      xhr.open("POST", "/upload-multiple", true);
+      console.log(fd);
+      xhr.send(fd); //发送时  Content-Type默认就是: multipart/form-data;
+      xhr.onreadystatechange = function () {
+        console.log("state change", xhr.readyState);
+        if (this.readyState == 4 && this.status == 200) {
+          var obj = JSON.parse(xhr.responseText); //返回值
+          console.log(obj);
+          if (obj.fileUrl.length) {
+            alert("上传成功");
+          }
+        }
+      };
+    }
+
+    //绑定提交事件
+    document
+      .getElementById("btn-submit")
+      .addEventListener("click", submitUpload);
+  </script>
+</html>

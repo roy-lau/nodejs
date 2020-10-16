@@ -1,0 +1,5 @@
+//- 将后台的消息反馈给用户
+- if locals.messages
+    each msg in messages
+      p (class='#{msg.type}')#{msg.string}
+      - removeMessages()

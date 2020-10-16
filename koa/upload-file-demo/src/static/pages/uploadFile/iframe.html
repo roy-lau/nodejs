@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>上传文件-iframe局部刷新</title>
+    <style>
+      body {
+        width: 600px;
+        margin: 0 auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>最原始的上传文件操作 - 多文件上传 之 iframe 局部刷新</h1>
+    <br /><br />
+    <iframe
+      id="temp-iframe"
+      name="temp-iframe"
+      src=""
+      style="display: none"
+    ></iframe>
+    <form
+      method="post"
+      target="temp-iframe"
+      action="/upload-single"
+      enctype="multipart/form-data"
+    >
+      选择文件(可多选): （input 必须设置 name 属性，否则数据无法发送）<br /><br />
+      标题：<input type="text" name="title" />
+      <input type="file" name="f1" id="f1" multiple />
+      <button type="submit" id="btn-upload-file">上 传</button>
+    </form>
+    <br /><br />
+    <p>
+      页面内放一个隐藏的 iframe，或者使用 js 动态创建，指定 form 表单的 target
+      属性值为 iframe 标签的 name 属性值，这样 form 表单的 shubmit
+      行为的跳转就会在 iframe 内完成，整体页面不会刷新
+    </p>
+    <p>
+      拿到接口数据 然后为 iframe 添加load事件，得到 iframe
+      的页面内容，将结果转换为 JSON 对象，这样就拿到了接口的数据
+    </p>
+  </body>
+  <script>
+    var iframe = document.getElementById("temp-iframe");
+    iframe.addEventListener("load", function () {
+      var result = iframe.contentWindow.document.body.innerText;
+      //接口数据转换为 JSON 对象
+      var obj = JSON.parse(result);
+      if (!obj.code && obj.fileUrl.length) {
+        alert(obj.message);
+      }
+      if (obj.code) {
+        alert(obj.message);
+      }
+      console.log(obj);
+    });
+  </script>
+</html>

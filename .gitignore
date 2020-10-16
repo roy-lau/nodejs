@@ -1,6 +1,9 @@
-<span style="font-size: small;">
 node_modules    
 ./node_modules    
 */node_modules
 
-</span>
+.vscode
+.DS_Store
+npm-debug.log
+node_modules
+dist

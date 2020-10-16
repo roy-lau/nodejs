@@ -1,0 +1,24 @@
+{
+  "name": "json-server",
+  "version": "1.0.0",
+  "description": "this a return json files server",
+  "main": "jsonServer.js",
+  "dependencies": {
+    "express": "^4.15.2"
+  },
+  "devDependencies": {
+    "axios": "^0.18.1",
+    "express": "^4.15.2",
+    "http-proxy-middleware": "^0.17.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "server",
+    "json",
+    "return"
+  ],
+  "author": "roy-lau",
+  "license": "ISC"
+}
